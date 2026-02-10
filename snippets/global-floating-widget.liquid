@@ -1,0 +1,116 @@
+{% comment %}
+  Shopify浮动图片效果 - 全屏运动并碰撞反弹
+  功能：图片在视口内随机运动，触碰边界（带16px阈值）时反弹
+  位置：将覆盖整个网页可视区域，不影响页面滚动和交互
+{% endcomment %}
+
+<div
+  id="floating-images-container"
+  style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"
+></div>
+
+<script>
+  // 图片配置 - 可替换为你的图片URL
+  const floatingImages = [
+    {% comment %} { src: "{{ 'Gift.svg' | asset_url }}", width: 91, height: 37, alt: 'bat' }, {% endcomment %}
+    {% comment %} { src: "{{ 'Santa.svg' | asset_url }}", width: 55, height: 28, alt: 'candy' }, {% endcomment %}
+    {% comment %} { src: "{{ 'Sock.svg' | asset_url }}", width: 33, height: 36, alt: 'pumpkin' },
+    { src: "{{ 'Tree.svg' | asset_url }}", width: 33, height: 36, alt: 'ghost' }, {% endcomment %}
+  ];
+
+  // 配置参数
+  const FIXED_SPEED = 1; // 固定速度
+  const COLLISION_THRESHOLD = 16; // 碰撞阈值（距离边缘16px反弹）
+
+  // 创建浮动图片元素
+  function createFloatingImages() {
+    const container = document.getElementById('floating-images-container');
+
+    floatingImages.forEach((imgData, index) => {
+      const img = document.createElement('img');
+      img.src = imgData.src;
+      img.alt = imgData.alt;
+      img.style.width = `${imgData.width}px`;
+      img.style.height = `${imgData.height}px`;
+      img.style.position = 'absolute';
+      img.style.objectFit = 'contain';
+      {% comment %} img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)'; {% endcomment %}
+      img.id = `floating-img-${index}`;
+
+      // 随机初始位置（避开阈值区域）
+      const startX =
+        COLLISION_THRESHOLD + Math.random() * (window.innerWidth - imgData.width - COLLISION_THRESHOLD * 2);
+      const startY =
+        COLLISION_THRESHOLD + Math.random() * (window.innerHeight - imgData.height - COLLISION_THRESHOLD * 2);
+      img.style.left = `${startX}px`;
+      img.style.top = `${startY}px`;
+
+      container.appendChild(img);
+
+      // 随机初始方向
+      const angle = Math.random() * Math.PI * 2;
+      img.dataset.vx = FIXED_SPEED * Math.cos(angle);
+      img.dataset.vy = FIXED_SPEED * Math.sin(angle);
+    });
+  }
+
+  // 更新位置与碰撞检测
+  function updatePositions() {
+    floatingImages.forEach((imgData, index) => {
+      const img = document.getElementById(`floating-img-${index}`);
+      if (!img) return;
+
+      let x = parseFloat(img.style.left);
+      let y = parseFloat(img.style.top);
+      let vx = parseFloat(img.dataset.vx);
+      let vy = parseFloat(img.dataset.vy);
+
+      // 更新位置
+      x += vx;
+      y += vy;
+
+      // 边界碰撞检测（带阈值）
+      if (x <= COLLISION_THRESHOLD || x >= window.innerWidth - imgData.width - COLLISION_THRESHOLD) {
+        vx = -vx;
+        x += vx * 2;
+      }
+      if (y <= COLLISION_THRESHOLD || y >= window.innerHeight - imgData.height - COLLISION_THRESHOLD) {
+        vy = -vy;
+        y += vy * 2;
+      }
+
+      // 应用更新
+      img.style.left = `${x}px`;
+      img.style.top = `${y}px`;
+      img.dataset.vx = vx;
+      img.dataset.vy = vy;
+    });
+    requestAnimationFrame(updatePositions);
+  }
+
+  // 初始化
+  function initFloatingImages() {
+    createFloatingImages();
+    updatePositions();
+
+    // 窗口大小变化时调整位置
+    window.addEventListener('resize', () => {
+      floatingImages.forEach((imgData, index) => {
+        const img = document.getElementById(`floating-img-${index}`);
+        if (!img) return;
+
+        let x = parseFloat(img.style.left);
+        let y = parseFloat(img.style.top);
+
+        x = Math.max(COLLISION_THRESHOLD, Math.min(x, window.innerWidth - imgData.width - COLLISION_THRESHOLD));
+        y = Math.max(COLLISION_THRESHOLD, Math.min(y, window.innerHeight - imgData.height - COLLISION_THRESHOLD));
+
+        img.style.left = `${x}px`;
+        img.style.top = `${y}px`;
+      });
+    });
+  }
+
+  // 页面加载完成后启动
+  window.addEventListener('load', initFloatingImages);
+</script>

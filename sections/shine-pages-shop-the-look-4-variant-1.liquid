@@ -1,0 +1,851 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+    #sp-{{ section.id }} {
+        --sp-shop-the-look-image-height: {{ settings.section_height }}vh;
+        --sp-image-shop-the-look-ratio: {{ settings.image_ratio }};
+        --sp-image-shop-the-look-border-size: {{ settings.image_border_size }}px;
+        --sp-image-shop-the-look-border-radius: {{ settings.image_border_radius }}px;
+        --sp-image-shop-the-look-gap: {{ settings.shop_the_look_gap }}px;
+    }
+
+    #sp-{{ section.id }} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item {
+        --sp-shop-the-look-hotspot-color: {{ settings.hotspot_color | default: "#FFF" }}
+    }
+    
+    #sp-{{ section.id }} .sp-section {
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default : null }};
+        --sp-section-text-color: {{ settings.section_text_color | default:"#1e1e1e" }};
+    }
+
+    .sp-modal-{{ section.id }} .sp-shop-the-look-content {
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default : null }};
+    }
+
+    #sp-{{ section.id }} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item {
+        --sp-shop-the-look-hotspot-color: {{ settings.hotspot_color | default: "#FFF" }}
+    }
+
+    #sp-{{ section.id }} .sp-product-card{
+--sp-image-aspect-ratio: {{ settings.product_card_image_ratio}};
+--sp-card-border-radius: {{ settings.product_card_border_radius }}px;
+--sp-product-card-badge-border-radius: {{ settings.product_card_badge_border_radius }}px;
+--sp-card-border-width: {{ settings.product_card_border_size }}px;
+
+--sp-card-background-color: {{ settings.product_card_background_color | default: "#FFF" }};
+--sp-card-background-gradient-color: {{ settings.product_card_background_gradient_color | default: null }};
+--sp-card-shadow-color: {{ settings.product_card_shadow_color | default: "transparent" }};
+--sp-card-border-color: {{ settings.product_card_border_color | default: 'none' }};
+--sp-card-heading-color: {{ settings.product_card_text_color | default: "#1e1e1e" }};
+--sp-product-card-price-color: {{ settings.product_card_price_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-rating .sp-rating-star {
+--sp-product-card-rating-color: {{ settings.product_card_price_rating_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--on-sale {
+--sp-product-card-badge-background-color: {{ settings.product_card_discount_badge_background_color | default: "#FFF" }};
+--sp-product-card-badge-text-color: {{ settings.product_card_discount_badge_text_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--sold-out {
+--sp-product-card-badge-background-color: {{ settings.product_card_sold_badge_background_color | default: "#FFF" }};
+--sp-product-card-badge-text-color: {{ settings.product_card_sold_badge_text_color | default: "#1e1e1e" }};
+}
+
+    .sp-modal-{{ section.id }} .sp-product-card {
+        --sp-card-border-radius: {{ settings.product_card_border_radius }}px;
+        --sp-product-card-badge-border-radius: {{ settings.product_card_badge_border_radius }}px;
+        --sp-card-border-width: {{ settings.product_card_border_size }}px;
+
+        --sp-card-background-color: {{ settings.product_card_background_color | default: "#FFF" }};
+        --sp-card-background-gradient-color: {{ settings.product_card_background_gradient_color | default: null }};
+    }
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-shop-the-look-1" data-section="shop-the-look-4" data-variant="variant-1">
+    <div class="sp-section sp-section-overflow" data-border="{{ settings.section_border }}">
+        <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-section-inner" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}" data-cascade>
+                <div class="sp-content-shop-look">
+                    {% assign product_card_show_second_image = settings.product_card_show_second_image %}
+                    {% assign product_card_show_vendor = settings.product_card_show_vendor %}
+                    {% assign product_card_show_price = settings.product_card_show_price %}
+
+                    {% assign use_first_variant_product = true %}
+                    {% assign show_compare_at_price = true %}
+
+                    {% assign show_tooltip_color_swatch = true %}
+                    {% assign max_color_swatches = 5 %}
+
+                    {% assign currency_code_enabled = true %}
+                    {% assign placeholder_product = false %}
+
+                    {% assign shop_the_look_block = section.blocks | where: 'type', 'shop_the_look_item' %}
+
+                    {% for block in shop_the_look_block %}
+                        {% assign setting = block.settings %}
+                        <div class="sp-shop-the-look-item"
+                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                            data-section-id="{{ section.id }}"
+                        >
+                            <div class="sp-shop-the-look-image-wrapper ">
+
+                                <div class="sp-shop-the-look-image-inner">
+                                    {% if setting.thumbnail_shop_the_look != null %}
+                                        <img class="sp-image" src="{{ setting.thumbnail_shop_the_look | image_url: width: 1920 }}" alt="{{ setting.thumbnail_shop_the_look.alt | default: "" }}">
+                                    {% else %}
+                                        {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                    {% endif %}
+                                </div>
+
+                                <div class="sp-shop-the-look-hotspots">
+
+                                    {% if setting.product != null %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position_1 }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position_1 }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="{{ setting.product.url }}">{{ setting.product.title }}</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ setting.product.price | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if setting.product.featured_media != null %}
+                                                        <div class="sp-card-media sp-product-card-media {% if setting.product.media[1] != null %}has-second-image{% endif %}">
+                                                            <a class="sp-link" href="{{ setting.product.url }}">
+                                                                <img src="{{- setting.product.featured_media | image_url: width: 550 -}}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product.featured_media.alt | escape }}" width="{{ setting.product.featured_media.width }}" height="{{ setting.product.featured_media.height }}">
+                                                                {%- if setting.product.media[1] != null -%}
+                                                                    <img src="{{ setting.product.media[1] | image_url: width: 1080 }}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product.media[1].alt | escape }}" width="{{ setting.product.media[1].width }}" height="{{ setting.product.media[1].height }}" >
+                                                                {%- endif -%}
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if setting.product_2 != null %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product_2.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position_2 }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position_2 }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="{{ setting.product_2.url }}">{{ setting.product_2.title }}</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ setting.product_2.price | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if setting.product_2.featured_media != null %}
+                                                        <div class="sp-card-media sp-product-card-media {% if setting.product_2.media[1] != null %}has-second-image{% endif %}">
+                                                            <a class="sp-link" href="{{ setting.product_2.url }}">
+                                                                <img src="{{- setting.product_2.featured_media | image_url: width: 550 -}}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.featured_media.alt | escape }}" width="{{ setting.product_2.featured_media.width }}" height="{{ setting.product_2.featured_media.height }}">
+                                                                {%- if setting.product_2.media[1] != null -%}
+                                                                    <img src="{{ setting.product_2.media[1] | image_url: width: 1080 }}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.media[1].alt | escape }}" width="{{ setting.product_2.media[1].width }}" height="{{ setting.product_2.media[1].height }}" >
+                                                                {%- endif -%}
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if setting.product_3 != null %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product_2.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position_3 }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position_3 }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="{{ setting.product_2.url }}">{{ setting.product_2.title }}</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ setting.product_2.price | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if setting.product_2.featured_media != null %}
+                                                        <div class="sp-card-media sp-product-card-media {% if setting.product_2.media[1] != null %}has-second-image{% endif %}">
+                                                            <a class="sp-link" href="{{ setting.product_2.url }}">
+                                                                <img src="{{- setting.product_2.featured_media | image_url: width: 550 -}}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.featured_media.alt | escape }}" width="{{ setting.product_2.featured_media.width }}" height="{{ setting.product_2.featured_media.height }}">
+                                                                {%- if setting.product_2.media[1] != null -%}
+                                                                    <img src="{{ setting.product_2.media[1] | image_url: width: 1080 }}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.media[1].alt | escape }}" width="{{ setting.product_2.media[1].width }}" height="{{ setting.product_2.media[1].height }}" >
+                                                                {%- endif -%}
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if setting.product_4 != null %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product_2.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position_4 }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position_4 }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="{{ setting.product_2.url }}">{{ setting.product_2.title }}</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ setting.product_2.price | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if setting.product_2.featured_media != null %}
+                                                        <div class="sp-card-media sp-product-card-media {% if setting.product_2.media[1] != null %}has-second-image{% endif %}">
+                                                            <a class="sp-link" href="{{ setting.product_2.url }}">
+                                                                <img src="{{- setting.product_2.featured_media | image_url: width: 550 -}}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.featured_media.alt | escape }}" width="{{ setting.product_2.featured_media.width }}" height="{{ setting.product_2.featured_media.height }}">
+                                                                {%- if setting.product_2.media[1] != null -%}
+                                                                    <img src="{{ setting.product_2.media[1] | image_url: width: 1080 }}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product_2.media[1].alt | escape }}" width="{{ setting.product_2.media[1].width }}" height="{{ setting.product_2.media[1].height }}" >
+                                                                {%- endif -%}
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                        
+                                    {% comment %} <div class="sp-shop-the-look-hotspot-item"
+                                        onclick="spChangeHotSpot(this)"
+                                        data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product.id }}-{{ block.id }}"
+                                        data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                        style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position }}%;"
+                                    >
+                                        <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                            <div class="sp-card-inner">
+                                                <div class="sp-card-information sp-product-card-information">
+                                                    <h2 class="sp-product-card-heading">
+                                                        <a class="sp-link body-font" href="#">The Product</a>
+                                                    </h2>
+                                                    <div class="sp-product-card-price">
+                                                        <span class="price-item price-item--sale price-item--last">
+                                                            {{ 20 | money }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="sp-card-media sp-product-card-media {% if setting.product.media[1] != null %}has-second-image{% endif %}">
+                                                    <a class="sp-link" href="{{ setting.product.url }}">
+                                                        {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> {% endcomment %}
+                                        
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+{% schema %}
+{
+	"name": "🧩 Shop the look 4.1",
+	"tag": "section",
+	"class": "sp-section-shop-the-look-2",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Shop the look setting"
+		},
+		{
+			"type": "range",
+			"id": "image_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Image border radius",
+			"default": 11
+		},
+		{
+			"type": "range",
+			"id": "shop_the_look_gap",
+			"min": 0,
+			"max": 80,
+			"step": 5,
+			"unit": "px",
+			"label": "Gap item",
+			"default": 10
+		},
+		{
+			"type": "range",
+			"id": "image_border_size",
+			"min": 0,
+			"max": 10,
+			"step": 1,
+			"unit": "px",
+			"label": "Image border size",
+			"default": 1
+		},
+		{
+			"type": "range",
+			"id": "image_ratio",
+			"min": 0.7,
+			"max": 1.3,
+			"step": 0.1,
+			"default": 1.2,
+			"unit": ":1",
+			"label": "Image ratio"
+		},
+		{
+			"type": "checkbox",
+			"id": "box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Product card setting"
+		},
+		{
+			"type": "range",
+			"id": "product_card_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Card border radius",
+			"default": 8
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_box_shadow",
+			"label": "Box shadow",
+			"info": "Apply only card style",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_show_second_image",
+			"label": "Show second image on hover",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_show_price",
+			"label": "Show price",
+			"default": true
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			],
+			"default": "boxed"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient"
+		},
+		{
+			"type": "color",
+			"id": "section_button_background",
+			"label": "Background button",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "section_border_color",
+			"label": "Border color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "section_heading_color",
+			"label": "Heading",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "section_text_color",
+			"label": "Text",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Shop the look color"
+		},
+		{
+			"type": "color",
+			"id": "hotspot_color",
+			"label": "Hotspot",
+			"default": "#ffffff"
+		},
+		{
+			"type": "header",
+			"content": "Product card color"
+		},
+		{
+			"type": "color",
+			"id": "product_card_text_color",
+			"label": "Text",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_price_color",
+			"label": "Price",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_price_rating_color",
+			"label": "Rating",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "product_card_background_gradient_color",
+			"label": "Background gradient",
+			"default": "linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 100%)"
+		},
+		{
+			"type": "color",
+			"id": "product_card_shadow_color",
+			"label": "Shadow",
+			"default": "rgba(0,0,0,0)"
+		},
+		{
+			"type": "color",
+			"id": "product_card_border_color",
+			"label": "Border"
+		},
+		{
+			"type": "color",
+			"id": "product_card_border_thumbnail_color",
+			"label": "Border thumbnail"
+		},
+		{
+			"type": "color",
+			"id": "product_card_discount_badge_text_color",
+			"label": "Discount badge (label)",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "product_card_discount_badge_background_color",
+			"label": "Discount badge (background)",
+			"default": "#c43235"
+		},
+		{
+			"type": "color",
+			"id": "product_card_sold_badge_text_color",
+			"label": "Sold out badge (label)",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "product_card_sold_badge_background_color",
+			"label": "Sold out badge (background)",
+			"default": "#acacac"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Shop the look",
+			"type": "shop_the_look_item",
+			"limit": 2,
+			"settings": [
+				{
+					"type": "header",
+					"content": "Thumbnail setting"
+				},
+				{
+					"type": "image_picker",
+					"id": "thumbnail_shop_the_look",
+					"label": "Image"
+				},
+				{
+					"type": "header",
+					"content": "Product 1"
+				},
+				{
+					"type": "product",
+					"id": "product",
+					"label": "Product 1"
+				},
+				{
+					"type": "range",
+					"id": "horizontal_position_1",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Horizontal position",
+					"default": 30
+				},
+				{
+					"type": "range",
+					"id": "vertical_position_1",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Vertical position",
+					"default": 39
+				},
+				{
+					"type": "header",
+					"content": "Product 2"
+				},
+				{
+					"type": "product",
+					"id": "product_2",
+					"label": "Product"
+				},
+				{
+					"type": "range",
+					"id": "horizontal_position_2",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Horizontal position",
+					"default": 52
+				},
+				{
+					"type": "range",
+					"id": "vertical_position_2",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Vertical position",
+					"default": 53
+				},
+				{
+					"type": "header",
+					"content": "Product 3"
+				},
+				{
+					"type": "product",
+					"id": "product_3",
+					"label": "Product"
+				},
+				{
+					"type": "range",
+					"id": "horizontal_position_3",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Horizontal position",
+					"default": 50
+				},
+				{
+					"type": "range",
+					"id": "vertical_position_3",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Vertical position",
+					"default": 50
+				},
+				{
+					"type": "header",
+					"content": "Product 4"
+				},
+				{
+					"type": "product",
+					"id": "product_4",
+					"label": "Product"
+				},
+				{
+					"type": "range",
+					"id": "horizontal_position_4",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Horizontal position",
+					"default": 50
+				},
+				{
+					"type": "range",
+					"id": "vertical_position_4",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Vertical position",
+					"default": 50
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Shop the look 4.1",
+			"settings": {
+				"image_border_radius": 11,
+				"shop_the_look_gap": 10,
+				"image_border_size": 1,
+				"image_ratio": 1.2,
+				"box_shadow": false,
+				"product_card_border_radius": 8,
+				"product_card_box_shadow": true,
+				"product_card_show_second_image": true,
+				"product_card_show_price": true,
+				"section_width": "boxed",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_color": "#ffffff",
+				"section_background_gradient_color": "",
+				"section_button_background": "#ffffff",
+				"section_border_color": "#1e1e1e",
+				"section_heading_color": "#ffffff",
+				"section_text_color": "#1e1e1e",
+				"hotspot_color": "#ffffff",
+				"product_card_text_color": "#1e1e1e",
+				"product_card_price_color": "#1e1e1e",
+				"product_card_price_rating_color": "#1e1e1e",
+				"product_card_background_color": "#ffffff",
+				"product_card_background_gradient_color": "linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 100%)",
+				"product_card_shadow_color": "rgba(0,0,0,0)",
+				"product_card_border_color": "",
+				"product_card_border_thumbnail_color": "",
+				"product_card_discount_badge_text_color": "#ffffff",
+				"product_card_discount_badge_background_color": "#c43235",
+				"product_card_sold_badge_text_color": "#ffffff",
+				"product_card_sold_badge_background_color": "#acacac"
+			},
+			"blocks": [
+				{
+					"type": "shop_the_look_item",
+					"settings": {
+						"thumbnail_shop_the_look": "shopify://shop_images/shop-the-look-4-variant-1-image-1.png",
+						"product": "",
+						"horizontal_position_1": 30,
+						"vertical_position_1": 40,
+						"product_2": "",
+						"horizontal_position_2": 40,
+						"vertical_position_2": 52,
+						"product_3": "",
+						"horizontal_position_3": 31,
+						"vertical_position_3": 70,
+						"product_4": "",
+						"horizontal_position_4": 37,
+						"vertical_position_4": 23
+					}
+				},
+				{
+					"type": "shop_the_look_item",
+					"settings": {
+						"thumbnail_shop_the_look": "shopify://shop_images/shop-the-look-4-variant-1-image-2.png",
+						"product": "",
+						"horizontal_position_1": 30,
+						"vertical_position_1": 39,
+						"product_2": "",
+						"horizontal_position_2": 52,
+						"vertical_position_2": 53,
+						"product_3": "",
+						"horizontal_position_3": 50,
+						"vertical_position_3": 50,
+						"product_4": "",
+						"horizontal_position_4": 50,
+						"vertical_position_4": 50
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}} .sp-section{background-color:var(--sp-section-background-color);background-image:var(--sp-section-background-gradient-color)}#sp-{{section.id}} .sp-content-shop-look{display:flex;align-items:center;justify-content:space-between;column-gap:var(--sp-image-shop-the-look-gap)}#sp-{{section.id}} .sp-shop-the-look-item{display:flex;height:var(--sp-shop-the-look-image-height)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-image-inner{width:100%;aspect-ratio:calc(var(--sp-image-shop-the-look-ratio)/1);border-radius:var(--sp-image-shop-the-look-border-radius)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item{top:var(--sp-shop-the-look-hotspot-top);left:var(--sp-shop-the-look-hotspot-left);background:var(--sp-shop-the-look-hotspot-color);width:15px;height:15px;position:relative;cursor:pointer}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:after{box-shadow:0 0 0 12px var(--sp-shop-the-look-hotspot-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:before{box-shadow:0 0 0 12px var(--sp-shop-the-look-hotspot-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card{position:absolute;left:-80%;top:135%;width:200px;height:266px;background:var(--sp-card-background-color) var(--sp-card-background-gradient-color);box-shadow:0 0 5px 0px var(--sp-card-shadow-color);padding:10px;border-radius:var(--sp-card-border-radius);z-index:-1;opacity:0;transition:.2s ease-in-out;position:relative;display:none}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card:after{width:10px;height:10px;background:#fff;content:"";position:absolute;top:-3px;transform:rotate(45deg);left:14px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information{padding:0 0 15px 0}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-heading a{font-size:13px;font-weight:700;text-wrap:nowrap}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-price{margin-top:7px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-price .price-item{font-size:13px;text-wrap:nowrap}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-media{aspect-ratio:1;border-radius:var(--sp-card-border-radius);overflow:hidden;z-index:2}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:hover{overflow:inherit}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:hover .sp-product-card{display:block;opacity:1;z-index:1;transition:.2s ease-in-out}#sp-{{section.id}} .sp-shop-the-look-item[data-box-shadow=true] .sp-shop-the-look-image-wrapper:before{border-radius:var(--sp-shop-the-look-image-border-radius)}@media(max-width: 768px){#sp-{{section.id}} .sp-content-shop-look{row-gap:var(--sp-image-shop-the-look-gap);flex-direction:column}#sp-{{section.id}} .sp-shop-the-look-item{flex-direction:column}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper{order:1;width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-small{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-medium{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-large{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-extra-large{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card{height:60px;width:200px;padding:5px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner{z-index:1;display:flex;flex-direction:row}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-media{order:1;width:50px;height:50px;aspect-ratio:1}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information{order:2;padding-left:5px;width:calc(100% - 60px)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information .sp-product-card-heading a{font-size:11px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information .price-item{font-size:11px}}
+{% endstyle %}
+<script>
+!function(){window.addEventListener("DOMContentLoaded",function(){});new ResizeObserver(e=>{for(const n of e){var i=n.target;window.innerWidth<=1199?i.classList.add("is-active"):i.classList.remove("is-active","is-selected")}});Shopify&&Shopify?.designMode}(document);
+</script>

@@ -1,0 +1,553 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+    #sp-{{ section.id }} .sp-section {
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default : null }};
+        
+        --sp-section-content-width: {{ settings.section_image_width }}%;
+        --sp-section-content-gap: {{ settings.section_image_gap }}px;
+        --sp-section-heading-size: {{ settings.section_collection_heading_size }}px;
+
+        --sp-section-collection-item-width: {{ settings.sp_collection_item_width }}%;
+        --sp-section-collection-item-gap: {{ settings.sp_collection_item_gap }}px;
+        
+        --sp-section-container-padding-left: {{ settings.section_container_padding_left }}px;
+        --sp-section-container-padding-right: {{ settings.section_container_padding_right }}px;
+
+        --sp-section-collection-heading-size: {{ settings.section_heading_font }}px;
+        --sp-section-collection-description-size: {{ settings.section_description_font }}px;
+        
+        --sp-section-collection-item-background: {{ settings.collection_item_background }};
+        --sp-section-collection-item-heading: {{ settings.collection_heading_color }};
+        
+        --sp-section-heading: {{ settings.heading_color }};
+        --sp-section-sub-heading: {{ settings.subheading_color }};
+        --sp-section-description: {{ settings.description_color }};
+    }
+    
+    @media (max-width:768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-heading-size: {{ settings.section_collection_heading_size_mobile }}px;
+            --sp-section-heading-gap: {{ settings.section_collection_heading_gap_mobile }}px;
+            
+            --sp-section-collection-item-width: {{ settings.sp_collection_item_width_mobile }}%;
+
+            --sp-section-collection-heading-size: {{ settings.section_heading_font_mobile }}px;
+            --sp-section-collection-description-size: {{ settings.section_description_font_mobile }}px;    
+        }
+    }
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-images-collection-5" data-section="images-collection-1" data-variant="variant-1">
+    <div class="sp-section">
+        <div class=" {% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-images-collection-items {{ settings.sp_image_position }}" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}">
+                {% if settings.section_block_image != blank %}
+                    <div class="sp-block-image-background">
+                        <div class="sp-background">
+                            {{ settings.section_block_image | image_url: width: 2040 | image_tag: class: 'sp-image' }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="sp-collection-block-content">
+                    {% assign collection_heading = section.blocks | where: 'type', 'collection_heading' %}
+
+                    <div class="sp-images-collection-heading">
+                        {% for block in collection_heading %} 
+                            {% assign setting = block.settings %}
+                            {% if setting.sub_heading != empty %}
+                                <div class="sp-image-collection-subheading body-font">{{ setting.sub_heading }}</div>
+                            {% endif %}
+                            {% if setting.heading != empty %}
+                                <h2 class="sp-image-collection-heading heading-font"> {{ setting.heading }} </h2>
+                            {% endif %}
+                            {% if setting.description != empty %}
+                                <div class="sp-image-collection-description body-font">
+                                    {{ setting.description }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="sp-images-collection-items-list">
+                        {% assign collection_block = section.blocks | where: 'type', 'collection_item' %}
+                        {% for block in collection_block %}
+                            {% assign setting = block.settings %}
+                            <a href="{{ setting.link_collection  }}" class="sp-image-collection-item">
+                                <div class="sp-image-collection-thumbnail">
+                                    {% if setting.collection_image != null %}
+                                        <div class="sp-image-collection-thumbnail-background">
+                                            {{ setting.collection_image | image_url: width: 1080 | image_tag: class: 'sp-image' }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="sp-image-collection-title body-font">
+                                    {% if setting.heading != blank %}
+                                        <span>{{ setting.heading  }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+{% schema %}
+{
+	"name": "🧩 Images collection 5.1",
+	"tag": "section",
+	"class": "sp-section-images-collection-5",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "image_picker",
+			"id": "section_block_image",
+			"label": "Image block"
+		},
+		{
+			"type": "range",
+			"id": "section_image_gap",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 50,
+			"unit": "px",
+			"label": "Content gap"
+		},
+		{
+			"type": "range",
+			"id": "section_image_width",
+			"min": 20,
+			"max": 70,
+			"step": 1,
+			"default": 45,
+			"unit": "%",
+			"label": "Image witdth"
+		},
+		{
+			"type": "select",
+			"id": "sp_image_position",
+			"label": "Image position",
+			"default": "sp-content-image-right",
+			"options": [
+				{
+					"label": "Left",
+					"value": "sp-content-image-left"
+				},
+				{
+					"label": "Right",
+					"value": "sp-content-image-right"
+				}
+			]
+		},
+		{
+			"type": "header",
+			"content": "Collection items settings"
+		},
+		{
+			"type": "range",
+			"id": "sp_collection_item_width",
+			"min": 20,
+			"max": 50,
+			"step": 1,
+			"default": 20,
+			"unit": "%",
+			"label": "Collection item width (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "sp_collection_item_width_mobile",
+			"min": 20,
+			"max": 50,
+			"step": 1,
+			"default": 36,
+			"unit": "%",
+			"label": "Collection item width (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "sp_collection_item_gap",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 30,
+			"unit": "px",
+			"label": "Collection item gap"
+		},
+		{
+			"type": "header",
+			"content": "Heading settings"
+		},
+		{
+			"type": "range",
+			"id": "section_heading_font",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 42,
+			"unit": "px",
+			"label": "Heading size (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "section_heading_font_mobile",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 36,
+			"unit": "px",
+			"label": "Heading size (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "section_description_font",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 16,
+			"unit": "px",
+			"label": "Description size (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "section_description_font_mobile",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 14,
+			"unit": "px",
+			"label": "Description size (Mobile)"
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			],
+			"default": "full_width_no_gap"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#ebe5d9"
+		},
+		{
+			"type": "header",
+			"content": "Heading"
+		},
+		{
+			"type": "color",
+			"id": "heading_color",
+			"label": "Heading",
+			"default": "#121212"
+		},
+		{
+			"type": "color",
+			"id": "subheading_color",
+			"label": "Sub heading",
+			"default": "#121212"
+		},
+		{
+			"type": "color",
+			"id": "description_color",
+			"label": "Description",
+			"default": "#121212"
+		},
+		{
+			"type": "header",
+			"content": "Collection item color"
+		},
+		{
+			"type": "color",
+			"id": "collection_item_background",
+			"label": "Background color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "collection_heading_color",
+			"label": "Heading collection",
+			"default": "#121212"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "playfair_display_n7"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Collection item",
+			"type": "collection_item",
+			"limit": 3,
+			"settings": [
+				{
+					"type": "header",
+					"content": "Block Image"
+				},
+				{
+					"type": "image_picker",
+					"id": "collection_image",
+					"label": "Background collection"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading collection",
+					"default": "Rings"
+				},
+				{
+					"type": "url",
+					"id": "link_collection",
+					"label": "Collection link"
+				}
+			]
+		},
+		{
+			"name": "Heading item",
+			"type": "collection_heading",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "header",
+					"content": "Block Image"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "sub_heading",
+					"label": "Sub heading",
+					"default": "Trends & Tradition"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "<strong>For Everyday Wear</strong>"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "From dainty classics that are perfect for daily adornment to chic, to trendsetting pieces designed to complement any occasion – our selection blends exquisite craftsmanship with modern sensibility."
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Images collection 5.1",
+			"settings": {
+				"section_block_image": "shopify://shop_images/images-collection-5-variant-1-image-collection-01.png",
+				"section_image_gap": 50,
+				"section_image_width": 45,
+				"sp_image_position": "sp-content-image-right",
+				"sp_collection_item_width": 20,
+				"sp_collection_item_width_mobile": 36,
+				"sp_collection_item_gap": 30,
+				"section_heading_font": 42,
+				"section_heading_font_mobile": 36,
+				"section_description_font": 16,
+				"section_description_font_mobile": 14,
+				"section_width": "full_width_no_gap",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_color": "#ebe5d9",
+				"heading_color": "#121212",
+				"subheading_color": "#121212",
+				"description_color": "#121212",
+				"collection_item_background": "#ffffff",
+				"collection_heading_color": "#121212",
+				"override_font": true,
+				"heading_font": "playfair_display_n7"
+			},
+			"blocks": [
+				{
+					"type": "collection_heading",
+					"settings": {
+						"sub_heading": "Trends & Tradition",
+						"heading": "<strong>For Everyday Wear</strong>",
+						"description": "From dainty classics that are perfect for daily adornment to chic, to trendsetting pieces designed to complement any occasion – our selection blends exquisite craftsmanship with modern sensibility."
+					}
+				},
+				{
+					"type": "collection_item",
+					"settings": {
+						"collection_image": "shopify://shop_images/images-collection-5-variant-1-image-collection-02.png",
+						"heading": "Charms",
+						"link_collection": ""
+					}
+				},
+				{
+					"type": "collection_item",
+					"settings": {
+						"collection_image": "shopify://shop_images/images-collection-5-variant-1-image-collection-03.png",
+						"heading": "Rings",
+						"link_collection": ""
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}} .sp-section{background-color:var(--sp-section-background-color);background-image:var(--sp-section-background-gradient-color)}#sp-{{section.id}} .sp-section .sp-images-collection-items{padding-left:var(--sp-section-container-padding-left);padding-right:var(--sp-section-container-padding-right);display:flex;align-items:stretch;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-section-content-gap)}#sp-{{section.id}} .sp-section .sp-images-collection-items.sp-content-image-left .sp-block-image-background{order:2}#sp-{{section.id}} .sp-section .sp-images-collection-items.sp-content-image-left .sp-collection-block-content{order:1}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-block-image-background{position:relative;width:var(--sp-section-content-width)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-block-image-background .sp-background{aspect-ratio:1;width:100%;height:100%;overflow:hidden;position:relative}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-block-image-background .sp-background .sp-image{display:block;width:100%;height:100%;object-position:center;object-fit:cover}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content{width:calc(100% - var(--sp-section-content-width) - var(--sp-section-content-gap));display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 var(--sp-section-content-gap)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list{display:flex;align-items:center;justify-content:center;gap:var(--sp-section-collection-item-gap);width:100%;height:max-content}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item{width:var(--sp-section-collection-item-width);overflow:hidden;text-decoration:none}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item:hover .sp-image-collection-thumbnail .sp-image-collection-thumbnail-background .sp-image{transform:scale(1.08);transition:transform 2s cubic-bezier(0.215, 0.61, 0.355, 1)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item .sp-image-collection-thumbnail{aspect-ratio:1}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item .sp-image-collection-thumbnail .sp-image-collection-thumbnail-background{aspect-ratio:1;overflow:hidden;position:relative}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item .sp-image-collection-thumbnail .sp-image-collection-thumbnail-background .sp-image{transform:scale(1);transition:transform 2s cubic-bezier(0.215, 0.61, 0.355, 1);display:block;width:100%;height:100%;object-fit:cover}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-items-list .sp-image-collection-item .sp-image-collection-title{text-align:center;background-color:var(--sp-section-collection-item-background);padding:8px 0;text-decoration:none;display:block;color:var(--sp-section-collection-item-heading)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-heading{text-align:center;margin-bottom:50px}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-heading .sp-image-collection-subheading{text-transform:uppercase;color:var(--sp-section-heading)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-heading .sp-image-collection-heading{color:var(--sp-section-sub-heading);font-size:var(--sp-section-collection-heading-size)}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content .sp-images-collection-heading .sp-image-collection-description{color:var(--sp-section-description);font-size:var(--sp-section-collection-description-size)}@media(max-width: 768px){#sp-{{section.id}} .sp-section .sp-images-collection-items{flex-direction:column}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-block-image-background{width:100%;order:2}#sp-{{section.id}} .sp-section .sp-images-collection-items .sp-collection-block-content{width:100%;order:1;padding:0}}
+{% endstyle %}
+<script>
+document,window.addEventListener("DOMContentLoaded",function(){}),Shopify&&Shopify?.designMode;
+</script>

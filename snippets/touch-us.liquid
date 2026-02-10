@@ -1,0 +1,200 @@
+<!-- Touch Us Popup Component -->
+<div class="touch-us-component" id="touchUsComponent">
+  <!-- 触发按钮 -->
+  <div class="touch-us-btn" id="touchUsBtn" type="button">
+    <img
+      src="{{ 'touch-us-badge.gif' | asset_url }}"
+      alt="touch us badge"
+      width="22px"
+      height="21px"
+    />
+  </div>
+  
+  <!-- 弹窗容器 -->
+  <div class="touch-us-popup" id="touchUsPopup">
+    <div class="popup-option" data-option="option1">
+      <div class="popup-option_img">
+        <img
+          src="{{ 'touch-us-message.svg' | asset_url }}"
+          alt="touch us badge"
+          width="20px"
+          height="20px"
+        />
+      </div>
+      <div class="popup-option_text">Get in Touch</div>
+    </div>
+    <div class="popup-split-line"></div>
+    <div class="popup-option" data-option="option2">
+      <div class="popup-option_img">
+        <img
+          src="{{ 'touch-us-meeting.svg' | asset_url }}"
+          alt="touch us badge"
+          width="20px"
+          height="20px"
+        />
+      </div>
+      <div class="popup-option_text">Book the Meet</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .touch-us-component {
+    position: relative;
+    display: inline-block;
+    margin-inline-end: 12px;
+    margin-inline-start: 18px;
+  }
+
+  .touch-us-btn {
+    color: #000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+  }
+
+  .touch-us-popup {
+    min-width: 170px;
+    position: absolute;
+    max-height: 265px;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-shadow: 0 0 17px -5px rgba(0,0,0,.15);
+    margin: 16px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .touch-us-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .popup-option {
+    padding: 9px 21px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+  }
+
+  .popup-split-line {
+    height: 1px;
+    width: auto;
+    background-color: #E9E9E9;
+  }
+
+  .popup-option:hover {
+    background-color: #f8f9fa;
+  }
+
+  .popup-option_img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .popup-option .popup-option_text {
+    font-size: 14px;
+    color: #333;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const component = document.getElementById('touchUsComponent');
+    const btn = document.getElementById('touchUsBtn');
+    const popup = document.getElementById('touchUsPopup');
+    const options = popup.querySelectorAll('.popup-option');
+
+    // 按钮点击事件
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      togglePopup();
+    });
+
+    // 选项点击事件
+    options.forEach(function(option) {
+      option.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const optionValue = this.getAttribute('data-option');
+        console.log('选择了:', optionValue);
+        
+        // 这里可以添加自定义的选项处理逻辑
+        // 例如：触发自定义事件或调用回调函数
+
+        if (optionValue === 'option1') {
+            openEmailPlugin()
+        }
+
+        if (optionValue === 'option2') {
+            window.open('https://cozyology.com/pages/complimentary-consultation')
+        }
+        
+        // 关闭弹窗
+        hidePopup();
+      });
+    });
+
+    // 点击外部区域关闭弹窗
+    document.addEventListener('click', function(e) {
+      if (!component.contains(e.target)) {
+        hidePopup();
+      }
+    });
+
+    // 阻止弹窗内部点击事件冒泡
+    popup.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    // 键盘事件处理（ESC键关闭弹窗）
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        hidePopup();
+      }
+    });
+
+    // 显示弹窗
+    function showPopup() {
+      popup.classList.add('show');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+
+    // 隐藏弹窗
+    function hidePopup() {
+      popup.classList.remove('show');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+
+    // 切换弹窗显示状态
+    function togglePopup() {
+      if (popup.classList.contains('show')) {
+        hidePopup();
+      } else {
+        showPopup();
+      }
+    }
+
+    // 唤起Get in Touch弹窗
+    function openEmailPlugin() {
+        const target_btns = document.getElementsByClassName('bcontact-trigger-button bcontact-trigger-button-has-icon')
+        console.log("target_btns===", target_btns);
+        if (target_btns && target_btns.length) {
+            Array.from(target_btns).forEach((btn) => {
+                btn?.click?.()
+            })
+        }
+    }
+
+    // 初始化ARIA属性
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-haspopup', 'true');
+  });
+</script>

@@ -1,0 +1,115 @@
+{% comment %}
+  Parameters:
+  - product {Object} - Product object.
+  - block {Object} - Block object.
+
+  Dependencies:
+  - Custom product selling points
+
+  Usage:
+  {% render 'product-selling-points', product: product, block: block %}
+{% endcomment %}
+
+<div class="product-selling-points">
+    {% assign one_title = block.settings.selling_points_one_title | strip %}
+    {% assign one_des = block.settings.selling_points_one_des | strip %}
+    {% assign default_value = 'null' | strip %}
+    {% if one_title != blank and one_des != blank and one_title != default_value and one_des != default_value %}
+        <div class="selling-points-item">
+            <div class="selling-points-item-title">
+                <div class="selling-points-title-img">
+                    <img src="{{ 'selling-points-clock.webp' | asset_url }}" alt="" width="16px" height="16px">
+                </div>
+                <div class="selling-points-title-content">{{ block.settings.selling_points_one_title }}</div>
+            </div>
+            <div class="product-selling-points-item-des">{{ block.settings.selling_points_one_des }}</div>
+        </div>
+    {% endif %}
+    <div class="selling-points-item">
+        <div class="selling-points-item-title">
+            <div class="selling-points-title-img">
+                <img src="{{ 'selling-points-earth.webp' | asset_url }}" alt="" width="16px" height="16px">
+            </div>
+            <div class="selling-points-title-content">Worldwide</div>
+        </div>
+        <div class="product-selling-points-item-des">Free Worldwide Shipping</div>
+    </div>
+    <div class="selling-points-item">
+        <div class="selling-points-item-title">
+            <div class="selling-points-title-img">
+                <img src="{{ 'selling-points-diamond.webp' | asset_url }}" alt="" width="16px" height="16px">
+            </div>
+            <div class="selling-points-title-content">Premium Quality</div>
+        </div>
+        <div class="product-selling-points-item-des">Premium Quality · Hand-Finished Details</div>
+    </div>
+    <div class="selling-points-item">
+        <div class="selling-points-item-title">
+            <div class="selling-points-title-img">
+                <img src="{{ 'selling-points-company.webp' | asset_url }}" alt="" width="16px" height="16px">
+            </div>
+            <div class="selling-points-title-content">Factory-Direct</div>
+        </div>
+        <div class="product-selling-points-item-des">No Middleman Markups · Factory-Direct</div>
+    </div>
+</div>
+
+<style>
+    .product-selling-points {
+        padding: 15px 0;
+        display: flex;
+        flex-direction: column;
+        row-gap: 15px;
+    }
+
+    .selling-points-item {
+        display: flex;
+        flex-wrap: wrap;
+        column-gap: 20px;
+    }
+
+    .selling-points-item-title {
+        display: flex;
+        width: 176px;
+        height: 24px;
+        column-gap: 6px;
+        background-color: #EFE9E5;
+        border-radius: 4px;
+    }
+
+    .selling-points-title-img {
+        width: 24px;
+        height: 24px;
+        background-color: #5B493F;
+        border-radius: 4px;
+        padding: 3px 4px;
+    }
+
+    .selling-points-title-content {
+        font-size: 16px;
+        color: #171717;
+        line-height: 24px;
+    }
+
+    .product-selling-points-item-des {
+        font-size: 16px;
+        color: #999999;
+        line-height: 24px;
+    }
+
+    @media (max-width: 768px) {
+        .selling-points-item {
+            flex-direction: column;
+            row-gap: 4px;
+        }
+
+        .selling-points-item-title {
+            width: 100%;
+        }
+
+        .product-selling-points-item-des {
+            margin-left: 30px;
+            font-size: 14px;
+        }
+    }
+</style>

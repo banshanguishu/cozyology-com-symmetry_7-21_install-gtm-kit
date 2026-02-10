@@ -1,0 +1,42 @@
+{% schema %}
+{
+  "name": "Pop Form",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="custom-form-section">
+  <!-- 添加按钮 -->
+  <button id="openFormButton" class="form-button">点击打开表单</button>
+
+  <!-- Shopify Form App 代码 -->
+  <div id="shopify-block-forms_inline_YXXgba" class="shopify-block shopify-app-block" style="display: none;">
+    <div id='forms_inline_YXXgba'
+         data-form-root='true'
+         data-forms-id='forms-root-183497'
+         data-forms-text-color='#202020'
+         data-forms-button-background-color='#202020'
+         data-forms-button-label-color='#FFFFFF'
+         data-forms-links-color='#1878B9'
+         data-forms-errors-color='#E02229'
+         data-forms-text-alignment='center'
+         data-forms-alignment='center'
+         data-forms-padding-top='0'
+         data-forms-padding-right='0'
+         data-forms-padding-bottom='0'
+         data-forms-padding-left='0'>
+    </div>
+    <script>
+      window['ShopifyForms'] = {
+        ...window['ShopifyForms'],
+        currentPageType: "page"
+      };
+    </script>
+  </div>
+</div>

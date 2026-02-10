@@ -1,0 +1,889 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+      {% comment %}
+      Render heading & body font family
+  {% endcomment %}
+  {%- if settings.override_font != blank -%}
+      {%- capture font_settings_list -%}
+          {{ settings.heading_font | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+          {{ settings.body_font | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+      {%- endcapture -%}
+      {%- assign font_array = font_settings_list | split: ';;' -%}
+  {% endif %}
+  {%- if settings.override_font != blank -%}
+      {%- for font in font_array -%}
+          {%- unless font contains 'error' -%}
+              {{ font }}{%- endunless -%}
+      {%- endfor -%}
+      #sp-{{ section.id }} {
+      --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+      --sp-heading-font-weight: {{ settings.heading_font.weight }};
+      --sp-heading-font-style: {{ settings.heading_font.style }};
+      --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+      --sp-body-font-weight: {{ settings.body_font.weight }};
+      --sp-body-font-style: {{ settings.body_font.style }};
+      --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+      --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+      --sp-highlight-font-style: {{ settings.highlight_font.style }};
+      }
+      {% if custom_selector != blank %}
+          {{ custom_selector }} {
+          --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+          --sp-heading-font-weight: {{ settings.heading_font.weight }};
+          --sp-heading-font-style: {{ settings.heading_font.style }};
+          --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+          --sp-body-font-weight: {{ settings.body_font.weight }};
+          --sp-body-font-style: {{ settings.body_font.style }};
+          --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+          --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+          --sp-highlight-font-style: {{ settings.highlight_font.style }};
+          }
+      {% endif %}
+  {% endif %}
+      {% comment %}
+      Render padding section, heading content max width
+  {% endcomment %}
+
+      #sp-{{ section.id }} .sp-section {
+      {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+          --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+          --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+      {% else %}
+          --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+          --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+      {% endif %}
+          }
+
+      @media (min-width: 768px) {
+          #sp-{{ section.id }} .sp-section {
+              --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+              --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+          }
+      }
+
+      @media (min-width: 1260px) {
+          #sp-{{ section.id }} .sp-section {
+              --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+              --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+          }
+      }
+
+
+      #sp-{{ section.id }} {
+          --sp-section-background-color: {{ settings.section_background_color }};
+          --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: "null" }};
+          background-color: var(--sp-section-background-color);
+          background-image: var(--sp-section-background-gradient-color);
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper {
+          position: relative;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item {
+          --sp-image-ratio: {{ settings.image_ratio }};
+          --sp-border-radius: {{ settings.image_border_radius }}px;
+          --sp-item-border-size: {{ settings.image_border_size }}px;
+          --sp-item-border-color: {{ settings.image_border_color }};
+          --sp-item-shadow-color: {{ settings.image_shadow_color.red }}, {{ settings.image_shadow_color.green }},{{ settings.image_shadow_color.blue }};
+          --sp-item-overlay-color: {{ settings.image_overlay_color.red }}, {{ settings.image_overlay_color.green }},{{ settings.image_overlay_color.blue }};
+          --sp-item-overlay-opacity: {{ settings.image_overlay_opacity }};
+          position: relative;
+          border-radius: var(--sp-border-radius);
+          border: var(--sp-item-border-size) solid var(--sp-item-border-color);
+          overflow: hidden;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-media-wrapper {
+          position: relative;
+          width: 100%;
+          aspect-ratio: var(--sp-image-ratio) / 1;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-media-wrapper:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(var(--sp-item-overlay-color), var(--sp-item-overlay-opacity));
+          z-index: 1;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper {
+          --sp-content-padding: 25px 40px;
+          --sp-content-item-gap: 16px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          padding: var(--sp-content-padding);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: center;
+          gap: var(--sp-content-item-gap);
+          z-index: 9;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item[data-shadow="true"] {
+          box-shadow: 1px 1px 10px rgba(var(--sp-item-shadow-color), 0.3);
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper {
+          --sp-text-size: {{ settings.heading_font_size }}px;
+          --sp-text-letter-spacing: {{ settings.heading_text_spacing }}px;
+          --sp-text-color: {{ settings.image_text_color }};
+
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper .sp-button-wrapper {
+          --sp-button-margin-top: 0;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper .sp-button {
+          --sp-button-border-size: {{ settings.button_border_size }}px;
+          --sp-button-padding: 12px 20px;
+          --sp-button-radius: {{ settings.button_radius }}px;
+          --sp-button-text-spacing: {{ settings.button_text_spacing }}px;
+          --sp-button-background-color: {{ settings.image_button_background_color }};
+          --sp-button-text-color: {{ settings.image_button_text_color }};
+          --sp-button-font-size: {{ settings.button_font_size }}px;
+
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          padding: var(--sp-button-padding);
+          border-radius: var(--sp-button-radius);
+          border: var(--sp-button-border-size) solid var(--sp-button-background-color);
+          color: var(--sp-button-text-color);
+          font-size: var(--sp-button-font-size);
+          letter-spacing: var(--sp-button-text-spacing);
+          transition: all .15s;
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper .sp-button:hover {
+          --sp-button-background-color: {{ settings.image_button_background_hover_color }};
+          --sp-button-text-color: {{ settings.image_button_text_hover_color }};
+          background: var(--sp-button-background-color);
+      }
+
+      #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper .sp-heading {
+          font-size: var(--sp-text-size);
+          letter-spacing: var(--sp-text-letter-spacing);
+          line-height: 130%;
+          color: var(--sp-text-color);
+      }
+
+      #sp-{{ section.id }} .sp-carousel-item img {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: {{ settings.image_cover_position }};
+      }
+
+      #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button {
+          --sp-text-color: {{ settings.navigation_icon_color }};
+          --sp-background-color: {{ settings.navigation_background_color }};
+
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          background-color: var(--sp-background-color);
+          color: var(--sp-text-color);
+          transition: all .15s;
+          z-index: 9;
+      }
+
+      #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button .sp-icon {
+          width: 18px;
+          height: 18px;
+      }
+
+      #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button[data-arrow="left"] {
+          left: 25px;
+      }
+
+      #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button[data-arrow="right"] {
+          right: 25px;
+      }
+
+      #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button:hover {
+          --sp-text-color: {{ settings.navigation_icon_hover_color }};
+          --sp-background-color: {{ settings.navigation_background_hover_color }};
+          cursor: pointer;
+      }
+
+      @media (max-width: 767px) {
+          #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button {
+              width: 32px;
+              height: 32px;
+          }
+
+          #sp-{{ section.id }} .sp-carousel-navigation .sp-navigation-button .sp-icon {
+              width: 12px;
+              height: 12px;
+          }
+
+          #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper {
+              --sp-content-padding: var(--sp-column-mobile-padding);
+          }
+
+          #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper {
+              --sp-text-size: {{ settings.heading_font_size_mobile }}px;
+          }
+
+          #sp-{{ section.id }} .sp-collection-carousel-wrapper .sp-carousel-item .sp-content-wrapper .sp-button {
+              --sp-button-padding: 8px 16px;
+              --sp-button-font-size: {{ settings.button_font_size_mobile }}px;
+          }
+      }
+</style>
+<link rel="stylesheet" href="{{ 'sp-swiper-bundle.min.css' | asset_url }}">
+<script data-id="swiper-bundle" src="{{ 'sp-swiper-bundle.min.js' | asset_url }}"></script>
+
+<div class="container">
+  <div
+    id="sp-{{ section.id }}"
+    class="sp-{{ section.id }} sp-section-collection-carousel-1"
+    data-section="collection-carousel-1"
+    data-variant="variant-2"
+    data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}"
+  >
+    <div class="sp-section sp-section-overflow sp-section-no-heading" data-border="{{ settings.section_border }}">
+      <div class="sp-container-fluid sp-container-no-gap">
+        <div
+          class="sp-collection-carousel-wrapper"
+          data-plugin="swiper"
+          data-auto-play="{{ settings.auto_rotate }}"
+        >
+          <div class="swiper-wrapper">
+            {% assign carousel_items = section.blocks | where: 'type', 'image_item' %}
+            {% if carousel_items.size > 0 %}
+              {% for block in carousel_items %}
+                {% assign setting = block.settings %}
+                <div id="sp-{{ block.id }}" class="swiper-slide" {{ block.shopify_attributes }}>
+                  <div class="sp-carousel-item" data-shadow="{{ settings.box_shadow_image }}">
+                    <div class="sp-media-wrapper">
+                      {% if setting.image != null %}
+                        {{ setting.image | image_url: width: 1024 | image_tag }}
+                      {% else %}
+                        {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                      {% endif %}
+                    </div>
+                    <div class="sp-content-wrapper">
+                      {% if setting.image_text != empty %}
+                        <h4 class="sp-heading heading-font">{{- setting.image_text -}}</h4>
+                      {% endif %}
+                      {% if setting.button_text != blank %}
+                        <div class="sp-button-wrapper" data-alignment="center">
+                          <a
+                            {% if setting.button_link == blank %}
+                              aria-disabled="true"
+                            {% else %}
+                              href="{{ setting.button_link }}"
+                            {% endif %}
+                            class="sp-button body-font"
+                            data-button-hover="opacity"
+                          >
+                            {{- setting.button_text -}}
+                          </a>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              {% for i in (1..15) %}
+                <div class="swiper-slide">
+                  <div class="sp-carousel-item" data-shadow="{{ settings.box_shadow_image }}">
+                    {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          {% if settings.hide_navigation == false %}
+            <div class="sp-carousel-navigation">
+              <button class="sp-navigation-button" data-arrow="left">
+                <svg fill="currentColor" class="sp-icon" viewBox="0 0 100 100">
+                  <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path>
+                </svg>
+              </button>
+              <button class="sp-navigation-button" data-arrow="right">
+                <svg fill="currentColor" class="sp-icon" viewBox="0 0 100 100">
+                  <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"
+                        transform="translate(100, 100) rotate(180) "></path>
+                </svg>
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "🧩 Collection carousel 1.2",
+  "tag": "section",
+  "class": "sp-collection-carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto rotate",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_navigation",
+      "label": "Hide navigation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Image item settings"
+    },
+    {
+      "type": "range",
+      "id": "image_ratio",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1,
+      "unit": ":1",
+      "label": "Image ratio",
+      "default": 0.8
+    },
+    {
+      "type": "select",
+      "id": "image_cover_position",
+      "label": "Image cover position",
+      "options": [
+        {
+          "label": "Top",
+          "value": "top"
+        },
+        {
+          "label": "Center",
+          "value": "center"
+        },
+        {
+          "label": "Bottom",
+          "value": "bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "box_shadow_image",
+      "label": "Shadow image",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_border_size",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "label": "Image border size",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 8,
+      "max": 68,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "min": 8,
+      "max": 68,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading font size (mobile)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "heading_text_spacing",
+      "min": -10,
+      "max": 10,
+      "step": 0.2,
+      "unit": "px",
+      "label": "Heading letter spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "button_border_size",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border size",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size (mobile)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_text_spacing",
+      "min": -10,
+      "max": 10,
+      "step": 0.2,
+      "unit": "px",
+      "label": "Text button letter spacing",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "section_top_padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_bottom_padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "section_border",
+      "label": "Separate section with border",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "lazy_load",
+      "label": "Lazy load",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section colors"
+    },
+    {
+      "type": "color",
+      "id": "section_background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color_background",
+      "id": "section_background_gradient_color",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Image item colors"
+    },
+    {
+      "type": "color",
+      "id": "image_overlay_color",
+      "label": "Image overlay color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "range",
+      "id": "image_overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Image overlay opacity",
+      "default": 0.1
+    },
+    {
+      "type": "color",
+      "id": "image_border_color",
+      "label": "Image border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "image_shadow_color",
+      "label": "Image shadow color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "color",
+      "id": "image_text_color",
+      "label": "Image text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "image_button_background_color",
+      "label": "Button background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "image_button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "image_button_background_hover_color",
+      "label": "Button background hover color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "image_button_text_hover_color",
+      "label": "Button text hover color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "header",
+      "content": "Navigation colors"
+    },
+    {
+      "type": "color",
+      "id": "navigation_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "navigation_background_hover_color",
+      "label": "Background hover color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "color",
+      "id": "navigation_icon_color",
+      "label": "Icon color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "color",
+      "id": "navigation_icon_hover_color",
+      "label": "Icon hover color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "checkbox",
+      "id": "override_font",
+      "label": "Override fonts of the theme",
+      "default": true,
+      "info": "If you check this option, the fonts of the section will work"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "futura_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "futura_n4"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Image item",
+      "type": "image_item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "image_text",
+          "default": "Foil spot mini dress",
+          "label": "Image text"
+        },
+        {
+          "type": "header",
+          "content": "Button settings"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "button_text",
+          "default": "Shop Now",
+          "label": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link",
+          "default": "/"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "🧩 Collection carousel 1.2",
+      "settings": {
+        "auto_rotate": false,
+        "hide_navigation": true,
+        "image_ratio": 0.8,
+        "image_cover_position": "center",
+        "box_shadow_image": true,
+        "image_border_radius": 0,
+        "image_border_size": 10,
+        "heading_font_size": 24,
+        "heading_font_size_mobile": 18,
+        "heading_text_spacing": 0,
+        "button_radius": 4,
+        "button_border_size": 1,
+        "button_font_size": 14,
+        "button_font_size_mobile": 14,
+        "button_text_spacing": 0,
+        "section_top_padding": 100,
+        "section_bottom_padding": 100,
+        "section_border": false,
+        "lazy_load": false,
+        "section_background_color": "#ffffff",
+        "section_background_gradient_color": "",
+        "image_overlay_color": "#1e1e1e",
+        "image_overlay_opacity": 0.1,
+        "image_border_color": "#ffffff",
+        "image_shadow_color": "#1e1e1e",
+        "image_text_color": "#ffffff",
+        "image_button_background_color": "#ffffff",
+        "image_button_text_color": "#ffffff",
+        "image_button_background_hover_color": "#ffffff",
+        "image_button_text_hover_color": "#1e1e1e",
+        "navigation_background_color": "#ffffff",
+        "navigation_background_hover_color": "#1e1e1e",
+        "navigation_icon_color": "#1e1e1e",
+        "navigation_icon_hover_color": "#ffffff",
+        "override_font": true,
+        "heading_font": "futura_n4",
+        "body_font": "futura_n4"
+      },
+      "blocks": [
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-3.jpg",
+            "image_text": "Ellesse collegiate t-shirt",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-4.jpg",
+            "image_text": "Tall knitted midi dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-1.jpg",
+            "image_text": "Curve 2 in 1 jumpsuit",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-2.jpg",
+            "image_text": "Topshop midaxi dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-6.jpg",
+            "image_text": "Cotton shoulder dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-7.jpg",
+            "image_text": "CK polo with tipping",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-8.jpg",
+            "image_text": "Foil spot mini dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-5.jpg",
+            "image_text": "Topshop midaxi dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-9.jpg",
+            "image_text": "Curve 2 in 1 jumpsuit",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "image": "shopify://shop_images/collection-carousel-1-variant-1-image-10.jpg",
+            "image_text": "Foil spot mini dress",
+            "button_text": "Shop Now",
+            "button_link": "/"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+{% endstyle %}
+<script>
+  !(function () {
+    function t() {
+      var e = document.getElementById('sp-{{ section.id }}');
+      e &&
+        ((e = e.querySelector('.sp-collection-carousel-wrapper')),
+        new Swiper(e, {
+          effect: 'coverflow',
+          centeredSlides: !0,
+          navigation: {
+            nextEl: e.querySelector('.sp-navigation-button[data-arrow="right"]'),
+            prevEl: e.querySelector('.sp-navigation-button[data-arrow="left"]'),
+          },
+          speed: 600,
+          loopAdditionalSlides: 4,
+          loopedSlides: 4,
+          loop: !0,
+          autoplay: 'true' === e.dataset.autoPlay,
+          slidesPerView: 'auto',
+          coverflowEffect: { rotate: 0, stretch: 0, depth: 200, modifier: 1, slideShadows: !1 },
+          initialSlide: 1,
+          breakpoints: { 320: { slidesPerView: 1.5 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
+        }));
+    }
+    window.addEventListener('DOMContentLoaded', (e) => {
+      t();
+    }),
+      Shopify && Shopify?.designMode && t();
+  })(document);
+</script>

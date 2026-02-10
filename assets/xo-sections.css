@@ -1,0 +1,25 @@
+.xo-section {--xo-page-width: 100%;--xo-gutter-left: .75rem;--xo-gutter-right: .75rem;--xo-page-width-xl: 1200px;--xo-gutter-left-xl: .75rem;--xo-gutter-right-xl: .75rem;}xo-collapse-trigger {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.xo-ac-icons {
+  text-align: center;
+  width: 24px;
+  transform: translate(0, -50%);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+}
+
+.xo-ac-icons-collapse,
+xo-collapse-trigger[xo-active] .xo-ac-icons-expand {
+  display: none;
+}
+
+.xo-ac-icons-expand,
+xo-collapse-trigger[xo-active] .xo-ac-icons-collapse {
+  display: block;
+}
+.xo-styles-1647198316136{--btn-background: #fee6e3;--btn-text-color: #111;--btn-border-radius: 6px}.xo-styles-1647198316136 a,.xo-styles-1647198316136 .xo-btn-span{color:var(--btn-text-color);font-size:16px;max-width:100%;position:relative;touch-action:manipulation}.xo-styles-1647198316136 a span,.xo-styles-1647198316136 .xo-btn-span span{padding:10px 25px;background-color:var(--btn-background);border:2px solid var(--btn-text-color);border-radius:var(--btn-border-radius);box-sizing:border-box;position:relative;z-index:1}.xo-styles-1647198316136 a:after,.xo-styles-1647198316136 .xo-btn-span:after{background-color:#111;border-radius:var(--btn-border-radius);content:"";display:block;height:100%;left:0;width:100%;position:absolute;top:-2px;transform:translate(6px, 8px);transition:transform .2s ease-out;z-index:0}.xo-styles-1647198316136 a:hover:after,.xo-styles-1647198316136 .xo-btn-span:hover:after{transform:translate(0, 0)}.xo-styles-1647198316136 a:active,.xo-styles-1647198316136 .xo-btn-span:active{background-color:#ffdeda;outline:0}.xo-styles-1647198316136 a:hover,.xo-styles-1647198316136 .xo-btn-span:hover{outline:0}@media(min-width: 768px){.xo-styles-1647198316136 a span,.xo-styles-1647198316136 .xo-btn-span span{padding:10px 35px}}.xo-styles-1647880179832{--img-border-radius: 20px}.xo-styles-1647880179832{border-radius:0px var(--img-border-radius) 0px var(--img-border-radius);overflow:hidden}.xo-styles-1647880179832 img{display:block;width:100%;transform:scale(1);transition:all 1.2s cubic-bezier(0.165, 0.84, 0.44, 1)}.xo-styles-1647880179832:hover img{transform:scale(1.15)}.xo-styles-1650684476130{--bg-color: #fff;--border-radius: 10px;--padding: 20px}.xo-styles-1650684476130{background-color:var(--bg-color);padding:var(--padding);border-radius:var(--border-radius);box-shadow:0 0 0 .05rem rgba(8,60,130,.06),0 0 1.25rem rgba(30,34,40,.04)}

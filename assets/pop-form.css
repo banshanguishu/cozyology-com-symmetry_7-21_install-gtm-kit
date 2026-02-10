@@ -1,0 +1,16 @@
+.custom-form-section {
+  text-align: center; /* Center the content */
+}
+
+.form-button {
+  background-color: #202020; /* Button background color */
+  color: #FFFFFF; /* Button text color */
+  padding: 10px 20px; /* Button padding */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+}
+
+.shopify-block {
+  margin-top: 20px; /* Add space above the form */
+}

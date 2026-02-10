@@ -1,0 +1,228 @@
+{{ 'cozy-calculator.css' | asset_url | stylesheet_tag }}
+
+<div id="section-id-{{ section.id }}">
+  <div class="cozy-cal-wrapper">
+    <div class="cozy-cal-header">
+      {{ section.settings.header_title }}
+    </div>
+    <div class="cozy-cal-main">
+      <div class="cozy-cal-block cozy-cal-block-left">
+        <div class="tab-switcher">
+          <div class="switcher-item switcher-1" data-tab="1">Panel Width Calculator</div>
+          <div class="switcher-item switcher-2" data-tab="2">Stacked Width Calculator</div>
+        </div>
+
+        <div class="cal-item item-stacked-width" style="display: none">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Stacked Width (inch)
+            </div>
+          </div>
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="inch"
+            value=""
+            min="0"
+            onkeypress="return event.charCode === 0 || event.charCode === 8 || (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 46" />
+        </div>
+
+        <div class="cal-item item-rod-length" style="display: none">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Rod / Track Length (inch)
+            </div>
+          </div>
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="inch"
+            value=""
+            min="0"
+            onkeypress="return event.charCode === 0 || event.charCode === 8 || (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 46" />
+        </div>
+
+        <div class="cal-item number-of-panels" style="display: none">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Number Of Panels
+            </div>
+            {% if section.settings.help_link_1 != blank %}
+              <a
+                href="{{ section.settings.help_link_1 }}"
+                target="_blank"
+                class="cal-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <select value="Single">
+            <option data-weight="1">Single</option>
+            <option data-weight="0.5">Split</option>
+          </select>
+        </div>
+
+        <div class="cal-item pleat-style">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Pleat Style
+            </div>
+            {% if section.settings.help_link_4 != blank %}
+              <a
+                href="{{ section.settings.help_link_4 }}"
+                target="_blank"
+                class="cal-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <select value="Single">
+            <option data-weight="double">Double Pleats (Pinch / Tailor / French), Goblet, or Ripple Fold</option>
+            <option data-weight="triple">Triple Pleats (Pinch / Tailor / French)</option>
+          </select>
+        </div>
+
+        <button class="cal-btn cal-btn-calculate">
+          CALCULATE
+        </button>
+
+        <div class="cal-result">
+          <div class="cal-result-item">
+            <div class="cal-result-item-title">
+              <span>Single Panel Order Width(inch)</span>
+              {% if section.settings.help_link_2 != blank %}
+                <a
+                  href="{{ section.settings.help_link_2 }}"
+                  target="_blank"
+                  class="cal-label-help-link">
+                  <img
+                    src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                    alt="help"
+                    width="20px"
+                    height="20px" />
+                </a>
+              {% endif %}
+            </div>
+            <div class="cal-result-item-res cal-result-order">
+              -
+            </div>
+          </div>
+          <div class="cal-result-item">
+            <div class="cal-result-item-title">
+              <span>Numers of Pleats and Rod Rings</span>
+            </div>
+            <div class="cal-result-item-res cal-result-rings">
+              -
+            </div>
+          </div>
+          <div class="cal-result-item cal-result-stacked-width">
+            <div class="cal-result-item-title">
+              <span>Stacked Width(inch)</span>
+              {% if section.settings.help_link_3 != blank %}
+                <a
+                  href="{{ section.settings.help_link_3 }}"
+                  target="_blank"
+                  class="cal-label-help-link">
+                  <img
+                    src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                    alt="help"
+                    width="20px"
+                    height="20px" />
+                </a>
+              {% endif %}
+            </div>
+            <div class="cal-result-item-res cal-result-width">
+              -
+            </div>
+          </div>
+        </div>
+
+        <div class="cal-item cal-item-hyperlink-panel" style="display: none">
+          <div style="margin-bottom: 12px">Stacked width varies slightly by fabric type —— thicker or lined drapery stacks wider, while lighter, unlined fabrics stack slimmer.</div>
+          <a onclick="handleNavigate('2')" style="cursor: pointer"><strong>CALCULATE STACKED WIDTH</strong></a>
+        </div>
+        <div class="cal-item cal-item-hyperlink-stacked" style="display: none">
+          <a onclick="handleNavigate('1')" style="cursor: pointer"><strong>CALCULATE PANEL WIDTH</strong></a>
+        </div>
+      </div>
+      {% if section.settings.right_block_image %}
+        <div class="cozy-cal-block cozy-cal-block-right">
+          <img
+            src="{{ section.settings.right_block_image | img_url: 'master' }}"
+            alt="{{ section.settings.right_block_image.alt | default: 'Calculator Image' }}"
+            class="cal-right-image">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'cozy-calculator.js' | asset_url }}" defer></script>
+<script>
+  function handleNavigate(tab) {
+    const { origin, pathname } = window.location;
+    window.location = `${origin}${pathname}?tab=${tab}`;
+  }
+</script>
+
+{% schema %}
+  {
+    "name": "Cozy Calculator",
+    "tag": "section",
+    "class": "cozy-calculator",
+    "settings": [
+      {
+        "type": "text",
+        "id": "header_title",
+        "label": "Header Title",
+        "default": "Pleated Curtain Calculator"
+      },
+      {
+        "type": "image_picker",
+        "id": "right_block_image",
+        "label": "Right Block Image",
+        "info": "Select an image to display in the right block"
+      },
+      {
+        "type": "url",
+        "id": "help_link_1",
+        "label": "Help Link 1 - Number Of Panels",
+        "info": "Link for the help icon in Number Of Panels section"
+      },
+      {
+        "type": "url",
+        "id": "help_link_2",
+        "label": "Help Link 2 - Single Panel Order Width",
+        "info": "Link for the help icon in Single Panel Order Width section"
+      }, {
+        "type": "url",
+        "id": "help_link_3",
+        "label": "Help Link 3 - Stacked Width",
+        "info": "Link for the help icon in Stacked Width section"
+      },{
+        "type": "url",
+        "id": "help_link_4",
+        "label": "Help Link 4 - Pleat Style",
+        "info": "Link for the help icon in Pleat Style section"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Cozy Calculator",
+        "category": "Cozy Calculator"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,787 @@
+{%- style -%}
+  /* 使用Symmetry主题的间距系统 */
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-left: {{ section.settings.padding_left_right | times: 0.75 | round: 0 }}px;
+    padding-right: {{ section.settings.padding_left_right | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+        padding-left: {{ section.settings.padding_left_right }}px;
+        padding-right: {{ section.settings.padding_left_right }}px;
+    }
+  }
+
+  /* 单行左右布局 */
+  .install-tutorials-section {
+    margin-top: 2rem;
+  }
+
+  .install-tutorials-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+  }
+
+  /* 单个教程项目 - 左右布局 */
+  .install-tutorial-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 990px) {
+    .install-tutorial-item {
+      grid-template-columns: 1fr 1fr; /* 左右两列 */
+      gap: 6rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .install-tutorials-grid {
+      gap: 4rem;
+    }
+  }
+
+  /* 左侧视频区域 */
+  .install-tutorial-video {
+    position: relative;
+  }
+
+  .install-tutorial-video__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .install-tutorial-video__title {
+    margin: 0 0 1rem 0;
+    font-family: var(--font-heading-family);
+    font-size: calc(var(--font-heading-scale) * 2.8rem);
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .install-tutorial-video__subtitle {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: rgba(var(--color-foreground), 0.8);
+    line-height: 1.4;
+  }
+
+  .install-tutorial-video__wrapper {
+    position: relative;
+    /* border-radius: 12px; */
+    overflow: hidden;
+    /* box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .install-tutorial-video__wrapper:hover {
+    transform: translateY(-5px);
+    /* box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); */
+  }
+
+  .install-tutorial-video__thumbnail {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 比例 */
+    overflow: hidden;
+    background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+  }
+
+  .install-tutorial-video__thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .install-tutorial-video__wrapper:hover .install-tutorial-video__thumbnail img {
+    transform: scale(1.05);
+  }
+
+  .install-tutorial-video__play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    /* background: rgba(255, 255, 255, 0.95); */
+    border-radius: 50%;
+    border: 4px solid #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .install-tutorial-video__play-button:hover {
+    /* background: white; */
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+  }
+
+  .install-tutorial-video__play-button svg {
+    width: 40px;
+    height: 40px;
+    fill: rgb(var(--color-foreground));
+    margin-left: 8px;
+  }
+
+  /* 右侧内容区域 */
+  .install-tutorial-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .install-tutorial-content__title {
+    margin: 0 0 2rem 0;
+    font-family: var(--font-heading-family);
+    font-size: calc(var(--font-heading-scale) * 3.2rem);
+    font-weight: 600;
+    color: rgb(var(--color-foreground));
+    line-height: 1.2;
+  }
+
+  .install-tutorial-content__description {
+    color: rgba(var(--color-foreground), 0.85);
+    /* font-size: 1.8rem; */
+    /* line-height: 1.7; */
+    margin-bottom: 3rem;
+
+  }
+
+  /* 移动端调整 */
+  @media screen and (max-width: 989px) {
+    .install-tutorial-video__title {
+      font-size: calc(var(--font-heading-scale) * 2.2rem);
+    }
+    
+    .install-tutorial-content__title {
+      font-size: calc(var(--font-heading-scale) * 2.5rem);
+    }
+    
+    .install-tutorial-video__play-button {
+      width: 80px;
+      height: 80px;
+    }
+    
+    .install-tutorial-video__play-button svg {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .install-tutorial-video__title {
+      font-size: calc(var(--font-heading-scale) * 1.8rem);
+    }
+    
+    .install-tutorial-video__subtitle {
+      font-size: 1.6rem;
+    }
+    
+    .install-tutorial-content__title {
+      font-size: calc(var(--font-heading-scale) * 2rem);
+    }
+    
+    /* .install-tutorial-content__description {
+      font-size: 1.6rem;
+    } */
+    
+    .install-tutorial-video__play-button {
+      width: 70px;
+      height: 70px;
+    }
+    
+    .install-tutorial-video__play-button svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  /* 偶数行反转布局（可选） */
+  {% if section.settings.alternate_layout %}
+    @media screen and (min-width: 990px) {
+      .install-tutorial-item:nth-child(even) {
+        direction: rtl;
+      }
+      
+      .install-tutorial-item:nth-child(even) .install-tutorial-video,
+      .install-tutorial-item:nth-child(even) .install-tutorial-content {
+        direction: ltr;
+      }
+    }
+  {% endif %}
+
+  /* 无内容状态 */
+  .install-tutorials-empty {
+    text-align: center;
+    padding: 8rem 2rem;
+    background: rgba(var(--color-foreground), 0.03);
+    border: 1px dashed rgba(var(--color-foreground), 0.1);
+    border-radius: 12px;
+  }
+
+  .install-tutorials-empty svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 2rem;
+    opacity: 0.3;
+  }
+
+  /* 视频弹窗样式 */
+  .video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .video-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .video-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    background: rgb(var(--color-background));
+    border-radius: 12px;
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+  }
+
+  .video-modal.active .video-modal__content {
+    transform: translateY(0);
+  }
+
+  .video-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 2.5rem;
+    line-height: 1;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+  }
+
+  .video-modal__close:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .video-modal__player {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
+  }
+
+  .video-modal__player iframe,
+  .video-modal__player video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .video-modal__info {
+    padding: 3rem;
+    text-align: center;
+  }
+
+  .video-modal__title {
+    margin: 0 0 1rem 0;
+    font-size: 2.4rem;
+    color: rgb(var(--color-foreground));
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="section-{{ section.id }}-padding isolate">
+    <div class="page-width{% if section.settings.full_width %} page-width--full-width{% endif %}">
+      
+      {%- unless section.settings.title == blank -%}
+        <div class="title-wrapper title-wrapper--no-top-margin center">
+          <h1 class="title {{ section.settings.heading_size }}">{{ section.settings.title | escape }}</h1>
+        </div>
+        
+        {%- unless section.settings.description == blank -%}
+          <div class="rich-text__text rte center" style="max-width: 800px; margin: 2rem auto 0;">
+            {{ section.settings.description }}
+          </div>
+        {%- endunless -%}
+      {%- endunless -%}
+
+      <div class="install-tutorials-section">
+        {%- if section.blocks.size > 0 -%}
+          <div class="install-tutorials-grid">
+            {%- for block in section.blocks -%}
+              <div class="install-tutorial-item" {{ block.shopify_attributes }}>
+                <!-- 左侧：视频区域 -->
+                <div class="install-tutorial-video">
+                  <div class="install-tutorial-video__header">
+                    {% comment %} <h2 class="install-tutorial-video__title">HOW TO INSTALL</h2> {% endcomment %}
+                    {%- if block.settings.product_name != blank -%}
+                      <p class="install-tutorial-video__subtitle">{{ block.settings.product_name }}</p>
+                    {%- endif -%}
+                  </div>
+                  
+                  <div class="install-tutorial-video__wrapper">
+                    <div class="install-tutorial-video__thumbnail">
+                      {%- if block.settings.cover_image != blank -%}
+                        {%- liquid
+                          assign image = block.settings.cover_image
+                          assign image_sizes = "(min-width: 990px) 50vw, (min-width: 750px) 100vw, 100vw"
+                        -%}
+                        {{ image | image_url: width: 1000 | image_tag:
+                          loading: 'lazy',
+                          sizes: image_sizes,
+                          widths: '375, 550, 750, 1100, 1500',
+                          class: 'motion-reduce'
+                        }}
+                      {%- else -%}
+                        <div class="placeholder-background" style="background: linear-gradient(45deg, #f5f5f5, #e0e0e0); width: 100%; height: 100%; position: absolute;"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(var(--color-foreground), 0.3); text-align: center;">
+                          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                            <rect width="80" height="80" rx="12" fill="currentColor" opacity="0.1"/>
+                            <path d="M32 26L52 40L32 54V26Z" fill="currentColor" opacity="0.3"/>
+                          </svg>
+                          <p style="margin-top: 1rem; font-size: 1.6rem;">添加封面图片</p>
+                        </div>
+                      {%- endif -%}
+                      
+                       <button type="button" 
+                                class="install-tutorial-video__play-button" 
+                                data-video-url="{{ block.settings.video_url }}"
+                                data-video-title="{{ block.settings.title | escape }}"
+                                aria-label="播放视频: {{ block.settings.title | escape }}">
+                            <svg aria-hidden="true" focusable="false" viewBox="0 0 32 32">
+                                <path d="M10 8V24L24 16L10 8Z" fill="white"/>
+                            </svg>
+                        </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 右侧：内容区域 -->
+                <div class="install-tutorial-content">
+                  <h3 class="install-tutorial-content__title">{{ block.settings.title | escape }}</h3>
+                  
+                  {%- if block.settings.description != blank -%}
+                    <h2  class="install-tutorial-content__description">
+                      {{ block.settings.description }}
+                    </h2>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.features != blank -%}
+                    <div class="install-tutorial-features">
+                      <h4 style="margin: 0 0 1.5rem 0; font-size: 1.8rem; color: rgb(var(--color-foreground));">Features:</h4>
+                      <div class="install-tutorial-features__list">
+                        {{ block.settings.features }}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+                    <a href="{{ block.settings.button_link }}" class="button button--primary" style="margin-top: 2rem; align-self: flex-start;">
+                      {{ block.settings.button_label }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="install-tutorials-empty">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor">
+              <rect x="4" y="8" width="24" height="18" rx="2" stroke-width="2"/>
+              <path d="M14 14L20 16L14 18V14Z" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <h3 style="margin-bottom: 1rem; color: rgba(var(--color-foreground), 0.5); font-size: 2rem;">暂无</h3>
+            <p style="color: rgba(var(--color-foreground), 0.4); max-width: 400px; margin: 0 auto; font-size: 1.6rem;">
+              添加区块
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 视频弹窗 -->
+<div class="video-modal" id="videoModal-{{ section.id }}">
+  <div class="video-modal__content">
+    <button type="button" class="video-modal__close" aria-label="关闭视频">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="video-modal__player" id="videoPlayer-{{ section.id }}"></div>
+    <div class="video-modal__info" id="videoInfo-{{ section.id }}"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 为每个视频画廊实例创建独立的作用域
+    const sectionId = '{{ section.id }}';
+    const modal = document.getElementById(`videoModal-${sectionId}`);
+    const player = document.getElementById(`videoPlayer-${sectionId}`);
+    const info = document.getElementById(`videoInfo-${sectionId}`);
+    
+    if (!modal) return;
+    
+    // 播放按钮点击事件
+    document.querySelectorAll(`#shopify-section-${sectionId} .install-tutorial-video__play-button`).forEach(button => {
+      button.addEventListener('click', function() {
+        const videoUrl = this.dataset.videoUrl;
+        const videoTitle = this.dataset.videoTitle;
+        openVideoModal(videoUrl, videoTitle);
+      });
+    });
+    
+    // 关闭弹窗
+    modal.querySelector('.video-modal__close').addEventListener('click', closeVideoModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeVideoModal();
+    });
+    
+    // ESC键关闭
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeVideoModal();
+    });
+    
+    // 获取视频嵌入URL
+    function getEmbedUrl(url) {
+      if (!url) return '';
+      
+      // YouTube
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoId = '';
+        if (url.includes('youtu.be')) {
+          videoId = url.split('/').pop().split('?')[0];
+        } else {
+          try {
+            const urlObj = new URL(url);
+            videoId = urlObj.searchParams.get('v');
+          } catch (e) {
+            console.error('Invalid YouTube URL:', url);
+            return url;
+          }
+        }
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+      }
+      
+      // Vimeo
+      if (url.includes('vimeo.com')) {
+        const videoId = url.split('/').pop();
+        return `https://player.vimeo.com/video/${videoId}?autoplay=1&title=0&byline=0&portrait=0`;
+      }
+      
+      // Shopify视频或直接视频文件
+      if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mov')) {
+        return url;
+      }
+      
+      return url;
+    }
+    
+    // 打开视频弹窗
+    function openVideoModal(url, title) {
+      const embedUrl = getEmbedUrl(url);
+      
+      // 清空之前的视频
+      player.innerHTML = '';
+      
+      // 创建新的视频播放器
+      if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mov')) {
+        // 直接视频文件
+        const video = document.createElement('video');
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.style.width = '100%';
+        video.style.height = '100%';
+        
+        const source = document.createElement('source');
+        source.src = embedUrl;
+        source.type = url.includes('.webm') ? 'video/webm' : 'video/mp4';
+        
+        video.appendChild(source);
+        player.appendChild(video);
+      } else if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('vimeo.com')) {
+        // 嵌入视频
+        const iframe = document.createElement('iframe');
+        iframe.src = embedUrl;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        player.appendChild(iframe);
+      } else {
+        // 其他链接
+        player.innerHTML = `<p style="padding: 3rem; text-align: center; color: rgba(var(--color-foreground), 0.7); font-size: 1.6rem;">无法加载此视频链接</p>`;
+      }
+      
+      // 更新视频信息
+      if (title) {
+        info.innerHTML = `
+          <h3 class="video-modal__title">${title}</h3>
+        `;
+      } else {
+        info.innerHTML = '';
+      }
+      
+      // 显示弹窗
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // 关闭视频弹窗
+    function closeVideoModal() {
+      modal.classList.remove('active');
+      player.innerHTML = '';
+      info.innerHTML = '';
+      document.body.style.overflow = 'auto';
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Video Tutorials Gallery",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "页面主标题",
+      "default": "Installation Tutorials"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Medium"
+        },
+        {
+          "value": "h1",
+          "label": "Large"
+        },
+        {
+          "value": "h0",
+          "label": "Extra Large"
+        }
+      ],
+      "default": "h1",
+      "label": "标题大小"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "页面描述",
+      "default": "<p>Step-by-step installation guides for our products</p>"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "配色方案"
+    },
+    {
+      "type": "checkbox",
+      "id": "alternate_layout",
+      "label": "交替布局",
+      "default": false,
+      "info": "启用后，偶数行会反转左右顺序"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "全宽显示",
+      "default": false
+    },
+     {
+       "type": "range",
+        "id": "padding_left_right",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "左右间距",
+        "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "顶部间距",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "底部间距",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tutorial",
+      "name": "区块",
+      "settings": [
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "产品名称/型号",
+          "default": "Tyra Ripple Fold Track",
+          "info": "显示在'HOW TO INSTALL'下方"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "视频标题",
+          "default": "How to Install the Tyra Ripple Fold Track"
+        },
+        {
+          "type": "textarea",
+          "id": "video_url",
+          "label": "视频链接",
+          "info": "支持: YouTube, Vimeo, Shopify视频或直接视频文件链接",
+          "placeholder": "https://www.youtube.com/watch?v=..."
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image",
+          "label": "封面图片",
+          "info": "推荐尺寸: 16:9 (例如 1200x675px)"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "详细描述",
+          "default": "<p>Learn how to install our products with this comprehensive step-by-step tutorial. Follow along as we guide you through the entire installation process.</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "features",
+          "label": "产品特点 (可选)",
+          "default": "<p><strong>• Easy to install</strong><br><strong>• Adjustable length</strong><br><strong>• Durable construction</strong><br><strong>• Professional finish</strong></p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "按钮文字 (可选)",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "按钮链接 (可选)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Tutorials Gallery",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "tutorial",
+          "settings": {
+            "product_name": "Tyra Ripple Fold Track",
+            "title": "How to Install the Tyra Ripple Fold Track",
+            "description": "<p>Complete installation guide for the Tyra Ripple Fold Track. Learn how to measure, install, and adjust your curtain track for perfect window treatments.</p>",
+            "features": "<p><strong>• Length adjustable</strong><br><strong>• Easy installation</strong><br><strong>• Smooth operation</strong><br><strong>• Modern design</strong></p>",
+            "button_label": "Buy Now",
+            "button_link": "/products/tyra-ripple-fold-track"
+          }
+        },
+        {
+          "type": "tutorial",
+          "settings": {
+            "product_name": "Remy Café & Door Curtain Rod",
+            "title": "How to Install Remy Café & Door Curtain Rod",
+            "description": "<p>Step-by-step tutorial for installing the Remy Café & Door Curtain Rod. Perfect for cafe curtains and door treatments with detailed instructions.</p>",
+            "features": "<p><strong>• Versatile design</strong><br><strong>• Door and window compatible</strong><br><strong>• Easy mounting</strong><br><strong>• Adjustable length</strong></p>",
+            "button_label": "Shop Remy Rod",
+            "button_link": "/products/remy-cafe-door-curtain-rod"
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 50
+}
+{% endschema %}

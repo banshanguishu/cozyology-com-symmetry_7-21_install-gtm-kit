@@ -1,0 +1,24 @@
+<script>
+  document.addEventListener('globo.formbuilder.form.submitted', e => {
+  
+    const { formId } = e.detail
+
+    if (formId == "98093") {
+      let element = document.querySelector('#shopify-section-template--22811780055358__rich_text_BEFejM')
+
+      setTimeout(() => {
+        element.scrollIntoView();
+      }, 200)
+
+      // setTimeout(() => {
+      //   window.scrollBy({ top: -100, left: 0, behavior: "smooth" });
+      // }, 500); // small delay to allow scrollIntoView to finish
+    }
+  })
+</script>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

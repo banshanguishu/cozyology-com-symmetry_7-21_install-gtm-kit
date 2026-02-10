@@ -1,0 +1,26 @@
+<style>
+  html {
+      scroll-behavior: smooth;
+  }
+</style>
+<div id="{{ section.settings.anchor }}">&nbsp;</div>
+
+{% schema %}
+  {
+    "name": "锚点跳转",
+    "settings": [
+      {
+        "type": "text",
+        "id": "anchor",
+        "label": "锚点名称",
+        "info": "[使用参考](https://shopify2006.com/add-anchor-to-shopify-themes/) 英文状态下输入小写名称, 再设置带 # 号的跳转链接, 例如: #new"
+      }
+    ],
+   "presets": [
+      {
+        "name": "锚点跳转",
+        "category": "Added by shopify2006"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,515 @@
+{%- liquid
+-%}
+
+<div id="cozy-video-player-{{ section.id }}" class="cozy-video-player">
+  <div class="cozy-video-container">
+    <button class="cozy-video-close" onclick="closeVideoPlayer('{{ section.id }}')">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none">
+        <path
+          d="M12 4L4 12M4 4L12 12"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round" />
+      </svg>
+    </button>
+    <video
+      id="cozy-video-{{ section.id }}"
+      class="cozy-video"
+      autoplay
+      muted
+      playsinline
+      controls
+      controlsList="nodownload noremoteplayback"
+      onclick="toggleFullscreen('{{ section.id }}')"></video>
+  </div>
+</div>
+
+<style>
+  .cozy-video-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 180px;
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: #000;
+    transition: all 0.3s ease;
+    display: none;
+  }
+
+  .cozy-video-player.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+  }
+
+  .cozy-video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cozy-video {
+    width: 180px;
+    height: 320px;
+    display: block;
+    border-radius: 12px;
+    cursor: pointer;
+    object-fit: cover;
+  }
+
+  .cozy-video:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    border-radius: 0;
+  }
+
+  .cozy-video:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    border-radius: 0;
+  }
+
+  .cozy-video:-moz-full-screen {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    border-radius: 0;
+  }
+
+  .cozy-video-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    opacity: 1;
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .cozy-video-player {
+      width: 180px;
+      bottom: 15px;
+      right: 15px;
+    }
+
+    .cozy-video {
+      width: 180px;
+      height: 320px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cozy-video-player {
+      width: 108px;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    .cozy-video {
+      width: 108px;
+      height: 192px;
+    }
+  }
+</style>
+
+<script>
+    var video_src_settings = {
+      "产品名称": [
+        "视频1", 
+        "视频2",
+      ],
+      "Handwoven Shade Box | 45 Styles": [
+        "https://cozyology.udook.com/video/liam_linen_1.mp4"
+      ],
+      "Silk Chic Collection｜Pleated": [
+        "https://cozyology.udook.com/video/silk-chic/silk-chic-pleated-drapery.mp4",
+      ],
+      "Liam Linen｜Pleated Drapery": [
+        "https://cozyology.udook.com/video/liam-linen/liam-linen-pleated-drapery.mp4"
+      ],
+      "Lena Luxury Linen｜Pleated Drapery": [
+        "https://cozyology.udook.com/video/lena-linen/lena-linen-pleated-drapery.mp4"
+      ],
+      "Livia Linen｜Pleated Drapery": [
+        "https://cozyology.udook.com/video/livia-linen/8-livia%20linen-sakura-pink.mp4"
+      ],
+      "Cassandra Linen Cotton｜Pleated Drapery": [
+        "https://cozyology.udook.com/video/2-cassandra%20cotton-stone-gray.mp4"
+      ],
+      "Lull Linen｜Sheer｜Pleated": [
+        "https://cozyology.udook.com/video/127-lull-linen-wheat-mist.mp4"
+      ],
+      "Vance Premium Velvet｜100% Blackout Drapery": [
+        "https://cozyology.udook.com/video/152-vance-velvet-blush-mountain.mp4"
+      ],
+      "Liam Linen｜Café Curtains": [
+        "https://cozyology.udook.com/video/liam-linen/514-liam-linen-cafe-morning-mist.mp4"
+      ],
+      "Lena Linen | Misty Blue | Pleated Drapery": [
+        "https://cozyology.udook.com/video/lena-linen/546-alex-lena-misty-blue.mp4"
+      ],
+      "Layla Linen｜Serenity Blackout Drapery": [
+        "https://cozyology.udook.com/video/layla_linen/layla_straw_beige.mp4"
+      ],
+      "Motorized | Handwoven Shades": [
+        "https://cozyology.udook.com/video/handwoven_shade/motorized-handwoven-shade.mp4"
+      ],
+      "Winslow | Textured Weave | Handwoven Shades": [
+        "https://cozyology.udook.com/video/handwoven_shade/motorized-handwoven-shade.mp4"
+      ],
+      "Motorized | Roman Shades": [
+        "https://cozyology.udook.com/video/roman_shade/motorized-roman-shade.mp4"
+      ],
+      "Layla Linen | Luxe Darkening Drapery": [
+        "https://cozyology.udook.com/video/layla-linen-luxe-darkening-drapery.mp4"
+      ],
+    }
+    var currentVideoIndex = 0;
+    var product_title = {{ product.title | json }}
+    var video_resource_list = video_src_settings[product_title]
+    
+    // 切换全屏播放
+    function toggleFullscreen(sectionId) {
+      const video = document.getElementById('cozy-video-' + sectionId);
+      
+      if (!video) return;
+      
+      // 记录当前播放状态
+      const wasPlaying = !video.paused;
+      
+      if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+        // 进入全屏
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+        } else if (video.mozRequestFullScreen) {
+          video.mozRequestFullScreen();
+        }
+        
+        // 确保进入全屏后立刻有声音（在用户手势下解除静音）
+        // 仅在进入全屏前视频处于播放状态时恢复声音
+        if (wasPlaying) {
+          // 解除静音并设置音量
+          try {
+            video.muted = false;
+            // 若未显式设置过音量，则给一个较高的默认值
+            if (typeof video.volume !== 'number' || video.volume === 0) {
+              video.volume = 1.0;
+            }
+            // 先立即尝试播放以解锁音频（保持与用户手势同一事件流）
+            try {
+              video.play().catch(e => console.log('全屏后立即播放失败:', e));
+            } catch (e) {
+              console.log('立即播放异常:', e);
+            }
+            // 某些浏览器进入全屏需要一点时间，增加短延迟的兜底
+            setTimeout(() => {
+              if (video.paused) {
+                video.play().catch(e => console.log('全屏后延迟播放失败:', e));
+              }
+            }, 50);
+          } catch (e) {
+            console.log('解除静音或播放失败:', e);
+          }
+        }
+      } else {
+        // 退出全屏
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        }
+        
+        // 退出全屏后静音
+        try {
+          video.muted = true;
+          // 置为 0 以兼容部分浏览器在静音切换瞬间的出声问题
+          video.volume = 0;
+        } catch (e) {
+          console.log('退出全屏后静音失败:', e);
+        }
+        
+        // 确保视频继续播放（但保持静音）
+        if (wasPlaying) {
+          setTimeout(() => {
+            if (video.paused) {
+              video.play().catch(e => console.log('退出全屏后恢复播放失败:', e));
+            }
+          }, 100);
+        }
+      }
+    }
+
+    // 监听全屏变化（包括 ESC/系统按钮触发的进入/退出全屏）
+    (function() {
+      const handleFsChange = () => {
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement;
+        if (fsEl && fsEl.tagName && fsEl.tagName.toLowerCase() === 'video' && fsEl.classList.contains('cozy-video')) {
+          // 记录当前全屏的视频元素
+          window.__cozyFullscreenVideo = fsEl;
+          // 进入全屏：若视频本身处于播放状态，则解除静音并确保有声音
+          if (!fsEl.paused) {
+            try {
+              fsEl.muted = false;
+              if (typeof fsEl.volume !== 'number' || fsEl.volume === 0) {
+                fsEl.volume = 1.0;
+              }
+              try {
+                fsEl.play().catch(e => console.log('全屏事件立即播放失败:', e));
+              } catch (e) {
+                console.log('全屏事件立即播放异常:', e);
+              }
+              setTimeout(() => {
+                if (fsEl.paused) {
+                  fsEl.play().catch(e => console.log('全屏事件延迟播放失败:', e));
+                }
+              }, 50);
+            } catch (e) {
+              console.log('全屏事件解除静音失败:', e);
+            }
+          }
+        } else {
+          // 退出全屏：静音
+          const last = window.__cozyFullscreenVideo;
+          if (last) {
+            try {
+              last.muted = true;
+              last.volume = 0;
+            } catch (e) {
+              console.log('退出全屏事件静音失败:', e);
+            }
+          }
+        }
+      };
+      document.addEventListener('fullscreenchange', handleFsChange);
+      document.addEventListener('webkitfullscreenchange', handleFsChange);
+      document.addEventListener('mozfullscreenchange', handleFsChange);
+    })();    
+    // 关闭视频播放器
+    function closeVideoPlayer(sectionId) {
+      const player = document.getElementById('cozy-video-player-' + sectionId);
+      const video = document.getElementById('cozy-video-' + sectionId);
+      
+      // 如果在全屏模式，先退出全屏
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        }
+      }
+      
+      if (player) {
+        player.classList.add('hidden');
+        
+        // 暂停视频播放
+        if (video) {
+          video.pause();
+        }
+        
+        // 延迟移除元素
+        setTimeout(() => {
+          if (player.parentNode) {
+            player.parentNode.removeChild(player);
+          }
+        }, 300);
+      }
+    }
+    
+    // 加载指定索引的视频
+    function loadVideo(video, index) {
+      if (!video_resource_list || !video_resource_list[index]) {
+        return false;
+      }
+      
+      const videoSrc = video_resource_list[index];
+      
+      // 清空现有视频源
+      video.innerHTML = '';
+      
+      // 添加视频源
+      if (videoSrc) {
+        const sourceElement = document.createElement('source');
+        sourceElement.src = videoSrc;
+        sourceElement.type = 'video/mp4';
+        video.appendChild(sourceElement);
+        
+        // 重新加载视频
+        video.load();
+        return true;
+      }
+      
+      return false;
+    }
+    
+    // 播放下一个视频
+    function playNextVideo() {
+      if (!video_resource_list || video_resource_list.length === 0) {
+        console.log('没有视频资源列表');
+        return;
+      }
+      
+      const video = document.getElementById('cozy-video-{{ section.id }}');
+      if (!video) return;
+      
+      // 循环到下一个视频
+      currentVideoIndex = (currentVideoIndex + 1) % video_resource_list.length;
+      
+      if (loadVideo(video, currentVideoIndex)) {
+        // 尝试自动播放
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('自动播放被阻止:', error);
+          });
+        }
+      }
+    }
+    
+    // 页面加载完成后初始化视频播放器
+    document.addEventListener('DOMContentLoaded', function() {
+      const videoPlayer = document.getElementById('cozy-video-player-{{ section.id }}');
+      const video = document.getElementById('cozy-video-{{ section.id }}');
+      
+      if (videoPlayer && video && video_resource_list && video_resource_list.length > 0) {
+        if (videoPlayer) {
+          videoPlayer.style.display = 'block';
+        }
+        // 加载第一个视频
+        if (loadVideo(video, 0)) {
+          // 视频加载完成事件
+          video.addEventListener('loadeddata', function() {
+            // 尝试自动播放
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+              playPromise.catch(error => {
+                console.log('自动播放被阻止:', error);
+              });
+            }
+          });
+          
+          // 视频播放结束事件 - 播放下一个视频
+          video.addEventListener('ended', function() {
+            playNextVideo();
+          });
+          
+          // 视频播放错误处理
+          video.addEventListener('error', function(e) {
+            console.error('视频播放错误:', e);
+            // 尝试播放下一个视频
+            setTimeout(() => {
+              playNextVideo();
+            }, 1000);
+          });
+          
+          // 视频开始播放事件
+          video.addEventListener('play', function() {});
+          
+          // 全屏状态变化事件
+          document.addEventListener('fullscreenchange', function() {
+            const video = document.querySelector('.cozy-video');
+            if (document.fullscreenElement) {
+              console.log('进入全屏模式');
+            } else {
+              console.log('退出全屏模式');
+            }
+            // 确保视频在全屏状态变化后继续播放
+            if (video && video.readyState >= 2) {
+              setTimeout(() => {
+                if (video.paused && video.currentTime > 0) {
+                  video.play().catch(e => console.log('全屏状态变化后恢复播放失败:', e));
+                }
+              }, 50);
+            }
+          });
+          
+          document.addEventListener('webkitfullscreenchange', function() {
+            const video = document.querySelector('.cozy-video');
+            if (document.webkitFullscreenElement) {
+              console.log('进入全屏模式 (webkit)');
+            } else {
+              console.log('退出全屏模式 (webkit)');
+            }
+            // 确保视频在全屏状态变化后继续播放
+            if (video && video.readyState >= 2) {
+              setTimeout(() => {
+                if (video.paused && video.currentTime > 0) {
+                  video.play().catch(e => console.log('全屏状态变化后恢复播放失败 (webkit):', e));
+                }
+              }, 50);
+            }
+          });
+          
+          document.addEventListener('mozfullscreenchange', function() {
+            const video = document.querySelector('.cozy-video');
+            if (document.mozFullScreenElement) {
+              console.log('进入全屏模式 (moz)');
+            } else {
+              console.log('退出全屏模式 (moz)');
+            }
+            // 确保视频在全屏状态变化后继续播放
+            if (video && video.readyState >= 2) {
+              setTimeout(() => {
+                if (video.paused && video.currentTime > 0) {
+                  video.play().catch(e => console.log('全屏状态变化后恢复播放失败 (moz):', e));
+                }
+              }, 50);
+            }
+          });
+        }
+      } else {
+        console.log('视频播放器初始化失败或没有视频资源');
+        // 如果没有视频资源，隐藏整个组件
+        if (videoPlayer) {
+          videoPlayer.style.display = 'none';
+        }
+      }
+    });
+</script>
+
+{% schema %}
+  {
+    "name": "Cozy Video Plugin",
+    "tag": "section",
+    "class": "cozy-video-plugin",
+    "settings": [
+      {
+        "type": "url",
+        "label": "video URL",
+        "id": "video_url",
+        "info": "Please input video url here"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Cozy Video Plugin",
+        "category": "Cozy Plugins"
+      }
+    ]
+  }
+{% endschema %}

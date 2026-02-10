@@ -1,0 +1,1006 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+    #sp-{{ section.id }} {
+        --sp-shop-the-look-image-border-radius: {{ settings.image_border_radius }}px;
+        --sp-shop-the-look-image-overlay-color: {{ settings.image_overlay_color | default: null }};
+    }
+
+    .sp-modal-{{ section.id }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+    }
+
+    #sp-{{ section.id }} .sp-section {
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default : null }};
+        --sp-section-text-color: {{ settings.section_text_color | default:"#1e1e1e" }};
+    }
+
+    #sp-{{ section.id }} .sp-heading-wrapper {
+        --sp-section-heading-width: 0rem;
+        max-width: var(--sp-section-heading-width);
+    }
+
+    #sp-{{ section.id }} .sp-shop-the-look-image-inner{
+        --sp-shop-the-look-image-border-width: {{ settings.image_border_size }}px;
+        --sp-shop-the-look-image-border-color: {{ settings.image_border_color | default:"transparent" }};
+        --sp-image-aspect-ratio: {{ settings.image_ratio}};
+    }
+
+    .sp-modal-{{ section.id }} .sp-shop-the-look-content {
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default : null }};
+    }
+
+    #sp-{{ section.id }} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item {
+        --sp-shop-the-look-hotspot-color: {{ settings.hotspot_color | default: "#FFF" }}
+    }
+
+    #sp-{{ section.id }} .sp-product-card{
+--sp-image-aspect-ratio: {{ settings.product_card_image_ratio}};
+--sp-card-border-radius: {{ settings.product_card_border_radius }}px;
+--sp-product-card-badge-border-radius: {{ settings.product_card_badge_border_radius }}px;
+--sp-card-border-width: {{ settings.product_card_border_size }}px;
+
+--sp-card-background-color: {{ settings.product_card_background_color | default: "#FFF" }};
+--sp-card-background-gradient-color: {{ settings.product_card_background_gradient_color | default: null }};
+--sp-card-shadow-color: {{ settings.product_card_shadow_color | default: "transparent" }};
+--sp-card-border-color: {{ settings.product_card_border_color | default: 'none' }};
+--sp-card-heading-color: {{ settings.product_card_text_color | default: "#1e1e1e" }};
+--sp-product-card-price-color: {{ settings.product_card_price_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-rating .sp-rating-star {
+--sp-product-card-rating-color: {{ settings.product_card_price_rating_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--on-sale {
+--sp-product-card-badge-background-color: {{ settings.product_card_discount_badge_background_color | default: "#FFF" }};
+--sp-product-card-badge-text-color: {{ settings.product_card_discount_badge_text_color | default: "#1e1e1e" }};
+}
+
+#sp-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--sold-out {
+--sp-product-card-badge-background-color: {{ settings.product_card_sold_badge_background_color | default: "#FFF" }};
+--sp-product-card-badge-text-color: {{ settings.product_card_sold_badge_text_color | default: "#1e1e1e" }};
+}
+
+    .sp-modal-{{ section.id }} .sp-product-card {
+        --sp-card-border-radius: {{ settings.product_card_border_radius }}px;
+        --sp-product-card-badge-border-radius: {{ settings.product_card_badge_border_radius }}px;
+        --sp-card-border-width: {{ settings.product_card_border_size }}px;
+
+        --sp-card-background-color: {{ settings.product_card_background_color | default: "#FFF" }};
+        --sp-card-background-gradient-color: {{ settings.product_card_background_gradient_color | default: null }};
+        --sp-card-shadow-color: {{ settings.product_card_shadow_color | default: "transparent" }};
+        --sp-card-border-color: {{ settings.product_card_border_color | default: 'none' }};
+        --sp-card-heading-color: {{ settings.product_card_text_color | default: "#1e1e1e" }};
+        --sp-product-card-price-color: {{ settings.product_card_price_color | default: "#1e1e1e" }};
+    }
+
+    .sp-modal-{{ section.id }} .sp-product-card .sp-product-card-rating .sp-rating-star{
+        --sp-product-card-rating-color: {{ settings.product_card_price_rating_color | default: "#1e1e1e" }};
+    }
+
+    .sp-modal-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--on-sale {
+        --sp-product-card-badge-background-color: {{ settings.product_card_discount_badge_background_color | default: "#FFF" }};
+        --sp-product-card-badge-text-color: {{ settings.product_card_discount_badge_text_color | default: "#1e1e1e" }};
+    }
+
+    .sp-modal-{{ section.id }} .sp-product-card .sp-product-card-badge .sp-badge.sp-badge--sold-out {
+        --sp-product-card-badge-background-color: {{ settings.product_card_sold_badge_background_color | default: "#FFF" }};
+        --sp-product-card-badge-text-color: {{ settings.product_card_sold_badge_text_color | default: "#1e1e1e" }};
+    }
+
+    #sp-{{ section.id }} [data-plugin="sp-carousel"],
+    .sp-modal-{{ section.id }}[data-plugin="sp-carousel"]{
+        --sp-slideshow-pagination-background-color: {{ settings.pagination_background | default: "transparent" }};
+        --sp-slideshow-pagination-color: {{ settings.pagination_highlight | default: "transparent" }};
+        --sp-slideshow-navigation-background-color: {{ settings.navigation_background | default: "transparent" }};
+        --sp-slideshow-navigation-background-gradient-color: {{ settings.navigation_background_gradient | default: null }};
+        --sp-slideshow-navigation-background-color: {{ settings.navigation_background | default: "transparent" }};
+        --sp-slideshow-navigation-icon-color: {{ settings.navigation_icon | default: "transparent" }};
+        --sp-navigation-border-width: {{ settings.navigation_button_border_width }}px;
+        --sp-navigation-scale: {{ settings.navigation_button_scale | divided_by: 100.0 }};
+        --sp-slideshow-navigarion-boxshadow-color: {{ settings.navigation_background_shadow }};
+        --sp-slideshow-navigarion-border-radius: {% if settings.navigation_button_radius == 60 %}50%{% else %}{{ settings.navigation_button_radius }}px{% endif %};
+    }
+
+    .sp-modal-{{ section.id }} .sp-button-close {
+        color: {{ settings.product_card_text_color | default:"#1e1e1e" }}
+    }
+
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-shop-the-look-1" data-section="shop-the-look-2"
+     data-variant="variant-2">
+    <div class="sp-section sp-section-overflow" data-border="{{ settings.section_border }}">
+        <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-section-inner" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}" data-cascade>
+
+                <div class="sp-content-shop-look">
+                    {% assign product_card_content_alignment = settings.product_card_content_alignment %}
+                    {% assign product_card_style = settings.product_card_style %}
+                    {% assign product_card_box_shadow = settings.product_card_box_shadow %}
+                    {% assign product_card_show_second_image = settings.product_card_show_second_image %}
+                    {% assign product_card_show_vendor = settings.product_card_show_vendor %}
+                    {% assign product_card_show_price = settings.product_card_show_price %}
+                    {% assign product_card_show_discount_badge = settings.product_card_show_discount_badge %}
+                    {% assign product_card_show_sold_out_badge = settings.product_card_show_sold_out_badge %}
+                    {% assign product_card_discount_badge_type = settings.product_card_discount_badge_type %}
+                    {% assign product_card_show_currency_code = settings.product_card_show_currency_code %}
+                    {% assign product_card_show_rating = settings.product_card_show_rating %}
+                    {% assign product_card_show_color_swatches = settings.product_card_show_color_swatches %}
+                    {% assign product_card_color_swatch_style = settings.product_card_color_swatch_style %}
+
+                    {% assign use_first_variant_product = true %}
+                    {% assign show_compare_at_price = true %}
+
+                    {% assign show_tooltip_color_swatch = true %}
+                    {% assign max_color_swatches = 5 %}
+
+                    {% assign currency_code_enabled = true %}
+                    {% assign placeholder_product = false %}
+
+                    <div class="sp-shop-the-look-item"
+                        data-image-position="{{ settings.image_position }}"
+                        data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                        data-section-id="{{ section.id }}"
+                        data-box-shadow="{{ settings.box_shadow }}"
+                    >
+                        <div class="sp-shop-the-look-image-wrapper {{ settings.section_content_size }}">
+                            {% assign heading_block = section.blocks | where: 'type', 'shop_the_look_item' %}
+                            <div class="sp-shop-the-look-image-inner">
+                                {% if settings.shop_the_look_image != null %}
+                                    <img class="sp-image" src="{{ settings.shop_the_look_image | image_url: width: 1920 }}" alt="{{ settings.shop_the_look_image.alt | default: "" }}">
+                                {% else %}
+                                    {{ 'image' | placeholder_svg_tag: "sp-placeholder-image-gray-100" }}
+                                {% endif %}
+                            </div>
+                            <div class="sp-shop-the-look-hotspots">
+                            {% for block in heading_block %}
+                                {% assign setting = block.settings %}
+                                    {% if setting.product != null %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="{{ setting.product.url }}">{{ setting.product.title }}</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ setting.product.price | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if setting.product.featured_media != null %}
+                                                        <div class="sp-card-media sp-product-card-media {% if setting.product.media[1] != null %}has-second-image{% endif %}">
+                                                            <a class="sp-link" href="{{ setting.product.url }}">
+                                                                <img src="{{- setting.product.featured_media | image_url: width: 550 -}}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product.featured_media.alt | escape }}" width="{{ setting.product.featured_media.width }}" height="{{ setting.product.featured_media.height }}">
+                                                                {%- if setting.product.media[1] != null -%}
+                                                                    <img src="{{ setting.product.media[1] | image_url: width: 1080 }}" sizes="(min-width: 1200px) 1200px, (min-width: 990px) 990px, (min-width: 750px) 750px, 650px)" alt="{{ setting.product.media[1].alt | escape }}" width="{{ setting.product.media[1].width }}" height="{{ setting.product.media[1].height }}" >
+                                                                {%- endif -%}
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="sp-shop-the-look-hotspot-item"
+                                            onclick="spChangeHotSpot(this)"
+                                            data-hotspot-id="sp-shop-the-look-product-item-1-{{ setting.product.id }}-{{ block.id }}"
+                                            data-modal-id="sp-modal-shop-the-look-{{ block.id }}"
+                                            style="--sp-shop-the-look-hotspot-top: {{ setting.vertical_position }}%; --sp-shop-the-look-hotspot-left: {{ setting.horizontal_position }}%;"
+                                        >
+                                            <div class="sp-card sp-product-card" data-style="{{ product_card_style | default: "style-1" }}">
+                                                <div class="sp-card-inner">
+                                                    <div class="sp-card-information sp-product-card-information">
+                                                        <h2 class="sp-product-card-heading">
+                                                            <a class="sp-link body-font" href="#">The Product</a>
+                                                        </h2>
+                                                        <div class="sp-product-card-price">
+                                                            <span class="price-item price-item--sale price-item--last">
+                                                                {{ 20 | money }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="sp-card-media sp-product-card-media {% if setting.product.media[1] != null %}has-second-image{% endif %}">
+                                                        <a class="sp-link" href="{{ setting.product.url }}">
+                                                            {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>          
+                        <div class="sp-shop-the-look-content-wrapper {{ settings.section_content_size }}">
+                            <div class="sp-shop-the-look-content" data-alignment="{{ settings.section_content_alignment }}">
+                                {% assign heading_block = section.blocks | where: 'type', 'heading_item' %}
+                                {% for block in heading_block %}
+                                    {% assign setting = block.settings %}
+                                    <style>
+                                        #sp-{{ section.id }} .sp-shop-the-look-content{
+                                            --sp-heading-font: {{ setting.heading_size_desktop }}px;
+                                            --sp-heading-text-style: {{ setting.heading_text_style }};
+                                            --sp-heading-text-color: {{ settings.section_heading_color }};
+
+                                            --sp-description-text-color: {{ settings.section_text_color }};
+                                            --sp-button-border-width: {{ setting.button_border_width }}px;
+                                            --sp-button-border-radius: {{ setting.button_radius }}px;
+                                            --sp-button-border-color: {{ settings.section_border_color }};
+                                            --sp-button-background-color: {{ settings.section_button_background }};
+                                        }
+
+                                        @media (max-width: 767px) {
+                                            #sp-{{ section.id }} .sp-shop-the-look-content{
+                                                --sp-heading-font: {{ setting.heading_size_mobile }}px;
+                                            }
+                                        }
+                                    </style>
+                                    <div class="sp-shop-the-look-content-heading heading-font">
+                                        {{ setting.heading }}
+                                    </div>
+                                    <div class="sp-shop-the-look-content-description body-font">
+                                        {{ setting.description }}
+                                    </div>
+                                    <div class="sp-shop-the-look-content-button body-font">
+                                        <a href="{{ setting.button_link }}" class="{{ setting.button_style | default: "sp-button-link" }}">
+                                            {{ setting.button_text }}
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>                      
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+{% schema %}
+{
+	"name": "🧩 Shop the look 2.2",
+	"tag": "section",
+	"class": "sp-section-shop-the-look-2",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Shop the look setting"
+		},
+		{
+			"type": "image_picker",
+			"id": "shop_the_look_image",
+			"label": "Image"
+		},
+		{
+			"type": "select",
+			"id": "image_position",
+			"label": "Image position",
+			"options": [
+				{
+					"label": "Left",
+					"value": "left"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				}
+			],
+			"default": "right"
+		},
+		{
+			"type": "select",
+			"id": "section_content_alignment",
+			"label": "Content alignment",
+			"default": "center",
+			"options": [
+				{
+					"label": "Left",
+					"value": "left"
+				},
+				{
+					"label": "Center",
+					"value": "center"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "section_content_size",
+			"label": "Content size",
+			"default": "",
+			"options": [
+				{
+					"label": "Default",
+					"value": ""
+				},
+				{
+					"label": "Small",
+					"value": "sp-small"
+				},
+				{
+					"label": "Medium",
+					"value": "sp-medium"
+				},
+				{
+					"label": "Large",
+					"value": "sp-large"
+				},
+				{
+					"label": "Extra Large",
+					"value": "sp-extra-large"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "image_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Image border radius",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "image_border_size",
+			"min": 0,
+			"max": 10,
+			"step": 1,
+			"unit": "px",
+			"label": "Image border size",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "image_ratio",
+			"min": 0.7,
+			"max": 1.3,
+			"step": 0.1,
+			"default": 1,
+			"unit": ":1",
+			"label": "Image ratio"
+		},
+		{
+			"type": "checkbox",
+			"id": "box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Product card"
+		},
+		{
+			"type": "range",
+			"id": "product_card_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Card border radius",
+			"default": 8
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_box_shadow",
+			"label": "Box shadow",
+			"info": "Apply only card style",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_show_second_image",
+			"label": "Show second image on hover",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "product_card_show_price",
+			"label": "Show price",
+			"default": true
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			],
+			"default": "boxed"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient"
+		},
+		{
+			"type": "color",
+			"id": "section_button_background",
+			"label": "Background button",
+			"default": "#c43235"
+		},
+		{
+			"type": "color",
+			"id": "section_border_color",
+			"label": "Border color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "section_heading_color",
+			"label": "Heading",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "section_text_color",
+			"label": "Text",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Shop the look color"
+		},
+		{
+			"type": "color",
+			"id": "hotspot_color",
+			"label": "Hotspot",
+			"default": "#ffffff"
+		},
+		{
+			"type": "header",
+			"content": "Product card color"
+		},
+		{
+			"type": "color",
+			"id": "product_card_text_color",
+			"label": "Text",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_price_color",
+			"label": "Price",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_price_rating_color",
+			"label": "Rating",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "product_card_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "product_card_background_gradient_color",
+			"label": "Background gradient",
+			"default": "linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 100%)"
+		},
+		{
+			"type": "color",
+			"id": "product_card_shadow_color",
+			"label": "Shadow",
+			"default": "rgba(0,0,0,0)"
+		},
+		{
+			"type": "color",
+			"id": "product_card_border_color",
+			"label": "Border"
+		},
+		{
+			"type": "color",
+			"id": "product_card_border_thumbnail_color",
+			"label": "Border thumbnail"
+		},
+		{
+			"type": "color",
+			"id": "product_card_discount_badge_text_color",
+			"label": "Discount badge (label)",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "product_card_discount_badge_background_color",
+			"label": "Discount badge (background)",
+			"default": "#c43235"
+		},
+		{
+			"type": "color",
+			"id": "product_card_sold_badge_text_color",
+			"label": "Sold out badge (label)",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "product_card_sold_badge_background_color",
+			"label": "Sold out badge (background)",
+			"default": "#acacac"
+		},
+		{
+			"type": "header",
+			"content": "Navigation button color"
+		},
+		{
+			"type": "color",
+			"id": "navigation_background",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "navigation_background_gradient",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible.",
+			"default": "linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2%, rgba(255, 255, 255, 0.4) 100%)"
+		},
+		{
+			"type": "color",
+			"id": "navigation_icon",
+			"label": "Icon",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "navigation_background_shadow",
+			"label": "Shadow",
+			"default": "#23468f"
+		},
+		{
+			"type": "header",
+			"content": "Pagination color"
+		},
+		{
+			"type": "color_background",
+			"id": "pagination_background",
+			"label": "Background",
+			"default": "linear-gradient(90deg, rgba(102, 96, 96, 0.4) 2%, rgba(61, 56, 56, 0.4) 100%)"
+		},
+		{
+			"type": "color",
+			"id": "pagination_highlight",
+			"label": "Highlight",
+			"default": "#ffffff"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "futura_n4"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Heading item",
+			"type": "heading_item",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "<h2>Creating the Perfect Living Space</h2>"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p>A house is not just a place to live; it is also a space to relax and connect with family. Arranging and decorating it to match your tastes and lifestyle can transform a house into a true home, where every corner brings a sense of comfort and warmth.</p>"
+				},
+				{
+					"type": "header",
+					"content": "Heading Styling"
+				},
+				{
+					"type": "range",
+					"id": "heading_size_desktop",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Desktop)",
+					"default": 48
+				},
+				{
+					"type": "range",
+					"id": "heading_size_mobile",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Mobile)",
+					"default": 36
+				},
+				{
+					"type": "select",
+					"id": "heading_text_style",
+					"label": "Text style",
+					"options": [
+						{
+							"label": "Normal",
+							"value": "normal"
+						},
+						{
+							"label": "Capitalize",
+							"value": "capitalize"
+						},
+						{
+							"label": "Uppercase",
+							"value": "uppercase"
+						},
+						{
+							"label": "Lowercase",
+							"value": "lowercase"
+						}
+					],
+					"default": "normal"
+				},
+				{
+					"type": "header",
+					"content": "Button settings"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button label",
+					"info": "Leave the label blank to hide the button.",
+					"default": "View Collection"
+				},
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link"
+				},
+				{
+					"type": "select",
+					"id": "button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"label": "Button link",
+							"value": "sp-button-link"
+						},
+						{
+							"label": "Button fill",
+							"value": "sp-button-fill"
+						},
+						{
+							"label": "Button outline",
+							"value": "sp-button-outline"
+						}
+					],
+					"default": "sp-button-outline"
+				},
+				{
+					"type": "range",
+					"id": "button_radius",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Button border radius",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_border_width",
+					"min": 0.5,
+					"max": 5,
+					"step": 0.5,
+					"unit": "px",
+					"label": "Button border size",
+					"default": 0.5
+				}
+			]
+		},
+		{
+			"name": "Shop the look",
+			"type": "shop_the_look_item",
+			"settings": [
+				{
+					"type": "header",
+					"content": "Product"
+				},
+				{
+					"type": "product",
+					"id": "product",
+					"label": "Product"
+				},
+				{
+					"type": "range",
+					"id": "horizontal_position",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Horizontal position",
+					"default": 24
+				},
+				{
+					"type": "range",
+					"id": "vertical_position",
+					"min": 0,
+					"max": 100,
+					"step": 1,
+					"unit": "%",
+					"label": "Vertical position",
+					"default": 48
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Shop the look 2.2",
+			"settings": {
+				"shop_the_look_image": "shopify://shop_images/shop-the-look-2-variant-2-image-1.png",
+				"image_position": "right",
+				"section_content_alignment": "center",
+				"section_content_size": "",
+				"image_border_radius": 0,
+				"image_border_size": 0,
+				"image_ratio": 1,
+				"box_shadow": false,
+				"product_card_border_radius": 8,
+				"product_card_box_shadow": true,
+				"product_card_show_second_image": true,
+				"product_card_show_price": true,
+				"section_width": "boxed",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_color": "#ffffff",
+				"section_background_gradient_color": "",
+				"section_button_background": "#c43235",
+				"section_border_color": "#1e1e1e",
+				"section_heading_color": "#1e1e1e",
+				"section_text_color": "#1e1e1e",
+				"hotspot_color": "#ffffff",
+				"product_card_text_color": "#1e1e1e",
+				"product_card_price_color": "#1e1e1e",
+				"product_card_price_rating_color": "#1e1e1e",
+				"product_card_background_color": "#ffffff",
+				"product_card_background_gradient_color": "linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 100%)",
+				"product_card_shadow_color": "rgba(0,0,0,0)",
+				"product_card_border_color": "",
+				"product_card_border_thumbnail_color": "",
+				"product_card_discount_badge_text_color": "#ffffff",
+				"product_card_discount_badge_background_color": "#c43235",
+				"product_card_sold_badge_text_color": "#ffffff",
+				"product_card_sold_badge_background_color": "#acacac",
+				"navigation_background": "#ffffff",
+				"navigation_background_gradient": "linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2%, rgba(255, 255, 255, 0.4) 100%)",
+				"navigation_icon": "#ffffff",
+				"navigation_background_shadow": "#23468f",
+				"pagination_background": "linear-gradient(90deg, rgba(102, 96, 96, 0.4) 2%, rgba(61, 56, 56, 0.4) 100%)",
+				"pagination_highlight": "#ffffff",
+				"override_font": true,
+				"heading_font": "futura_n4",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "heading_item",
+					"settings": {
+						"heading": "<h2>Creating the Perfect Living Space</h2>",
+						"description": "<p>A house is not just a place to live; it is also a space to relax and connect with family. Arranging and decorating it to match your tastes and lifestyle can transform a house into a true home, where every corner brings a sense of comfort and warmth.</p>",
+						"heading_size_desktop": 48,
+						"heading_size_mobile": 36,
+						"heading_text_style": "normal",
+						"button_text": "View Collection",
+						"button_link": "",
+						"button_style": "sp-button-outline",
+						"button_radius": 0,
+						"button_border_width": 0.5
+					}
+				},
+				{
+					"type": "shop_the_look_item",
+					"settings": {
+						"product": "",
+						"horizontal_position": 64,
+						"vertical_position": 64
+					}
+				},
+				{
+					"type": "shop_the_look_item",
+					"settings": {
+						"product": "",
+						"horizontal_position": 24,
+						"vertical_position": 48
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}} .sp-section{background-color:var(--sp-section-background-color);background-image:var(--sp-section-background-gradient-color)}#sp-{{section.id}} .sp-shop-the-look-item{display:flex;align-items:stretch;column-gap:8rem}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper{width:50%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-small{width:70%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-medium{width:60%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-large{width:40%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-extra-large{width:30%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-image-inner{border-radius:var(--sp-shop-the-look-image-border-radius);border:var(--sp-shop-the-look-image-border-width) solid var(--sp-shop-the-look-image-border-color);aspect-ratio:calc(var(--sp-image-aspect-ratio)/1)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-image-inner:before{background-image:var(--sp-shop-the-look-image-overlay-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item{top:var(--sp-shop-the-look-hotspot-top);left:var(--sp-shop-the-look-hotspot-left);background:var(--sp-shop-the-look-hotspot-color);width:15px;height:15px;position:relative;cursor:pointer}@keyframes animation-wave{100%{transform:scale(1.5);opacity:0}}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:after{box-shadow:0 0 0 12px var(--sp-shop-the-look-hotspot-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:before{box-shadow:0 0 0 12px var(--sp-shop-the-look-hotspot-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card{position:absolute;left:-80%;top:135%;width:200px;height:266px;background:var(--sp-card-background-color) var(--sp-card-background-gradient-color);box-shadow:0 0 5px 0px var(--sp-card-shadow-color);padding:10px;border-radius:var(--sp-card-border-radius);z-index:-1;opacity:0;transition:.2s ease-in-out;position:relative;display:none}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card:after{width:10px;height:10px;background:#fff;content:"";position:absolute;top:-3px;transform:rotate(45deg);left:14px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information{padding:0 0 15px 0}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-heading a{font-size:13px;font-weight:700;text-wrap:nowrap}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-price{margin-top:7px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-product-card-information .sp-product-card-price .price-item{font-size:13px;text-wrap:nowrap}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-media{aspect-ratio:1;border-radius:var(--sp-card-border-radius);overflow:hidden}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:hover{overflow:inherit}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item:hover .sp-product-card{display:block;opacity:1;z-index:1;transition:.2s ease-in-out}#sp-{{section.id}} .sp-shop-the-look-item[data-box-shadow=true] .sp-shop-the-look-image-wrapper:before{border-radius:var(--sp-shop-the-look-image-border-radius)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper{width:50%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-small{width:30%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-medium{width:40%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-large{width:60%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-extra-large{width:70%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;height:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content[data-alignment=left]{align-items:flex-start}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content[data-alignment=center]{align-items:center;text-align:center}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content[data-alignment=right]{align-items:flex-end;text-align:right}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-heading *{font-size:var(--sp-heading-font);text-transform:var(--sp-heading-text-style);color:var(--sp-heading-text-color);font-weight:700}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-description *{color:var(--sp-description-text-color);margin:10px 0}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-button{margin-top:15px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-button a{padding:10px 15px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-button a.sp-button-link{padding:0;color:var(--sp-description-text-color)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-button a.sp-button-fill{background-color:var(--sp-button-background-color);border-radius:var(--sp-button-border-radius);color:var(--sp-section-background-color);text-decoration:none;border:none}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper .sp-shop-the-look-content .sp-shop-the-look-content-button a.sp-button-outline{border:none;text-decoration:none;color:var(--sp-description-text-color);background-color:var(--sp-section-background-color);border-radius:var(--sp-button-border-radius);border:var(--sp-button-border-width) solid var(--sp-button-border-color)}@media(max-width: 768px){#sp-{{section.id}} .sp-shop-the-look-item{flex-direction:column;row-gap:80px;padding:5px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper{order:1;width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-small{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-medium{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-large{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper.sp-extra-large{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card{height:80px;width:200px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner{display:flex;flex-direction:row}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-media{order:1;width:60px;height:60px;aspect-ratio:1}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information{order:2;padding-left:5px;width:calc(100% - 60px)}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information .sp-product-card-heading a{font-size:11px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-image-wrapper .sp-shop-the-look-hotspots .sp-shop-the-look-hotspot-item .sp-product-card .sp-card-inner .sp-card-information .price-item{font-size:11px}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper{width:100%;order:2}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-small{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-medium{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-large{width:100%}#sp-{{section.id}} .sp-shop-the-look-item .sp-shop-the-look-content-wrapper.sp-extra-large{width:100%}}
+{% endstyle %}
+<script>
+!function(){window.addEventListener("DOMContentLoaded",function(){});new ResizeObserver(e=>{for(const n of e){var i=n.target;window.innerWidth<=1199?i.classList.add("is-active"):i.classList.remove("is-active","is-selected")}});Shopify&&Shopify?.designMode}(document);
+</script>

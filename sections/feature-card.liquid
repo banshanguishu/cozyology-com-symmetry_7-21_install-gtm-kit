@@ -1,0 +1,227 @@
+{% schema %}
+{
+  "name": "Feature Card",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "feature_icon",
+          "label": "Feature Icon",
+          "default": "feature-card-1.svg",
+          "options": [
+            {
+              "value": "feature-card-1.svg",
+              "label": "Icon 1"
+            },
+            {
+              "value": "feature-card-2.svg",
+              "label": "Icon 2"
+            },
+            {
+              "value": "feature-card-3.svg",
+              "label": "Icon 3"
+            },
+            {
+              "value": "feature-card-4.svg",
+              "label": "Icon 4"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "feature_title",
+          "label": "Feature Title"
+        },
+        {
+          "type": "text",
+          "id": "feature_description",
+          "label": "Feature Description"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link Url"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Card",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div id="section-id-{{ section.id }}">
+  <div class="container feature-card">
+    {% for block in section.blocks %}
+      <a class="card-item" href="{{ block.settings.link_url }}">
+        <div class="card-content">
+          <img
+            class="card-image"
+            src="{{ block.settings.feature_icon | asset_url }}"
+            alt="{{ block.settings.feature_title }}"
+          >
+          <h3 class="card-title">{{ block.settings.feature_title }}</h3>
+          <div class="card-description">{{ block.settings.feature_description }}</div>
+        </div>
+        <div class="card-link">
+          <span>{{ block.settings.link_text }}</span>
+          <svg class="arrow-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+            <path
+                d="M537.893 116.736l391.533 391.607L537.893 899.95l-51.786-51.785 339.895-339.822L486.107 168.52l51.786-51.785z"
+                fill="currentColor" />
+            <path d="M0 471.771h877.714v73.143H0v-73.143z" fill="currentColor" />
+          </svg>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  #section-id-{{ section.id }} .feature-card {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+  }
+
+  #section-id-{{ section.id }} .card-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    position: relative;
+    padding-bottom: 60px;
+  }
+
+  #section-id-{{ section.id }} .card-content {
+    padding: 40px 20px;
+    transition: background-color 0.3s ease;
+  }
+
+  #section-id-{{ section.id }} .card-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    display: block;
+  }
+
+  #section-id-{{ section.id }} .card-title {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-family: American_bt;
+    font-size: 27.52px;
+    line-height: 30px;
+    min-height: 60px;
+    color: #171717;
+  }
+
+  #section-id-{{ section.id }} .card-description {
+    margin-top: 26px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #656565;
+  }
+
+  #section-id-{{ section.id }} .card-link {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1;
+    color: #A58D7B;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    gap: 10px;
+  }
+
+  #section-id-{{ section.id }} .card-link .arrow-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  #section-id-{{ section.id }} .card-item:hover {
+    background-color: #F5F5F5;
+  }
+
+  #section-id-{{ section.id }} .card-item:hover .card-link {
+    background-color: #BBB3AB;
+    color: #FFFFFF;
+  }
+
+  @media screen and (max-width: 767px) {
+    #section-id-{{ section.id }} .feature-card {
+      grid-template-columns: repeat(2, 1fr);
+      text-align: center;
+      justify-items: center;
+      grid-gap: 10px;
+    }
+
+    #section-id-{{ section.id }} .card-item {
+      padding-bottom: 30px;
+    }
+
+    #section-id-{{ section.id }} .card-content {
+      padding: 20px 10px;
+    }
+
+    #section-id-{{ section.id }} .card-image {
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+    }
+
+    #section-id-{{ section.id }} .card-title {
+      margin-top: 10px;
+      font-size: 16px;
+      line-height: 17px;
+      min-height: 30px;
+    }
+
+    #section-id-{{ section.id }} .card-description {
+      margin-top: 13px;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    #section-id-{{ section.id }} .card-link {
+      justify-content: center;
+      font-size: 12px;
+      height: 30px;
+      padding: 10px;
+    }
+
+    #section-id-{{ section.id }} .card-link .arrow-icon {
+      display: none;
+    }
+  }
+</style>

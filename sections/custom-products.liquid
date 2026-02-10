@@ -1,0 +1,35 @@
+<form id="collection-selector" action="#" method="get">
+  <select name="collection_handle" id="collection-handle">
+    <option value="">请选择一个合集</option>
+    {% for collection in collections %}
+      <option value="{{ collection.handle }}">{{ collection.title }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div id="product-list"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var selector = document.getElementById('collection-handle');
+
+    selector.addEventListener('change', function() {
+      var handle = this.value;
+
+      if (handle) {
+        var url = '/collections/' + handle + '?view=ajax-product-list';
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+            console.log(html)
+            document.getElementById('product-list').innerHTML = html;
+          })
+          .catch(error => {
+            console.error('Error loading products:', error);
+          });
+      } else {
+        document.getElementById('product-list').innerHTML = '';
+      }
+    });
+  });
+</script>

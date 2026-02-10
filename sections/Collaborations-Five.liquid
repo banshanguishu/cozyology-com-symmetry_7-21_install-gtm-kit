@@ -1,0 +1,202 @@
+<div id="section-id-{{ section.id }}">
+  <div class="cp-five-container">
+    <div class="cpfive-top">
+      <div class="cpfive-image">
+        {%- render 'image' with section.settings.image
+          , size_cols_desktop: 2
+          , custom_aspect_ratio: 1
+        -%}
+      </div>
+      <div class="cpfive-content">
+        <h1 class="cpfive-title">{{ section.settings.title }}</h1>
+        <div class="cpfive-introduce">{{ section.settings.introduce }}</div>
+        {% if section.settings.instagram and section.settings.instagram_name %}
+          <p class="cpfive-ins">
+            Instagram -
+            <a target="_blank" href="{{ section.settings.instagram }}">{{ section.settings.instagram_name }}</a>
+          </p>
+        {% endif %}
+        {% if section.settings.contact_url %}
+          <a
+            class="cp-five-contact-btn"
+            target="_blank"
+            href="{{ section.settings.contact_url }}">CONTACT DESIGNER</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="cpfive-bot">
+      <div class="cpfive-reason">
+        <span class="cpfive-quote">‘‘</span>
+        {{ section.settings.reason }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cp-five-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 0;
+    background-color: #fff;
+  }
+
+  .cpfive-top {
+    max-width: 1200px;
+    height: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .cpfive-image {
+    width: 400px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .cpfive-content {
+    width: calc(100% - 520px);
+    margin-left: 520px;
+  }
+
+  .cpfive-title {
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+    color: #8B7461;
+    font-style: italic;
+  }
+
+  .cpfive-introduce {
+    color: #171717;
+  }
+
+  .cpfive-ins span {
+    text-decoration: underline;
+    color: #8B7461;
+  }
+
+  .cpfive-bot {
+    width: 100%;
+    background-color: #F5F5F5;
+    padding: 100px 0 50px;
+  }
+
+  .cpfive-reason {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .cpfive-quote {
+    font-size: 80px;
+    color: #BBB3AB;
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+    position: absolute;
+    top: -65px;
+    left: -10px;
+  }
+
+  .cp-five-contact-btn {
+    width: 200px;
+    height: 50px;
+    display: block;
+    line-height: 50px;
+    text-align: center;
+    background: #232323;
+    border-radius: 4px;
+    color: #fff;
+  }
+
+
+  @media (max-width: 768px) {
+    .cp-five-container {
+      padding: 15px;
+    }
+
+    .cpfive-top {
+      height: auto;
+    }
+
+    .cpfive-image {
+      width: 100%;
+      position: relative;
+    }
+
+    .cpfive-content {
+      width: 100%;
+      margin: 1em 0 0;
+    }
+
+    .cpfive-bot {
+      padding: 45px 0 15px;
+      background-color: transparent;
+    }
+
+    .cp-five-contact-btn {
+      width: 200px;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Collaborations-Five",
+    "tag": "section",
+    "class": "Collaborations-Five",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Select the main image"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "About the Designer"
+      },
+      {
+        "type": "richtext",
+        "id": "introduce",
+        "label": "Designer Introduction",
+        "default": "<p>Designer Introduction </p>"
+      },
+      {
+        "type": "richtext",
+        "id": "reason",
+        "label": "Why I Choose",
+        "default": "<p>Please enter the reason for your selection </p>"
+      }, {
+        "type": "url",
+        "id": "instagram",
+        "label": "Designer's Instagram",
+        "info": "Please enter the link to contact the designer "
+      }, {
+        "type": "text",
+        "id": "instagram_name",
+        "label": "Designer's Instagram Name",
+        "default": "@Lottie Design",
+        "info": "Please enter the designer's Instagram name "
+      }, {
+        "type": "url",
+        "id": "contact_url",
+        "label": "Contact Designer",
+        "info": "Please enter the link to contact the designer "
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collaborations-Five",
+        "category": "Collaborations-Project"
+      }
+    ]
+  }
+{% endschema %}

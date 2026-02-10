@@ -1,0 +1,244 @@
+.cozy-cal2-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 0;
+}
+
+.cozy-cal2-title {
+    text-align: center;
+    font-size: 34px;
+    color: #171717;
+    font-family: var(--heading-font-family);
+    font-style: var(--heading-font-style);
+    font-weight: var(--heading-font-weight);
+}
+
+.cozy-cal2-subtitle {
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.cozy-cal2-main {
+    display: flex;
+    column-gap: 83px;
+}
+
+.cozy-cal2-block {
+    flex: 1;
+}
+
+.cozy-cal2-block-left {
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+}
+
+.cal2-item {
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+}
+
+.cal2-item input {
+    height: 42px;
+    font-size: 16px;
+    border-color: #BCB3AC;
+    color: #BCB3AC;
+    border-radius: 4px;
+}
+
+.cal2-item input::placeholder {
+    color: #BCB3AC;
+}
+
+.cal2-item input.cal2-filled,
+.cal2-item select.cal2-filled {
+    color: #171717;
+}
+
+.cal2-item select {
+    height: 42px;
+    padding-left: 12px;
+    font-size: 16px;
+    border-color: #BCB3AC;
+    color: #BCB3AC;
+    border-radius: 4px;
+}
+
+.cal2-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cal2-label-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #BCB3AC;
+    border-radius: 50%;
+}
+
+.cal2-label-content {
+    font-size: 16px;
+    color: #171717;
+}
+
+.cal2-label img {
+    cursor: pointer;
+}
+
+.cal2-btn {
+    flex: 1;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: #232323;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cal2-result {
+    padding: 20px;
+    background-color: #F5F2F0;
+    border-radius: 4px;
+}
+
+.cal2-result-item-title {
+    font-size: 14px;
+    color: #666666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cal2-result-item-title img {
+    cursor: pointer;
+}
+
+.cal2-label-help-link {
+    display: flex;
+    align-items: center;
+}
+
+.cal2-result-item-res {
+    font-weight: bold;
+    font-size: 20px;
+    color: #171717;
+}
+
+.cal2-right-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.el-highlight-error {
+    border: 3px solid #c16452 !important;
+}
+
+/* iPad 适配 */
+@media (max-width: 1024px) and (min-width: 768px) {
+    .cozy-cal2-main {
+        column-gap: 40px;
+    }
+
+    .cozy-cal2-wrapper {
+        padding: 24px 20px;
+    }
+
+    .cozy-cal2-title {
+        font-size: 28px;
+    }
+
+    .cozy-cal2-subtitle {
+        font-size: 24px;
+    }
+}
+
+/* Mobile 适配 */
+@media (max-width: 767px) {
+    .cozy-cal2-main {
+        flex-direction: column;
+        row-gap: 12px;
+        max-height: none;
+    }
+
+    .cozy-cal2-wrapper {
+        padding: 20px 16px;
+    }
+
+    .cozy-cal2-title {
+        font-size: 24px;
+    }
+
+    .cozy-cal2-subtitle {
+        font-size: 12px;
+    }
+
+    .cozy-cal2-block-left {
+        row-gap: 12px;
+    }
+
+    .cozy-cal2-block-right {
+        order: -1;
+        /* max-height: 200px; */
+    }
+
+    .cal2-item input,
+    .cal2-item select {
+        height: 48px;
+        font-size: 16px;
+    }
+
+    .cal2-item select {
+        color: #BCB3AC;
+        border-radius: 4px;
+        background-color: transparent;
+        border: 1px #BCB3AC solid;
+        /* border-radius: var(--btn-border-radius); */
+        background: var(--input-background-color);
+        box-sizing: border-box;
+        /* color: rgb(var(--input-text-color)); */
+        font-family: var(--base-font-family);
+        font-size: var(--input-text-size);
+        font-style: var(--base-font-style);
+        font-weight: var(--base-font-weight);
+        line-height: calc(1.3* var(--input-text-size));
+        vertical-align: middle;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .cal2-item input.cal2-filled,
+    .cal2-item select.cal2-filled {
+        color: #171717;
+    }
+
+    .cal2-btn {
+        height: 48px;
+        line-height: 48px;
+        font-size: 18px;
+    }
+
+    .cal2-result {
+        padding: 16px;
+    }
+
+    .cal2-result-item-title {
+        font-size: 13px;
+        color: #666666;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .cal2-result-item-res {
+        font-size: 18px;
+    }
+
+    .cal2-right-image {
+        /* height: 200px; */
+    }
+}

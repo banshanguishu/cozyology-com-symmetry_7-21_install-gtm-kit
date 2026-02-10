@@ -1,0 +1,263 @@
+<div id="section-id-{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
+  {% style %}
+    #section-id-{{ section.id }} {
+      --background: {{ section.settings.head_not_col_bg }};
+      --tab-text: {{ section.settings.tab_text }};
+      --tab-active-text: {{ section.settings.tab_active_text }};
+      .page-tabs {
+        background-color: var(--background);
+        font-size: 16px;
+        font-family: Americana_bt, serif, Helvetica, Arial, sans-serif;
+        .container {
+          height: 40px;
+          display: flex;
+          gap: 25px;
+          justify-content: space-evenly;
+          align-items: center;
+        }
+        .tab {
+          cursor: pointer;
+          text-decoration: none;
+          font-weight: 400;
+          color: var(--tab-text);
+          transition: color 0.3s ease-in-out;
+          &:hover {
+            color: var(--tab-active-text);
+          }
+        }
+
+        .tab.active {
+          color: var(--tab-active-text);
+          text-decoration: underline;
+          text-decoration-color: var(--tab-active-text);
+          text-decoration-thickness: 1px;
+          text-underline-offset: 4px;
+        }
+      }
+    }
+
+    .section-page-tabs {
+        position: fixed;
+        top: 90px;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    @media screen and (min-width: 768px) {
+      .section-page-tabs {
+        top: 192px;
+      }
+    }
+
+    @media screen and (min-width: 1408px) {
+      .section-page-tabs {
+        top: 132px;
+      }
+    }
+
+
+    .section-page-tabs.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+  {% endstyle %}
+  <div class="page-tabs">
+    <div class="container">
+      {%- for block in section.blocks -%}
+        {%- assign animation_delay = forloop.index | times: 0.15 | append: 's' -%}
+        {%- assign animation_attrs = 'data-cc-animate data-cc-animate-delay="'
+          | append: animation_delay
+          | append: '"'
+        -%}
+        <div
+          class="tab"
+          data-anchor="{{ block.settings.link_url }}"
+          {%- render 'animation-attrs', attrs: animation_attrs -%}
+        >
+          <span>{{ block.settings.tab_title | escape }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  setTimeout(function () {
+    initPageTabs();
+  }, 300); // 延时300毫秒执行
+
+  function initPageTabs() {
+    const section = document.getElementById('section-id-{{ section.id }}');
+    const tabs = section.querySelectorAll('.tab');
+    const sectionElement = document.querySelector('.section-page-tabs');
+
+    {% if browser.mobile %}
+    const offsetTop = 150;
+    {% else %}
+    const offsetTop = 240;
+    {% endif %}
+
+    // 检查滚动位置并显示/隐藏标签栏
+    function checkScroll() {
+      {% if browser.mobile %}
+      const windowHeight = window.innerHeight;
+      {% else %}
+      const windowHeight = 1800;
+      {% endif %}
+      const scrollPosition = window.scrollY;
+
+      // 如果滚动超过一屏高度，显示标签栏
+      if (scrollPosition > windowHeight) {
+        sectionElement.classList.add('visible');
+      } else {
+        sectionElement.classList.remove('visible');
+      }
+    }
+
+    // 页面加载时检查一次滚动位置
+    checkScroll();
+
+    // 监听滚动事件
+    window.addEventListener('scroll', checkScroll);
+
+    // 标记是否已经绑定了事件，防止重复绑定
+    if (!section.dataset.eventBound) {
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', function (e) {
+          e.preventDefault();
+          highlightTab(tab);
+          const anchorId = tab.getAttribute('data-anchor');
+          if (anchorId) {
+            const targetElement = document.querySelector(anchorId);
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop - offsetTop,
+                behavior: 'smooth',
+              });
+            } else {
+              window.location.href = anchorId;
+            }
+          }
+        });
+      });
+
+      setupScrollObserver();
+
+      // 标记已绑定事件
+      section.dataset.eventBound = 'true';
+    }
+
+    // 高亮选中的tab
+    function highlightTab(activeTab) {
+      tabs.forEach((t) => t.classList.remove('active'));
+      activeTab.classList.add('active');
+    }
+
+    // 设置滚动观察器
+    function setupScrollObserver() {
+      const anchorMap = {};
+      tabs.forEach((tab) => {
+        const anchorId = tab.getAttribute('data-anchor');
+        if (anchorId && anchorId.startsWith('#')) {
+          anchorMap[anchorId] = tab;
+        }
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = '#' + entry.target.id;
+              const tab = anchorMap[id];
+              if (tab) {
+                highlightTab(tab);
+              }
+            }
+          });
+        },
+        {
+          rootMargin: '-10% 0px -70% 0px',
+        }
+      );
+
+      Object.keys(anchorMap).forEach((selector) => {
+        const target = document.querySelector(selector);
+        if (target) {
+          observer.observe(target);
+        }
+      });
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Page tabs",
+  "class": "section-page-tabs",
+  "disabled_on": {
+    "groups": ["aside"]
+  },
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "head_not_col_bg",
+      "label": "Background",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "color",
+      "id": "tab_text",
+      "label": "Tab text color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_text",
+      "label": "Active tab text",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab title",
+          "default": "Tab"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page tabs",
+      "settings": {},
+      "blocks": [
+        {
+          "type": "tab"
+        },
+        {
+          "type": "tab"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

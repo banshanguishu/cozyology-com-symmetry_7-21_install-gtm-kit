@@ -1,0 +1,32 @@
+{{ 'widget.css' | asset_url | stylesheet_tag }}
+
+<div class="calendly-widget">
+  <button class="btn" id="show_calendly_widget_button" style="width: 100%;">Book Now</button>
+</div>
+
+<script src="{{ 'widget.js' | asset_url }}" defer></script>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById('show_calendly_widget_button')
+        
+        // const source = "https://calendly.com/cozyology/free_design_consultation?hide_event_type_details=1&hide_gdpr_banner=1&text_color=171717&primary_color=1a1a1a"
+        {% comment %} const source = "https://calendly.com/cozyology/free_design_consultation?text_color=171717&primary_color=1a1a1a" {% endcomment %}
+        {% comment %} const source = "https://calendly.com/asummers-cozyology/cozyology-free-consultation?hide_event_type_details=1&hide_gdpr_banner=1&text_color=171717&primary_color=1a1a1a" {% endcomment %}
+        const source = "https://calendly.com/cozyology-consultation/cozyology-free-consultation"
+
+        const lunchCalendlyWidget = () => {
+            if (Calendly && Calendly.showPopupWidget) Calendly.showPopupWidget(source)
+        }
+        
+        if (btn) {
+            btn.addEventListener("click", lunchCalendlyWidget)
+        }
+
+        window.addEventListener("beforeunload", () => {
+            if (btn) {
+                btn.removeEventListener("click", lunchCalendlyWidget)
+            }
+        })
+    })
+</script>

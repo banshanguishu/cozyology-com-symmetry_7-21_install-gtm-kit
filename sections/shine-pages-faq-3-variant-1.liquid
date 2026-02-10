@@ -1,0 +1,804 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+      {% comment %}
+      Render heading & body font family
+  {% endcomment %}
+  {%- if settings.override_font != blank -%}
+      {%- capture font_settings_list -%}
+          {{ settings.heading_font | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+          {{ settings.body_font | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+          {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+      {%- endcapture -%}
+      {%- assign font_array = font_settings_list | split: ';;' -%}
+  {% endif %}
+  {%- if settings.override_font != blank -%}
+      {%- for font in font_array -%}
+          {%- unless font contains 'error' -%}
+              {{ font }}{%- endunless -%}
+      {%- endfor -%}
+      #sp-{{ section.id }} {
+      --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+      --sp-heading-font-weight: {{ settings.heading_font.weight }};
+      --sp-heading-font-style: {{ settings.heading_font.style }};
+      --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+      --sp-body-font-weight: {{ settings.body_font.weight }};
+      --sp-body-font-style: {{ settings.body_font.style }};
+      --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+      --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+      --sp-highlight-font-style: {{ settings.highlight_font.style }};
+      }
+      {% if custom_selector != blank %}
+          {{ custom_selector }} {
+          --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+          --sp-heading-font-weight: {{ settings.heading_font.weight }};
+          --sp-heading-font-style: {{ settings.heading_font.style }};
+          --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+          --sp-body-font-weight: {{ settings.body_font.weight }};
+          --sp-body-font-style: {{ settings.body_font.style }};
+          --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+          --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+          --sp-highlight-font-style: {{ settings.highlight_font.style }};
+          }
+      {% endif %}
+  {% endif %}
+      {% comment %}
+      Render padding section, heading content max width
+  {% endcomment %}
+
+      #sp-{{ section.id }} .sp-section {
+      {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+          --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+          --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+      {% else %}
+          --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+          --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+      {% endif %}
+          }
+
+      @media (min-width: 768px) {
+          #sp-{{ section.id }} .sp-section {
+              --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+              --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+          }
+      }
+
+      @media (min-width: 1260px) {
+          #sp-{{ section.id }} .sp-section {
+              --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+              --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+          }
+      }
+
+
+      #sp-{{ section.id }} {
+          --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+          --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: null }};
+          --sp-section-text-color: {{ settings.heading_text_color | default: "transparent" }};
+
+          --sp-top-padding-section: {{ settings.section_top_padding }}px;
+          --sp-bottom-padding-section: {{ settings.section_bottom_padding }}px;
+          --sp-heading-size-desktop: {{ settings.heading_size_desktop }}px;
+          --sp-description-size-desktop: {{ settings.description_size_desktop }}px;
+
+          --sp-question-size-desktop: {{ settings.question_font_size_desktop }}px;
+          --sp-answer-size-desktop: {{ settings.answer_font_size_desktop }}px;
+
+          --sp-block-image-max-width: {{ settings.block_image_max_width }}%;
+
+          --sp-container-background-color: {{ settings.section_background_color }};
+          --sp-container-background-color-rgb: {{ settings.section_background_gradient_color }};
+
+          --sp-question-border-color: {{ settings.question_border }};
+
+          --sp-question-background-color: {{ settings.question_block_background_color }};
+          --sp-question-background-color-rgb: {{ settings.question_block_background_gradient_color }};
+          --sp-question-color: {{ settings.question_block_question_color }};
+          --sp-answers-color: {{ settings.question_block_answer_color }};
+
+          --sp-image-border-radius: {{ settings.image_radius }}px;
+          --sp-questions-border-radius: {{ settings.questions_radius }}px;
+
+          --sp-button-bacground-color: {{ settings.button_background_color }};
+          --sp-button-text-color: {{ settings.button_text_color |  default: "black" }};
+
+          --sp-heading-description-color: {{ settings.heading_description_color |  default: "black" }};
+          --sp-sub-heading-description-color: {{ settings.heading_sub_color |  default: "black" }};
+
+          --sp-image-ratio: {{ settings.image_ratio }};
+      }
+
+      @media (max-width: 767px) {
+          #sp-{{ section.id }} {
+              --sp-heading-size-desktop: {{ settings.heading_size_mobile }}px;
+              --sp-description-size-desktop: {{ settings.description_size_mobile }}px;
+
+              --sp-question-size-desktop: {{ settings.question_font_size_mobile }}px;
+              --sp-answer-size-desktop: {{ settings.answer_font_size_mobile }}px;
+          }
+      }
+</style>
+<div
+  id="sp-{{ section.id }}"
+  class="sp-{{ section.id }} sp-section-faq-3"
+  data-section="faq-3"
+  data-variant="variant-1"
+>
+  <div class="sp-section-outer">
+    <div class="sp-section" data-border="{{ settings.section_border }}">
+      <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+        <div class="sp-content">
+          <div class="sp-section-inner" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}" data-cascade>
+            <div class="sp-faq-wrapper">
+              {% assign image_block = section.blocks | where: 'type', 'image' %}
+              {% for block in image_block %}
+                {% assign setting = block.settings %}
+                {% if setting.image_background != null %}
+                  <div class="sp-faq-image">
+                    <div class="sp-image-block">
+                      {{ setting.image_background | image_url: width: 2040 | image_tag: class: 'sp-icon-tab' }}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <div class="sp-faq-questions">
+                {% assign heading_block = section.blocks | where: 'type', 'heading_item' %}
+                {% for block in heading_block %}
+                  {% assign setting = block.settings %}
+                  <div
+                    class="sp-faq-heading"
+                    data-show-background="{{ setting.show_background }}"
+                    data-show-box-shadow="{{ setting.box_shadow }}"
+                  >
+                    <div class="sp-heading-outer {{ settings.heading_alignment }}">
+                      <div class="sp-heading-wrapper">
+                        {% if setting.heading != blank %}
+                          <h2 class="sp-heading heading-font">{{ setting.heading }}</h2>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% assign index = -1 %}
+                <div
+                  class="sp-faq-content"
+                  data-show-background="{{ settings.show_background }}"
+                  data-box-shadow="{{ settings.show_box_shadow }}"
+                >
+                  {% for block in section.blocks %}
+                    {% assign setting = block.settings %}
+                    {% if block.type == 'question_item' and setting.question != empty %}
+                      <div
+                        id="sp-{{ block.id }}"
+                        class="sp-faq-item sp-faq-question-item {% if index == -1 %}is-selected{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div class="sp-faq-question-heading">
+                          <span class="sp-faq-question-heading-text sp-text body-font">{{ setting.question }}</span>
+                          <div class="sp-control-group">
+                            <div class="sp-icon-toggle-active-question">
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 10 10"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clip-path="url(#clip0_778_2)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.645368 2.64495C0.691818 2.59838 0.746987 2.56144 0.807737 2.53624C0.868477 2.51103 0.933598 2.49805 0.999368 2.49805C1.06514 2.49805 1.13026 2.51103 1.191 2.53624C1.25175 2.56144 1.30693 2.59838 1.35337 2.64495L4.99937 6.29195L8.64537 2.64495C8.73926 2.55106 8.8666 2.49832 8.99937 2.49832C9.13214 2.49832 9.25948 2.55106 9.35337 2.64495C9.44725 2.73883 9.5 2.86617 9.5 2.99895C9.5 3.13172 9.44725 3.25906 9.35337 3.35295L5.35337 7.35295C5.30693 7.39951 5.25175 7.43645 5.191 7.46166C5.13026 7.48687 5.06514 7.49984 4.99937 7.49984C4.9336 7.49984 4.86848 7.48687 4.80774 7.46166C4.74699 7.43645 4.69182 7.39951 4.64537 7.35295L0.645368 3.35295C0.598808 3.3065 0.561867 3.25133 0.536657 3.19058C0.511447 3.12984 0.498478 3.06471 0.498478 2.99895C0.498478 2.93318 0.511447 2.86806 0.536657 2.80731C0.561867 2.74657 0.598808 2.69139 0.645368 2.64495Z" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_778_2">
+                                        <rect width="10" height="10" fill="white" transform="translate(10) rotate(90)"/>
+                                    </clipPath>
+                                </defs>
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="sp-faq-question-content">
+                          <div class="sp-inner-content body-font">{{ setting.answer }}</div>
+                        </div>
+                      </div>
+                      {% assign index = 1 %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 FAQ 3.1",
+	"tag": "section",
+	"class": "sp-faq-3",
+	"settings": [
+		{
+			"type": "header",
+			"content": "FAQ settings"
+		},
+		{
+			"type": "range",
+			"id": "block_image_max_width",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "%",
+			"label": "Max width image block",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "image_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Image border radius",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "image_ratio",
+			"min": 0.5,
+			"max": 3,
+			"step": 0.1,
+			"unit": "/1",
+			"label": "Image ratio",
+			"default": 1
+		},
+		{
+			"type": "header",
+			"content": "Heading settings"
+		},
+		{
+			"type": "select",
+			"id": "heading_alignment",
+			"label": "Heading alignment",
+			"options": [
+				{
+					"label": "Left",
+					"value": "sp-heading-alignment-left"
+				},
+				{
+					"label": "Center",
+					"value": "sp-heading-alignment-center"
+				},
+				{
+					"label": "Right",
+					"value": "sp-heading-alignment-right"
+				}
+			],
+			"default": "sp-heading-alignment-left"
+		},
+		{
+			"type": "range",
+			"id": "heading_size_desktop",
+			"min": 15,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": "Heading size (Desktop)",
+			"default": 48
+		},
+		{
+			"type": "range",
+			"id": "heading_size_mobile",
+			"min": 15,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": "Heading size (Mobile)",
+			"default": 32
+		},
+		{
+			"type": "header",
+			"content": "Questions settings"
+		},
+		{
+			"type": "range",
+			"id": "questions_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Questions border radius",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "question_font_size_desktop",
+			"min": 15,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": "Question size (desktop)",
+			"default": 18
+		},
+		{
+			"type": "range",
+			"id": "question_font_size_mobile",
+			"min": 15,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": "Question size (mobile)",
+			"default": 15
+		},
+		{
+			"type": "range",
+			"id": "answer_font_size_desktop",
+			"min": 14,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Answer size (desktop)",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "answer_font_size_mobile",
+			"min": 14,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Answer size (mobile)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "text_heading_spacing",
+			"min": -10,
+			"max": 10,
+			"step": 0.2,
+			"unit": "px",
+			"label": "Text heading letter spacing",
+			"default": 0
+		},
+		{
+			"type": "checkbox",
+			"id": "show_box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			],
+			"default": "full_width"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "header",
+			"content": "Heading color"
+		},
+		{
+			"type": "color",
+			"id": "heading_text_color",
+			"label": "Heading",
+			"default": "#121212"
+		},
+		{
+			"type": "header",
+			"content": "Question color"
+		},
+		{
+			"type": "color",
+			"id": "question_border",
+			"label": "Border color",
+			"default": "#121212"
+		},
+		{
+			"type": "color",
+			"id": "question_block_question_color",
+			"label": "Question",
+			"default": "#121212"
+		},
+		{
+			"type": "color",
+			"id": "question_block_answer_color",
+			"label": "Answer",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "futura_n7"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Heading",
+			"type": "heading_item",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "Questions to Turn Your Dream Home into Reality!"
+				}
+			]
+		},
+		{
+			"name": "Question",
+			"type": "question_item",
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "question",
+					"label": "Question",
+					"default": "<strong>Do your furniture products come with a warranty?</strong>"
+				},
+				{
+					"type": "richtext",
+					"id": "answer",
+					"label": "Answer",
+					"default": "<p>All our furniture products come with a warranty ranging from 1 to 2 years, depending on the product type. You will receive detailed warranty information upon purchase.</p>"
+				}
+			]
+		},
+		{
+			"name": "Image",
+			"type": "image",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image_background",
+					"label": "Image"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 FAQ 3.1",
+			"settings": {
+				"block_image_max_width": 100,
+				"image_radius": 0,
+				"image_ratio": 1,
+				"heading_alignment": "sp-heading-alignment-left",
+				"heading_size_desktop": 48,
+				"heading_size_mobile": 32,
+				"questions_radius": 0,
+				"question_font_size_desktop": 18,
+				"question_font_size_mobile": 15,
+				"answer_font_size_desktop": 16,
+				"answer_font_size_mobile": 14,
+				"text_heading_spacing": 0,
+				"show_box_shadow": false,
+				"section_width": "full_width",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_color": "#ffffff",
+				"section_background_gradient_color": "",
+				"heading_text_color": "#121212",
+				"question_border": "#121212",
+				"question_block_question_color": "#121212",
+				"question_block_answer_color": "#1e1e1e",
+				"override_font": true,
+				"heading_font": "futura_n7",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "heading_item",
+					"settings": {
+						"heading": "Questions to Turn Your Dream Home into Reality!"
+					}
+				},
+				{
+					"type": "image",
+					"settings": {
+						"image_background": "shopify://shop_images/faq-3-variant-1-image-01.png"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>How can I choose the right furniture size for my space?</strong>",
+						"answer": "<p>We provide detailed guides and online measurement tools to help you select the right furniture size. You can also contact us for free consultation.</p>"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>How long does it take to deliver the furniture?</strong>",
+						"answer": "<p>Delivery times typically range from 3-7 business days, depending on your location and the type of product ordered. We will provide specific delivery details once your order is confirmed.</p>"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>Can I request custom furniture designs?</strong>",
+						"answer": "<p>Yes, we offer custom furniture design and production services based on customer requests. Simply provide the details of your idea and desired dimensions, and our design team will bring it to life.</p>"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>What is your return policy?</strong>",
+						"answer": "<p>We accept product returns within 7 days if there are any manufacturing defects or if the wrong item was delivered. The product must remain in its original condition without any damage.</p>"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>Can I place an order online and pay upon delivery?</strong>",
+						"answer": "<p>Yes, you can order online and choose the option to pay upon delivery. We accept both cash and electronic payment methods.</p>"
+					}
+				},
+				{
+					"type": "question_item",
+					"settings": {
+						"question": "<strong>Do your furniture products come with a warranty?</strong>",
+						"answer": "<p>All our furniture products come with a warranty ranging from 1 to 2 years, depending on the product type. You will receive detailed warranty information upon purchase.</p>"
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+  #sp-{{ section.id }} {
+    --sp-margin-item: 5rem
+  }#sp-{{ section.id }}
+  .sp-section {
+    background-color: var(--sp-section-background-color);
+    background-image: var(--sp-section-background-gradient-color);
+    background: var(--sp-container-background-color) var(--sp-container-background-color-rgb)
+  }#sp-{{ section.id }}
+  .sp-section-inner {
+    border-top: 1px solid var(--sp-question-border-color);
+    border-bottom: 1px solid var(--sp-question-border-color)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper {
+    margin: auto;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 35px;
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-image {
+    order: 2;
+  } #sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions {
+    order: 1;
+  }
+  @media (max-width: 769px) {
+    #sp-{{ section.id }} .sp-faq-wrapper .sp-faq-image {
+      order: 1;
+    } #sp-{{ section.id }}
+    .sp-faq-wrapper .sp-faq-questions {
+      order: 2;
+    }
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-image {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-image .sp-image-block {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    aspect-ratio: calc(var(--sp-image-ratio)) / 1;
+    border-radius: var(--sp-image-border-radius);
+    width: var(--sp-block-image-max-width)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-image .sp-image-block img {
+    border-radius: var(--sp-image-border-radius);
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-heading .sp-heading-outer {
+    width: 100%;
+    padding-left: 0;
+    padding-top: 2rem
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-heading .sp-heading-outer .sp-heading-wrapper {
+    max-width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-heading .sp-heading-outer .sp-heading-wrapper .sp-heading {
+    font-size: var(--sp-heading-size-desktop)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item {
+    padding: 20px 20px 20px 0;
+    border-top: 1px solid var(--sp-question-border-color);
+    background: var(--sp-container-background-color) var(--sp-container-background-color-rgb);
+    border-radius: var(--sp-questions-border-radius)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    cursor: pointer
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading .sp-faq-question-heading-text {
+    font-size: var(--sp-question-size-desktop);
+    color: var(--sp-question-color)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading .sp-faq-question-heading-text strong {
+    font-weight: 600
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading .sp-control-group .sp-icon-toggle-active-question {
+    width: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading .sp-control-group .sp-icon-toggle-active-question svg {
+    transform: rotate(0deg);
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    height: 100%
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-heading .sp-control-group .sp-icon-toggle-active-question svg path {
+    fill: var(--sp-question-color)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-content {
+    overflow: hidden;
+    transition: all 0.3s ease-in-out
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item .sp-faq-question-content .sp-inner-content * {
+    padding-top: 10px;
+    font-size: var(--sp-answer-size-desktop);
+    color: var(--sp-answers-color)
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item.active .sp-control-group .sp-icon-toggle-active-question svg {
+    transform: rotate(-180deg);
+    transition: all 0.3s ease-in-out
+  }#sp-{{ section.id }}
+  .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item.active .sp-faq-question-content {
+    transition: all 0.3s ease-in-out
+  }
+  @media(max-width: 769px) {
+    #sp-{{ section.id }} .sp-faq-wrapper {
+      flex-direction: column;
+      gap: 10px;
+    }#sp-{{ section.id }}
+    .sp-faq-wrapper .sp-faq-image {
+      width: 100%
+    }#sp-{{ section.id }}
+    .sp-faq-wrapper .sp-faq-questions {
+      width: 100%;
+      gap: 0 !important;
+    }#sp-{{ section.id }}
+    .sp-faq-wrapper .sp-faq-questions .sp-faq-heading .sp-heading-outer {
+      padding: 20px 0;
+    }#sp-{{ section.id }}
+    .sp-faq-wrapper .sp-faq-questions .sp-faq-content .sp-faq-question-item {
+      padding: 20px 0;
+    }
+  }
+{% endstyle %}
+<script>
+  !function(){function t(){const i=document.querySelectorAll("#sp-{{ section.id }} .sp-faq-question-item");var t,e;0<i.length&&(e=(t=i[0]).querySelector(".sp-faq-question-content"),t.classList.add("active"),e.style.height=e.scrollHeight+"px"),i.forEach((e,t)=>{const s=e.querySelector(".sp-faq-question-content");e.classList.contains("active")||0===t||(s.style.height="0px"),e.addEventListener("click",()=>{i.forEach(t=>{t!==e&&(t.classList.remove("active"),t.querySelector(".sp-faq-question-content").style.height="0px")}),e.classList.contains("active")||(e.classList.add("active"),s.style.height=s.scrollHeight+"px")})})}window.addEventListener("DOMContentLoaded",function(){t()}),Shopify&&Shopify?.designMode&&t()}(document);
+</script>

@@ -1,0 +1,1108 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+    #sp-{{ section.id }} {
+        --sp-section-background-color: {{ settings.section_background_color }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: "null" }};
+        --sp-section-background-overlay-color: {{ settings.section_background_overlay_color.red }}, {{ settings.section_background_overlay_color.green }},{{ settings.section_background_overlay_color.blue }};
+        --sp-overlay-opacity: {{ settings.overlay_opacity }};
+    }
+
+    #sp-{{ section.id }} .sp-section-outer {
+        .sp-image-wrapper {
+            background-color: var(--sp-section-background-color);
+            background-image: var(--sp-section-background-gradient-color);
+
+            &:after {
+                background: rgba(var(--sp-section-background-overlay-color), var(--sp-overlay-opacity));
+            }
+        }
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper {
+        --sp-item-row-gap: {{ settings.item_row_gap }}px;
+        --sp-scrolling-speed: {{ settings.scroll_speed }}s;
+        --sp-translate: {{ settings.item_translate }}px;
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-item-row-gap);
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper .sp-text-row {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper .sp-text-row,
+    #sp-{{ section.id }} .sp-media-group {
+        --sp-item-gap: {{ settings.item_gap }}px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: var(--sp-item-gap);
+    }
+
+    #sp-{{ section.id }} .sp-media-group {
+        &[data-scrolling="left_to_right"] {
+            animation: marqueertf var(--sp-scrolling-speed) linear infinite;
+        }
+
+        &[data-scrolling="right_to_left"] {
+            animation: marquee var(--sp-scrolling-speed) linear infinite;
+        }
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper:hover .sp-media-group {
+        animation-play-state: paused;
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper:not(.sp-show) {
+        display: none;
+    }
+
+    #sp-{{ section.id }} .sp-text-scrolling-wrapper .sp-row-bottom .sp-media-group .sp-text-item {
+        transform: translateX(var(--sp-translate));
+    }
+
+    #sp-{{ section.id }} .sp-text-item {
+        --sp-item-width: {{settings.item_width}}px;
+        --sp-item-gap: 15px;
+        --sp-item-content-gap: {{ settings.item_content_gap }}px;
+        --sp-item-padding: 20px;
+        --sp-item-border-size: {{ settings.item_border_size }}px;
+        --sp-item-border-radius: {{ settings.item_border_radius }}px;
+        --sp-item-media-border-radius: {{ settings.item_media_border_radius }}px;
+
+        --sp-item-media-width: {{ settings.item_media_width }}px;
+        --sp-item-media-ratio: {{ settings.image_ratio }} / 1;
+        --sp-item-rating-width: {{ settings.item_rating_width }}px;
+        --sp-item-author-size: {{ settings.item_author_size }}px;
+        --sp-item-verified-size: {{ settings.item_verified_size }}px;
+        --sp-item-description-size: {{ settings.item_description_size }}px;
+
+        --sp-item-background-color: {{ settings.item_background_color }};
+        --sp-item-border-color: {{ settings.item_border_color }};
+        --sp-item-author-color: {{ settings.item_author_color }};
+        --sp-item-verified-color: {{ settings.item_verified_color }};
+        --sp-item-description-color: {{ settings.item_description_color }};
+        --sp-item-rating-color: {{ settings.item_rating_color }};
+
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        width: var(--sp-item-width);
+        gap: var(--sp-item-gap);
+        height: 100%;
+        padding: var(--sp-item-padding);
+        border-radius: var(--sp-item-border-radius);
+        border: var(--sp-item-border-size) solid var(--sp-item-border-color);
+        background-color: var(--sp-item-background-color);
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-media {
+        flex: 0 0 auto;
+        position: relative;
+        width: var(--sp-item-media-width);
+        aspect-ratio: var(--sp-item-media-ratio);
+        border-radius: var(--sp-item-media-border-radius);
+        overflow: hidden;
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-media img,
+    #sp-{{ section.id }} .sp-text-item .sp-text-media svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: {{ settings.image_cover_position }};
+    }
+
+    #sp-{{ section.id }} .sp-text-rating {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    #sp-{{ section.id }} .sp-text-rating svg {
+        width: var(--sp-item-rating-width);
+        height: var(--sp-item-rating-width);
+        fill: var(--sp-item-rating-color);
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-item-content-gap);
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-content .sp-text-verified {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 5px;
+        font-size: var(--sp-item-verified-size);
+        color: var(--sp-item-verified-color);
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-content .sp-text-author {
+        font-size: var(--sp-item-author-size);
+        color: var(--sp-item-author-color);
+        line-height: 1;
+    }
+
+    #sp-{{ section.id }} .sp-text-item .sp-text-content .sp-text-description {
+        font-size: var(--sp-item-description-size);
+        color: var(--sp-item-description-color);
+    }
+
+    @media (max-width: 767px) {
+        #sp-{{ section.id }} .sp-text-scrolling-wrapper {
+            --sp-translate: {{ settings.item_translate_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-text-scrolling-wrapper,
+        #sp-{{ section.id }} .sp-media-group {
+            --sp-item-gap: {{ settings.item_gap_mobile }}px;
+            --sp-item-media-width: {{ settings.item_media_width_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-text-item {
+            --sp-item-rating-width: {{ settings.item_rating_width_mobile }}px;
+            --sp-item-author-size: {{ settings.item_author_size_mobile }}px;
+            --sp-item-verified-size: {{ settings.item_verified_size_mobile }}px;
+            --sp-item-description-size: {{ settings.item_description_size_mobile }}px;
+        }
+    }
+
+</style>
+
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-scrolling-text-2"
+     data-section="scrolling-text-2"
+     data-variant="variant-1" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}">
+    <div class="sp-section-outer">
+        <div class="sp-image-wrapper sp-image-effect">
+            {% if settings.background_countdown != null %}
+                <img class="sp-image"
+                     src="{{ settings.background_countdown | image_url: width: 1920 }}"
+                     alt="{{ settings.background_countdown.alt | default: "" }}">
+            {% endif %}
+            {% if settings.background_countdown_mobile != null %}
+                <img class="sp-image sp-image-mobile"
+                     src="{{ settings.background_countdown_mobile | image_url: width: 1920 }}"
+                     alt="{{ settings.background_countdown_mobile.alt | default: "" }}">
+            {% endif %}
+        </div>
+        <div class="sp-section sp-section-overflow sp-section-no-heading" data-border="{{ settings.section_border }}">
+            <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+                {% assign text_blocks = section.blocks | where: 'type', 'text_item' %}
+                {% assign text_blocks_reverse = section.blocks | where: 'type', 'text_item' | reverse %}
+                <div class="sp-text-scrolling-wrapper">
+                    {% if text_blocks.size > 0 %}
+                        <div class="sp-text-row sp-row-top">
+                            <div class="sp-media-group" data-scrolling="{{ settings.scrolling_style }}">
+                                {% for block in text_blocks %}
+                                    {% assign setting = block.settings %}
+                                    <div class="sp-text-item">
+                                        <div class="sp-text-media">
+                                            {% if setting.avatar != null %}
+                                                {{ setting.avatar | image_url: width: 1024 | image_tag }}
+                                            {% else %}
+                                                {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray-100' }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="sp-text-content">
+                                            <div class="sp-text-rating">
+                                                {% for i in (1..setting.rating_score) %}
+                                                    <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                    </svg>
+                                                {% endfor %}
+                                            </div>
+                                            {% if setting.author_text != empty %}
+                                                <div class="sp-text-author heading-font">{{ setting.author_text }}</div>
+                                            {% endif %}
+                                            {% if setting.verified_text != empty %}
+                                                <div class="sp-text-verified">
+                                                    <svg class="sp-icon" width="20" height="20" viewBox="0 0 20 20"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                              d="M0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0C4.486 0 0 4.486 0 10ZM15.2071 8.20711C15.5976 7.81658 15.5976 7.18342 15.2071 6.79289C14.8166 6.40237 14.1834 6.40237 13.7929 6.79289L9 11.5858L6.70711 9.29289C6.31658 8.90237 5.68342 8.90237 5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071L8.29289 13.7071C8.68342 14.0976 9.31658 14.0976 9.70711 13.7071L15.2071 8.20711Z"
+                                                              fill="#007AFF"/>
+                                                    </svg>
+                                                    <span class="body-font">{{ setting.verified_text }}</span>
+                                                </div>
+                                            {% endif %}
+                                            {% if setting.description_text != empty %}
+                                                <div class="sp-text-description body-font">{{ setting.description_text }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="sp-text-row sp-row-bottom">
+                            <div class="sp-media-group"
+                                 data-scrolling="{% if settings.scrolling_style == 'left_to_right' %}right_to_left{% else %}left_to_right{% endif %}">
+                                {% for block in text_blocks_reverse %}
+                                    {% assign setting = block.settings %}
+                                    <div class="sp-text-item">
+                                        <div class="sp-text-media">
+                                            {% if setting.avatar != null %}
+                                                {{ setting.avatar | image_url: width: 1024 | image_tag }}
+                                            {% else %}
+                                                {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray-100' }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="sp-text-content">
+                                            <div class="sp-text-rating">
+                                                {% for i in (1..setting.rating_score) %}
+                                                    <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                    </svg>
+                                                {% endfor %}
+                                            </div>
+                                            {% if setting.author_text != empty %}
+                                                <div class="sp-text-author heading-font">{{ setting.author_text }}</div>
+                                            {% endif %}
+                                            {% if setting.verified_text != empty %}
+                                                <div class="sp-text-verified">
+                                                    <svg class="sp-icon" width="20" height="20" viewBox="0 0 20 20"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                              d="M0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0C4.486 0 0 4.486 0 10ZM15.2071 8.20711C15.5976 7.81658 15.5976 7.18342 15.2071 6.79289C14.8166 6.40237 14.1834 6.40237 13.7929 6.79289L9 11.5858L6.70711 9.29289C6.31658 8.90237 5.68342 8.90237 5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071L8.29289 13.7071C8.68342 14.0976 9.31658 14.0976 9.70711 13.7071L15.2071 8.20711Z"
+                                                              fill="#007AFF"/>
+                                                    </svg>
+                                                    <span class="body-font">{{ setting.verified_text }}</span>
+                                                </div>
+                                            {% endif %}
+                                            {% if setting.description_text != empty %}
+                                                <div class="sp-text-description body-font">{{ setting.description_text }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="sp-text-row sp-row-top">
+                            <div class="sp-media-group" data-scrolling="{{ settings.scrolling_style }}">
+                                {% for i in (1..4) %}
+                                    <div class="sp-text-item">
+                                        <div class="sp-text-media">
+                                            {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray-100' }}
+                                        </div>
+                                        <div class="sp-text-content">
+                                            <div class="sp-text-rating">
+                                                {% for i in (1..5) %}
+                                                    <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                    </svg>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="sp-text-author heading-font">Author Name</div>
+                                            <div class="sp-text-verified">
+                                                <svg class="sp-icon" width="20" height="20" viewBox="0 0 20 20"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                          d="M0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0C4.486 0 0 4.486 0 10ZM15.2071 8.20711C15.5976 7.81658 15.5976 7.18342 15.2071 6.79289C14.8166 6.40237 14.1834 6.40237 13.7929 6.79289L9 11.5858L6.70711 9.29289C6.31658 8.90237 5.68342 8.90237 5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071L8.29289 13.7071C8.68342 14.0976 9.31658 14.0976 9.70711 13.7071L15.2071 8.20711Z"
+                                                          fill="#007AFF"/>
+                                                </svg>
+                                                <span class="body-font">Verified buyer</span>
+                                            </div>
+                                            <div class="sp-text-description body-font">"Lorem ipsum dolor sit amet,
+                                                consectetur
+                                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                                magna
+                                                aliqua"
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="sp-text-row sp-row-bottom">
+                            <div class="sp-media-group"
+                                 data-scrolling="{% if settings.scrolling_style == 'left_to_right' %}right_to_left{% else %}left_to_right{% endif %}">
+                                {% for i in (1..4) %}
+                                    <div class="sp-text-item">
+                                        <div class="sp-text-media">
+                                            {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray-100' }}
+                                        </div>
+                                        <div class="sp-text-content">
+                                            <div class="sp-text-rating">
+                                                {% for i in (1..5) %}
+                                                    <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                    </svg>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="sp-text-author heading-font">Author Name</div>
+                                            <div class="sp-text-verified">
+                                                <svg class="sp-icon" width="20" height="20" viewBox="0 0 20 20"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                          d="M0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0C4.486 0 0 4.486 0 10ZM15.2071 8.20711C15.5976 7.81658 15.5976 7.18342 15.2071 6.79289C14.8166 6.40237 14.1834 6.40237 13.7929 6.79289L9 11.5858L6.70711 9.29289C6.31658 8.90237 5.68342 8.90237 5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071L8.29289 13.7071C8.68342 14.0976 9.31658 14.0976 9.70711 13.7071L15.2071 8.20711Z"
+                                                          fill="#007AFF"/>
+                                                </svg>
+                                                <span class="body-font">Verified buyer</span>
+                                            </div>
+                                            <div class="sp-text-description body-font">"Lorem ipsum dolor sit amet,
+                                                consectetur
+                                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                                magna
+                                                aliqua"
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Testimonial 12.1",
+	"tag": "section",
+	"class": "sp-scrolling-text",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "image_picker",
+			"id": "background_countdown",
+			"label": "Background image"
+		},
+		{
+			"type": "image_picker",
+			"id": "background_countdown_mobile",
+			"label": "Background image (Mobile)"
+		},
+		{
+			"type": "header",
+			"content": "Scrolling settings"
+		},
+		{
+			"type": "select",
+			"id": "scrolling_style",
+			"label": "Scrolling style",
+			"default": "left_to_right",
+			"options": [
+				{
+					"label": "Left to right",
+					"value": "left_to_right"
+				},
+				{
+					"label": "Right to left",
+					"value": "right_to_left"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "scroll_speed",
+			"min": 5,
+			"max": 100,
+			"step": 1,
+			"default": 40,
+			"unit": "s",
+			"label": "Image scroll speed"
+		},
+		{
+			"type": "range",
+			"id": "item_translate",
+			"min": 0,
+			"max": 500,
+			"step": 10,
+			"default": 120,
+			"label": "Item translate"
+		},
+		{
+			"type": "range",
+			"id": "item_translate_mobile",
+			"min": 0,
+			"max": 500,
+			"step": 10,
+			"default": 120,
+			"label": "Item translate (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "item_gap",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 20,
+			"unit": "px",
+			"label": "Items gap"
+		},
+		{
+			"type": "range",
+			"id": "item_gap_mobile",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 15,
+			"unit": "px",
+			"label": "Items gap (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "item_row_gap",
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"default": 25,
+			"unit": "px",
+			"label": "Items row gap"
+		},
+		{
+			"type": "range",
+			"id": "item_width",
+			"min": 350,
+			"max": 850,
+			"step": 5,
+			"default": 400,
+			"unit": "px",
+			"label": "Item width (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "item_width_mobile",
+			"min": 350,
+			"max": 850,
+			"step": 5,
+			"default": 350,
+			"unit": "px",
+			"label": "Item width (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "item_border_size",
+			"min": 0,
+			"max": 15,
+			"step": 1,
+			"default": 1,
+			"unit": "px",
+			"label": "Item border size"
+		},
+		{
+			"type": "range",
+			"id": "item_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"default": 6,
+			"unit": "px",
+			"label": "Item border radius"
+		},
+		{
+			"type": "range",
+			"id": "image_ratio",
+			"min": 0.3,
+			"max": 2.5,
+			"step": 0.1,
+			"default": 0.7,
+			"unit": ":1",
+			"label": "Image ratio"
+		},
+		{
+			"type": "select",
+			"id": "image_cover_position",
+			"label": "Image cover position",
+			"default": "top",
+			"options": [
+				{
+					"label": "Top",
+					"value": "top"
+				},
+				{
+					"label": "Center",
+					"value": "center"
+				},
+				{
+					"label": "Bottom",
+					"value": "bottom"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "item_media_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"default": 0,
+			"unit": "px",
+			"label": "Image border radius"
+		},
+		{
+			"type": "range",
+			"id": "item_media_width",
+			"min": 50,
+			"max": 250,
+			"step": 5,
+			"default": 95,
+			"unit": "px",
+			"label": "Item media width (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "item_media_width_mobile",
+			"min": 50,
+			"max": 250,
+			"step": 5,
+			"default": 75,
+			"unit": "px",
+			"label": "Item media width (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "item_rating_width",
+			"min": 5,
+			"max": 50,
+			"step": 1,
+			"default": 20,
+			"unit": "px",
+			"label": "Item rating width (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "item_rating_width_mobile",
+			"min": 5,
+			"max": 50,
+			"step": 1,
+			"default": 20,
+			"unit": "px",
+			"label": "Item rating width (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "item_content_gap",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"default": 10,
+			"unit": "px",
+			"label": "Items content gap"
+		},
+		{
+			"type": "header",
+			"content": "Text styling"
+		},
+		{
+			"type": "range",
+			"id": "item_author_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Author size (Desktop)",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "item_author_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Author size (Mobile)",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "item_verified_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Verified size (Desktop)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_verified_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Verified size (Mobile)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_description_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Description size (Desktop)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_description_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Description size (Mobile)",
+			"default": 14
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"default": "full_width_no_gap",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Top padding (Desktop)",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Bottom padding (Desktop)",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Top padding (Mobile)",
+			"default": 50
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Bottom padding (Mobile)",
+			"default": 50
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section colors"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "section_background_overlay_color",
+			"label": "Background overlay color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "range",
+			"id": "overlay_opacity",
+			"min": 0,
+			"max": 1,
+			"step": 0.1,
+			"unit": "px",
+			"label": "Overlay opacity",
+			"default": 0
+		},
+		{
+			"type": "header",
+			"content": "Item colors"
+		},
+		{
+			"type": "color",
+			"id": "item_background_color",
+			"label": "Item background color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "item_border_color",
+			"label": "Item border color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_rating_color",
+			"label": "Rating color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_author_color",
+			"label": "Item author color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_verified_color",
+			"label": "Item verified color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_description_color",
+			"label": "Item description color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "futura_n4"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Text item",
+			"type": "text_item",
+			"settings": [
+				{
+					"type": "range",
+					"id": "rating_score",
+					"min": 1,
+					"max": 5,
+					"step": 1,
+					"label": "Rating score",
+					"default": 5
+				},
+				{
+					"type": "image_picker",
+					"id": "avatar",
+					"label": "Avatar icon"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "author_text",
+					"label": "Author name",
+					"default": "Author 8"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "verified_text",
+					"label": "Verified text",
+					"default": "Verified"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "description_text",
+					"label": "Description text",
+					"default": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Testimonial 12.1",
+			"settings": {
+				"scrolling_style": "left_to_right",
+				"scroll_speed": 40,
+				"item_translate": 120,
+				"item_translate_mobile": 120,
+				"item_gap": 20,
+				"item_gap_mobile": 15,
+				"item_row_gap": 25,
+				"item_width": 400,
+				"item_width_mobile": 350,
+				"item_border_size": 1,
+				"item_border_radius": 6,
+				"image_ratio": 0.7,
+				"image_cover_position": "top",
+				"item_media_border_radius": 0,
+				"item_media_width": 95,
+				"item_media_width_mobile": 75,
+				"item_rating_width": 20,
+				"item_rating_width_mobile": 20,
+				"item_content_gap": 10,
+				"item_author_size": 16,
+				"item_author_size_mobile": 16,
+				"item_verified_size": 14,
+				"item_verified_size_mobile": 14,
+				"item_description_size": 14,
+				"item_description_size_mobile": 14,
+				"section_width": "full_width_no_gap",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_top_padding_mobile": 50,
+				"section_bottom_padding_mobile": 50,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_gradient_color": "",
+				"section_background_color": "#ffffff",
+				"item_background_color": "#ffffff",
+				"item_border_color": "#1e1e1e",
+				"item_rating_color": "#1e1e1e",
+				"item_author_color": "#1e1e1e",
+				"item_verified_color": "#1e1e1e",
+				"item_description_color": "#1e1e1e",
+				"override_font": true,
+				"heading_font": "futura_n4",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-1.png",
+						"author_text": "Author 1",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-2.png",
+						"author_text": "Author 2",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-3.png",
+						"author_text": "Author 3",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-4.png",
+						"author_text": "Author 4",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-5.png",
+						"author_text": "Author 5",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-6.png",
+						"author_text": "Author 6",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-7.png",
+						"author_text": "Author 7",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				},
+				{
+					"type": "text_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-12-variant-1-image-8.png",
+						"author_text": "Author 8",
+						"verified_text": "Verified",
+						"description_text": "Our German Shepherd has a high energy level, and finding a durable toy that keeps her engaged has been challenging."
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	
+{% endstyle %}
+<script>
+!function(){function o(){var e=document.getElementById("sp-{{ section.id }}");if(e){const d=e.querySelector(".sp-text-scrolling-wrapper");e.querySelectorAll(".sp-text-row").forEach(o=>{var t=o.querySelector(".sp-media-group");for(let e=1;e<=7;e++){var n=t.cloneNode(!0);o.appendChild(n)}d.classList.add("sp-show")})}}window.addEventListener("DOMContentLoaded",e=>{o()}),Shopify&&Shopify?.designMode&&o()}(document);
+</script>

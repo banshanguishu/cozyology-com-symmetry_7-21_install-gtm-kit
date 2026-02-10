@@ -1,0 +1,333 @@
+<div id="section-id-{{ section.id }}" class="cart-discount-code">
+  <div class="cart-discount-code-wrapper is-web">
+    <div class="cart-discount-code-bg-img">
+      <img src="{{ 'cart-code-bg-img.webp' |  asset_url  }}" alt="dicount code bg image" />
+    </div>
+    <h1 class="cart-discount-code-title">{{ section.settings.title }}</h1>
+    <div class="cart-discount-code-codes">
+      <div class="code-img" data-v-code="SPR100">
+        <img
+          src="{{ 'cart-code-one_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="240px"
+          height="150px" />
+      </div>
+      <div class="code-img" data-v-code="SPR220">
+        <img
+          src="{{ 'cart-code-two_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="240px"
+          height="150px" />
+      </div>
+      <div class="code-img" data-v-code="FLASH">
+        <img
+          src="{{ 'cart-code-three_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="240px"
+          height="150px" />
+      </div>
+      {% comment %} <div class="code-img" data-v-code="T5000">
+        <img
+          src="{{ 'cart-code-four_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="240px"
+          height="150px" />
+      </div> {% endcomment %}
+      {% comment %} <div class="code-img" data-v-code="B6000">
+        <img
+          src="{{ 'cart-code-five_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="240px"
+          height="150px" />
+      </div> {% endcomment %}
+    </div>
+    <div class="cart-discount-code-describe">{{ section.settings.describe }}</div>
+  </div>
+  <div class="cart-discount-code-wrapper is-mobile">
+    <div class="cart-discount-code-bg-img">
+      <img src="{{ 'cart-code-bg-img_mobile.webp' |  asset_url  }}" alt="dicount code bg image" />
+    </div>
+    <h1 class="cart-discount-code-title">{{ section.settings.title }}</h1>
+    <div class="cart-discount-code-codes">
+      <div class="code-img" data-v-code="FRESH20">
+        <img
+          src="{{ 'cart-code-one_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="320px"
+          height="180px" />
+      </div>
+      <div class="code-img" data-v-code="FRESH23">
+        <img
+          src="{{ 'cart-code-two_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="320px"
+          height="180px" />
+      </div>
+      <div class="code-img" data-v-code="FLASH">
+        <img
+          src="{{ 'cart-code-three_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="320px"
+          height="180px" />
+      </div>
+      {% comment %} <div class="code-img" data-v-code="T5000">
+        <img
+          src="{{ 'cart-code-four_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="320px"
+          height="180px" />
+      </div> {% endcomment %}
+      {% comment %} <div class="code-img" data-v-code="T5000"> {% endcomment %}
+        {% comment %} <img
+          src="{{ 'cart-code-five_mobile.webp' |  asset_url  }}"
+          alt="dicount code bg image"
+          width="320px"
+          height="180px" />
+      </div> {% endcomment %}
+    </div>
+    <div class="cart-discount-code-describe">{{ section.settings.describe }}</div>
+  </div>
+</div>
+
+<style>
+  .is-mobile {
+    display: none !important;
+  }
+  .cart-discount-code-wrapper {
+    position: relative;
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 20px;
+  }
+  .cart-discount-code-bg-img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .cart-discount-code-bg-img img {
+    width: 100%;
+    height: 100%;
+  }
+  .cart-discount-code-title {
+    color: #573B25;
+    text-align: center;
+    position: relative;
+    z-index: 100;
+  }
+  .cart-discount-code-codes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 45px;
+    row-gap: 20px;
+    z-index: 100;
+    position: relative;
+  }
+  .cart-discount-code-codes .code-img {
+    width: 240px;
+    height: 150px;
+    cursor: pointer;
+  }
+  .cart-discount-code-describe {
+    background: #583C25;
+    opacity: 0.8;
+    z-index: 100;
+    position: relative;
+    font-weight: 400;
+    font-size: 24px;
+    color: #FFFFFF;
+    text-align: center;
+    min-width: 1095px;
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .is-mobile {
+      display: flex !important;
+    }
+    .is-web {
+      display: none !important;
+    }
+    .cart-discount-code-wrapper {
+      padding: 30px 0;
+    }
+    .cart-discount-code-codes {
+      column-gap: 20px;
+      row-gap: 12px
+    }
+    .cart-discount-code-codes .code-img {
+      width: 144px;
+      height: 90px;
+      cursor: pointer;
+      pointer-events: auto;
+      /* 允许点击事件 */
+      user-select: none;
+      /* 禁止选中文字（避免误触唤起菜单） */
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .cart-discount-code-describe {
+      min-width: auto;
+      font-size: 20px;
+      font-family: NunitoSans
+      , NunitoSans;
+    }
+  }
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let codes = null
+        let codesContainer = null
+  
+        if (isMobile()) {
+            codes = document.querySelectorAll('.cart-discount-code-codes .code-img')
+            if (codes) {
+                codes.forEach(item => {
+                    item.addEventListener('touchend', handleCopy)
+                })
+            }
+        } else {
+            codesContainer = document.querySelector('.cart-discount-code-codes')
+            if (codesContainer) {
+                codesContainer.addEventListener('click', handleCopy)
+            }
+        }
+  
+        // 3. 在页面即将卸载时（beforeunload）移除事件监听
+        function cleanUp() {
+            if (isMobile()) {
+                if (codes) {
+                    codes.forEach(item => {
+                        item.removeEventListener('touchend', handleCopy)
+                    })
+                }
+            } else {
+                if (codesContainer) {
+                    codesContainer.removeEventListener('click', handleCopy)
+                }
+            }
+  
+            document.removeEventListener('beforeunload', cleanUp);
+        }
+  
+        document.addEventListener("beforeunload", cleanUp)
+    })
+  
+    function isMobile() {
+        // 检测 UA 中是否包含移动端特征关键词
+        const userAgent = navigator.userAgent.toLowerCase();
+        const mobileKeywords = ['mobile', 'android', 'iphone', 'ipad', 'ipod', 'ios', 'windows phone'];
+  
+        // 遍历关键词，只要匹配到一个就认为是移动端
+        return mobileKeywords.some(keyword => userAgent.includes(keyword));
+    }
+  
+    function handleCopy(event) {
+        console.log("event", event);
+      
+        // 阻止事件冒泡和重复触发
+        if (event.type === 'touchend') {
+          event.preventDefault(); // 阻止触摸事件后续触发 click
+        }
+  
+        // 核心复制逻辑（同上）
+        const el = event.target.closest('.code-img')
+  
+        if (!el) return;
+        const code = el.dataset.vCode; 
+  
+        if (!code) return;
+  
+        if (isMobile()) {
+            copyToClip(code)
+            return
+        }
+        copyToClipboard(code)
+    }
+  
+    function getBrowserLang() {
+      const lang = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+      return String(lang).toLowerCase();
+    }
+  
+    function i18nCopyMessage(success) {
+        const lang = getBrowserLang();
+        const iscn = ["zh", "zh-cn"].includes(lang)
+        if (success) {
+            return iscn ?  "复制成功!" : "Copy successful!"
+        } else {
+            return iscn ?  "复制失败,请手动复制!" : "Copy failed, please manually copy!"
+        }
+    }
+  
+    function copyToClip(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert(i18nCopyMessage(true))
+          // CozyMessage({ message: i18nCopyMessage(true), type: 'success', duration: 1000 * 60 * 5 })
+        }).catch(() => {
+          alert(i18nCopyMessage(false))
+          // CozyMessage({ message: i18nCopyMessage(false), type: 'error', duration: 1000 * 60 * 5 })
+        })
+    }
+  
+    function copyToClipboard(text) {
+        // 创建临时文本框
+        const textarea = document.createElement('textarea');
+        textarea.value = text; // 设置要复制的内容
+        textarea.style.position = 'fixed'; // 避免滚动到视图外
+        document.body.appendChild(textarea);
+  
+        // 选中文本
+        textarea.select();
+        // textarea.setSelectionRange(0, text.length); // 兼容移动设备
+  
+        // 执行复制命令
+        const success = document.execCommand('copy');
+  
+        // 清理临时元素
+        document.body.removeChild(textarea);
+  
+        if (success) {
+          alert(i18nCopyMessage(true))
+          // CozyMessage({ message: i18nCopyMessage(true), type: 'success', duration: 1000 * 60 * 5 })
+        } else {
+          alert(i18nCopyMessage(false))
+          // CozyMessage({ message: i18nCopyMessage(false), type: 'error', duration: 1000 * 60 * 5 })
+        } 
+    }
+</script>
+
+{% schema %}
+  {
+    "name": "Cart-Discount-Code",
+    "tag": "section",
+    "class": "cart-discount-code",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Tiered Discounts"
+      }, {
+        "type": "text",
+        "id": "describe",
+        "label": "Describe",
+        "default": "Shop More Save More"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Cart-Discount-Code",
+        "category": "Cart-Discount"
+      }
+    ]
+  }
+{% endschema %}

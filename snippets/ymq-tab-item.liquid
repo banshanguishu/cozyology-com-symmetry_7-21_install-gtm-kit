@@ -1,0 +1,31 @@
+{%- assign ymqMainTabHeader = '' -%}
+{%- assign ymqMainTabContent = '' -%}
+{%- assign ymq_product_array = d | split: ',' -%}
+{%- assign ymq_product_tags_array = g | split: ',' -%}
+{%- assign ymq_collections_array = c | split: ',' -%}
+{%- assign ymq_show = false -%}
+{%- assign ymq_id = product.id | append: '' -%}
+{%- if ymq_product_array contains ymq_id %}{% assign ymq_show = true %}{% endif -%}
+{%- if ymq_show == false -%}
+    {%- for pt in ymq_product_tags_array -%}
+        {%- if product.tags contains pt -%}
+            {%- assign ymq_show = true -%}
+            {%- break -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif -%}
+{%- if ymq_show == false -%}
+    {%- for c in product.collections -%}
+        {%- assign ymq_id = c.id | append: '' -%}
+        {%- if ymq_collections_array contains ymq_id -%}
+            {%- assign ymq_show = true -%}
+            {%- break -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif -%}
+{%- if ymq_show == true -%}
+    {%- assign ymqMainTabHeader = ymqMainTabHeader | append: 'ymq_2021_ymq' | append: t -%}
+    {%- assign ymqMainTabContent = ymqMainTabContent | append: 'ymq_2021_ymq' | append: u -%}
+{%- endif -%}
+{%- assign ymqMainTab = ymqMainTabHeader | append: 'header_content_split' | append: ymqMainTabContent -%}
+{{ ymqMainTab }}

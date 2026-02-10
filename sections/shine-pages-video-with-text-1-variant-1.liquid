@@ -1,0 +1,795 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+    #sp-{{ section.id }} {
+        --sp-section-background-color: {{ settings.section_background_color }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: "null" }};
+        background-color: var(--sp-section-background-color);
+        background-image: var(--sp-section-background-gradient-color);
+    }
+
+    #sp-{{ section.id }} .sp-video-with-text-wrapper {
+        --sp-item-gap: {{ settings.item_gap }}px;
+        --sp-video-width: {{ settings.video_width }}%;
+        --sp-video-ratio: {{ settings.video_ratio }};
+        --sp-border-radius: {{ settings.item_border_radius }}px;
+        display: flex;
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: var(--sp-item-gap);
+    }
+
+    #sp-{{ section.id }} .sp-video-with-text-wrapper[data-box="true"] {
+        padding: var(--sp-item-gap);
+        background: {{ settings.box_background_color }};
+        border-radius: var(--sp-border-radius);
+    }
+
+    #sp-{{ section.id }} .sp-video-wrapper {
+        flex: 0 0 auto;
+        width: var(--sp-video-width);
+    }
+
+    @media (min-width: 992px) {
+
+        #sp-{{ section.id }} .sp-video-with-text-wrapper[data-position="right"] .sp-video-wrapper {
+            order: 2;
+        }
+    }
+
+    #sp-{{ section.id }} .sp-video-wrapper .sp-video-background {
+        aspect-ratio: var(--sp-video-ratio)/ 1;
+        border-radius: var(--sp-border-radius);
+    }
+
+    #sp-{{ section.id }} .sp-video-content-wrapper {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        z-index: 99;
+    }
+
+    #sp-{{ section.id }} .sp-video-content-wrapper .sp-heading {
+        --sp-header-text-size: {{ settings.heading_font_size }}px;
+        --sp-header-text-color: {{ settings.video_heading_color }};
+        --sp-text-letter-spacing: {{ settings.heading_text_spacing }}px;
+        font-size: var(--sp-header-text-size);
+        color: var(--sp-header-text-color);
+        line-height: 130%;
+        letter-spacing: var(--sp-text-letter-spacing);
+    }
+
+    #sp-{{ section.id }} .sp-video-content-wrapper .sp-sub-heading {
+        --sp-header-text-size: {{ settings.sub_heading_font_size }}px;
+        --sp-header-text-color: {{ settings.video_sub_heading_color }};
+        font-size: var(--sp-header-text-size);
+        color: var(--sp-header-text-color);
+        line-height: 130%;
+    }
+
+    #sp-{{ section.id }} .sp-video-wrapper .sp-video-background video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    #sp-{{ section.id }} .sp-video-wrapper .sp-video-background video,
+    #sp-{{ section.id }} .sp-video-wrapper .sp-video-background iframe {
+        border-radius: var(--sp-border-radius);
+    }
+
+    #sp-{{ section.id }} .sp-content-wrapper {
+        --sp-background-color: {{ settings.background_button_color }};
+        flex: 1;
+        display: flex;
+        align-items: center;
+        border-radius: var(--sp-border-radius);
+        background-color: var(--sp-background-color);
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    #sp-{{ section.id }} .sp-content-wrapper > a {
+        text-decoration: none;
+    }
+
+    #sp-{{ section.id }} .sp-content-wrapper .sp-content-inner {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        transform: translateX(-55px);
+        transition: all .15s ease-in-out;
+    }
+
+    #sp-{{ section.id }} .sp-video-with-text-wrapper:hover .sp-content-wrapper .sp-content-inner {
+        transform: translateX(0);
+    }
+
+    #sp-{{ section.id }} .sp-media-content .sp-heading {
+        --sp-header-text-size: {{ settings.button_heading_font_size }}px;
+        --sp-header-text-color: {{ settings.heading_button_color }};
+        --sp-text-letter-spacing: {{ settings.button_heading_text_spacing }}px;
+        font-size: var(--sp-header-text-size);
+        color: var(--sp-header-text-color);
+        line-height: 130%;
+        letter-spacing: var(--sp-text-letter-spacing);
+    }
+
+    #sp-{{ section.id }} .sp-media-content .sp-sub-heading {
+        --sp-header-text-size: {{ settings.button_sub_heading_font_size }}px;
+        --sp-header-text-color: {{ settings.sub_heading_button_color }};
+        font-size: var(--sp-header-text-size);
+        color: var(--sp-header-text-color);
+        line-height: 130%;
+    }
+
+    #sp-{{ section.id }} .sp-media-object {
+        display: inline-flex;
+    }
+
+    #sp-{{ section.id }} .sp-media-object .sp-icon {
+        --sp-header-text-color: {{ settings.heading_button_color }};
+        color: var(--sp-header-text-color);
+    }
+
+    @media (max-width: 991px) {
+        #sp-{{ section.id }} .sp-video-with-text-wrapper {
+            --sp-video-width: 100%;
+        }
+        #sp-{{ section.id }} .sp-video-content-wrapper{
+            padding: var(--sp-column-mobile-padding);
+        }
+
+        #sp-{{ section.id }} .sp-video-outer .sp-video-control{
+            bottom: auto;
+            top: 10px;
+            right: 10px;
+        }
+
+        #sp-{{ section.id }} .sp-video-content-wrapper .sp-heading {
+            --sp-header-text-size: {{ settings.heading_font_size_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-video-content-wrapper .sp-sub-heading {
+            --sp-header-text-size: {{ settings.sub_heading_font_size_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-media-content .sp-heading {
+            --sp-header-text-size: {{ settings.button_heading_font_size_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-media-content .sp-sub-heading {
+            --sp-header-text-size: {{ settings.button_sub_heading_font_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-content-wrapper .sp-content-inner {
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-video-with-text-1"
+     data-section="video-with-text-1"
+     data-variant="variant-1" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}">
+    <div class="sp-section sp-section-overflow sp-section-no-heading" data-border="{{ settings.section_border }}">
+        <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-video-with-text-wrapper" data-box="{{ settings.box_style }}"
+                 data-position="{{ settings.video_position }}">
+                <div class="sp-video-wrapper"
+                     data-mute="{% if settings.muted_video == true %}muted{% else %}unmute{% endif %}">
+                    <div class="sp-video-outer sp-relative">
+                        {% assign video_type = null %}
+                        {% assign video_url = null %}
+                        {% assign video_alt = null %}
+                        {% if settings.video_url and settings.video_url.type %}
+                            {% assign video_type = settings.video_url.type %}
+                            {% assign video_url = settings.video_url.id %}
+                            {% assign video_alt = settings.video_alt | escape %}
+                        {% endif %}
+                        {% if settings.video != null or video_url != null %}
+                            <div class="sp-video-background">
+                                {% if settings.video != null and video_url == null %}
+                                    {{ settings.video | video_tag: image_size: '1920x', loop: true, controls: false, muted: settings.muted_video, autoplay: true }}
+                                {% endif %}
+                            </div>
+                            <div class="sp-video-backdrop" data-video-type="{{ video_type }}"
+                                 data-video-url="{{ video_url }}"
+                                 data-video-alt="{{ video_alt }}"
+                                 data-video-link="{{ settings.video_url | uri_escape }}"></div>
+                        {% else %}
+                            <div class="sp-placeholder-wrapper">
+                                {{ 'image' | placeholder_svg_tag: "sp-placeholder-image-gray-100" }}
+                            </div>
+                        {% endif %}
+                        {% if settings.video != null or video_url != null %}
+                            {% assign video_selector = '.sp-video-wrapper' %}
+                            <sp-video-controls class="sp-video-control"
+                   data-video-selector="{{ video_selector }}">
+    <button class="sp-button-video sp-button-video-muted">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+            <g id="volumn-mute">
+                <g id="Vector">
+                    <path d="M22.7277 11.9289C22.6778 14.9847 21.6147 17.624 19.4786 19.8234C19.2454 20.0633 18.9688 20.0966 18.7555 19.91C18.5189 19.7034 18.5222 19.3935 18.7622 19.1536C19.5553 18.3505 20.2051 17.444 20.695 16.4277C21.608 14.5315 21.9213 12.5387 21.628 10.456C21.3081 8.20327 20.3317 6.27381 18.7455 4.65093C18.5589 4.46098 18.5322 4.20105 18.6755 4.00111C18.8155 3.81116 19.0721 3.74118 19.282 3.84449C19.3353 3.87114 19.3853 3.9078 19.4287 3.95112C21.1049 5.64065 22.1546 7.65676 22.5611 10.0061C22.6711 10.6393 22.7244 11.2824 22.7277 11.9289Z"
+                          fill="currentColor"></path>
+                    <path d="M19.8452 11.9022C19.8185 14.1749 19.0254 16.1411 17.4459 17.7806C17.2393 17.9972 16.9993 18.0439 16.7894 17.9206C16.5128 17.7573 16.4561 17.3941 16.6894 17.1508C17.0327 16.7942 17.3526 16.421 17.6258 16.0078C18.5656 14.5782 18.9721 13.0086 18.8355 11.3024C18.6922 9.50958 17.9691 7.97667 16.7194 6.68703C16.5028 6.46376 16.4895 6.16051 16.6961 5.96056C16.896 5.76395 17.1926 5.77062 17.4092 5.98722C18.6555 7.25021 19.4353 8.75645 19.7319 10.5093C19.8052 10.9725 19.8385 11.4357 19.8452 11.9022Z"
+                          fill="currentColor"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M15.3531 11.9922V19.4735C15.3531 20.6265 14.54 21.4263 13.387 21.4496C12.7772 21.4629 12.2906 21.223 11.8108 20.8831C10.4348 19.9085 9.05235 18.9421 7.67019 17.9758L7.66937 17.9752C7.06681 17.554 6.46431 17.1327 5.86242 16.7109C5.78578 16.6576 5.71246 16.6343 5.61916 16.6343C4.82604 16.6376 4.0296 16.6376 3.23649 16.6376C2.0968 16.6376 1.2737 15.8178 1.2737 14.6748C1.2737 14.0782 1.27333 13.4812 1.27296 12.8851L1.27296 12.884C1.27222 11.6927 1.27148 10.5019 1.2737 9.30963C1.2737 8.31991 1.91019 7.56012 2.87325 7.3935C2.98656 7.37351 3.10652 7.37351 3.22316 7.37351C3.48716 7.37351 3.75227 7.37314 4.01676 7.37277C4.54662 7.37202 5.07696 7.37128 5.60583 7.37351C5.7058 7.37351 5.78578 7.34685 5.86576 7.2902C6.44599 6.88356 7.02727 6.47708 7.60812 6.07091C9.11202 5.01925 10.6165 3.9672 12.114 2.90475C12.8638 2.37489 14.46 2.33157 15.1132 3.52124C15.2831 3.83116 15.3565 4.16106 15.3565 4.51097C15.3531 7.00694 15.3531 9.49958 15.3531 11.9922ZM14.3334 11.9922V19.4868C14.3334 20.0733 13.9802 20.4199 13.3937 20.4332C13.0937 20.4399 12.8372 20.3599 12.5872 20.1833C11.0801 19.1211 9.56741 18.0645 8.05469 17.0079C7.55047 16.6557 7.04625 16.3035 6.54223 15.9511C6.45226 15.8878 6.4156 15.8212 6.4156 15.7079C6.41894 13.2385 6.41894 10.7659 6.4156 8.29658C6.4156 8.17662 6.45226 8.10997 6.5489 8.04332C6.98991 7.73505 7.43107 7.42694 7.87226 7.11881L7.87382 7.11772C9.45904 6.0106 11.0445 4.90329 12.6239 3.78783C12.9438 3.56123 13.287 3.5379 13.6369 3.59456C14.0635 3.6612 14.3301 4.02444 14.3301 4.48098V10.6926C14.3334 11.1258 14.3334 11.559 14.3334 11.9922ZM5.3988 12.8694C5.39901 12.5837 5.39922 12.298 5.39922 12.0122C5.39922 11.6257 5.39885 11.2387 5.39848 10.8518C5.39774 10.0779 5.397 9.30408 5.39922 8.53318C5.39922 8.42321 5.38589 8.37989 5.25926 8.37989C4.86122 8.3837 4.46427 8.38316 4.06778 8.38261C3.77051 8.3822 3.47351 8.3818 3.1765 8.38322C2.66664 8.38656 2.29341 8.75979 2.29341 9.26631V14.7281C2.29341 15.248 2.66331 15.6145 3.1865 15.6145C3.35662 15.6145 3.52653 15.6143 3.69629 15.6141C4.20489 15.6135 4.71208 15.6129 5.21927 15.6179C5.3559 15.6179 5.40255 15.5946 5.40255 15.4413C5.39755 14.584 5.39818 13.7267 5.3988 12.8694Z"
+                          fill="currentColor"></path>
+                </g>
+            </g>
+        </svg>
+    </button>
+    <button class="sp-button-video sp-button-video-unmute">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+            <g id="volumn-up">
+                <g id="Vector">
+                    <path d="M20.2394 11.2935C20.7959 10.737 21.3358 10.1938 21.8756 9.65398C21.9823 9.54734 22.0923 9.4507 22.2555 9.4407C22.4655 9.42737 22.6654 9.52068 22.7554 9.70396C22.852 9.90058 22.842 10.0905 22.6988 10.2638C22.6554 10.3138 22.6088 10.3638 22.5621 10.4104C22.0656 10.9103 21.5657 11.4102 21.0659 11.9034C20.9826 11.9833 20.9826 12.0267 21.0659 12.1066C21.5957 12.6298 22.1189 13.1563 22.6454 13.6829C22.7921 13.8328 22.8554 14.0094 22.7954 14.2127C22.7387 14.4027 22.6021 14.5226 22.4088 14.5626C22.2022 14.6059 22.0423 14.5193 21.9023 14.3793C21.3891 13.8628 20.8726 13.3529 20.3627 12.8331C20.2728 12.7398 20.2261 12.7398 20.1328 12.8331C19.6196 13.3563 19.0998 13.8728 18.5799 14.3893C18.3366 14.6326 18.0267 14.6393 17.8168 14.4127C17.6502 14.236 17.6302 13.9661 17.7768 13.7728C17.8201 13.7162 17.8701 13.6629 17.9201 13.6129C18.4233 13.1097 18.9231 12.6065 19.4297 12.1066C19.5096 12.03 19.5163 11.9867 19.433 11.9034C18.9031 11.3802 18.3766 10.857 17.8534 10.3271C17.5702 10.0405 17.6502 9.60732 18.0101 9.47069C18.24 9.38405 18.4299 9.4607 18.5966 9.63065C19.0998 10.1372 19.6096 10.6437 20.1161 11.1502C20.1595 11.1902 20.1961 11.2402 20.2394 11.2935Z"
+                          fill="currentColor"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M15.2608 12V19.4812C15.2608 20.6243 14.4444 21.424 13.3047 21.4507C12.6882 21.464 12.1983 21.2241 11.7151 20.8809C10.4908 20.0137 9.26092 19.1539 8.03106 18.2942L8.0302 18.2936C7.2755 17.766 6.52066 17.2383 5.76679 16.7087C5.69014 16.6554 5.6135 16.6354 5.52019 16.6354C4.72708 16.6387 3.93063 16.6387 3.13752 16.6354C2.00783 16.6354 1.1814 15.8123 1.1814 14.6826V9.3174C1.1814 8.32435 1.80789 7.56456 2.77095 7.39127C2.89092 7.37128 3.01422 7.36795 3.13419 7.36795C3.9273 7.36461 4.72375 7.36461 5.51686 7.36795C5.61017 7.36795 5.68681 7.34462 5.76346 7.2913C6.33876 6.88841 6.9149 6.48605 7.49072 6.08391C8.99611 5.03259 10.5016 3.98119 11.9984 2.91585C12.7615 2.37267 14.3677 2.32268 15.0242 3.52568C15.1942 3.83559 15.2642 4.1655 15.2642 4.51541C15.2608 7.01471 15.2608 9.50735 15.2608 12ZM5.30692 12.0133C5.30692 12.3008 5.30671 12.5882 5.3065 12.8757C5.30588 13.7377 5.30525 14.5993 5.31025 15.459C5.31025 15.579 5.29026 15.6157 5.16029 15.6157C4.64308 15.6107 4.12773 15.6113 3.61146 15.6119C3.43918 15.6121 3.26679 15.6123 3.0942 15.6123C2.57101 15.6123 2.20445 15.2458 2.20445 14.7226V9.27742C2.20445 8.7509 2.57434 8.381 3.10753 8.381C3.40031 8.37957 3.69309 8.37998 3.98587 8.38039C4.37624 8.38093 4.7666 8.38147 5.15696 8.37767C5.28026 8.37767 5.31358 8.40766 5.31358 8.53096C5.30558 9.46138 5.30612 10.3897 5.30665 11.3175L5.30692 12.0133ZM14.2411 19.4812V12.0033C14.2411 9.49735 14.2411 6.99472 14.2444 4.48875C14.2444 4.02554 13.9878 3.66897 13.5613 3.59566C13.2081 3.53568 12.8648 3.55567 12.5449 3.78228C10.641 5.12567 8.73411 6.45729 6.8243 7.79097C6.70175 7.87656 6.57918 7.96215 6.4566 8.04776C6.36662 8.11107 6.32663 8.17439 6.32663 8.28769C6.32997 10.7637 6.32997 13.2396 6.32663 15.7156C6.32663 15.8223 6.35663 15.8856 6.44327 15.9456C6.57312 16.0362 6.70296 16.1268 6.83278 16.2174C8.72196 17.5361 10.608 18.8525 12.4883 20.1777C12.7349 20.3543 12.9881 20.441 13.2914 20.4343C13.8879 20.421 14.2411 20.0777 14.2411 19.4812Z"
+                          fill="currentColor"></path>
+                </g>
+            </g>
+        </svg>
+    </button>
+</sp-video-controls>
+                            <div class="sp-video-content-wrapper">
+                                {% if settings.video_sub_heading_text != empty %}
+                                    <h5 class="sp-sub-heading body-font">{{ settings.video_sub_heading_text }}</h5>
+                                {% endif %}
+                                {% if settings.video_heading_text != empty %}
+                                    <h4 class="sp-heading heading-font">{{ settings.video_heading_text }}</h4>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="sp-content-wrapper">
+                {% if settings.button_link != empty %}
+                    <a href="{{ settings.button_link }}">
+                        {% endif %}
+                        <div class="sp-content-inner">
+                            <div class="sp-media-object">
+                                <svg class="sp-icon" width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                          d="M32 16L16 0L13.18 2.82L24.34 14L0 14V18L24.34 18L13.16 29.18L16 32L32 16Z"
+                                          fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <div class="sp-media-content">
+                                {% if settings.button_sub_heading_text != empty %}
+                                    <h5 class="sp-sub-heading body-font">{{ settings.button_sub_heading_text }}</h5>
+                                {% endif %}
+                                {% if settings.button_heading_text != empty %}
+                                    <h4 class="sp-heading heading-font">{{ settings.button_heading_text }}</h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if settings.button_link != empty %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Video with text 1.1",
+	"tag": "section",
+	"class": "sp-collection-carousel",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Video settings"
+		},
+		{
+			"type": "video",
+			"id": "video",
+			"label": "Shopify-hosted video"
+		},
+		{
+			"type": "video_url",
+			"id": "video_url",
+			"label": "Video URL",
+			"accept": [
+				"youtube",
+				"vimeo"
+			],
+			"default": "https://www.youtube.com/watch?v=z1E09WemG7Y"
+		},
+		{
+			"type": "range",
+			"id": "video_width",
+			"min": 30,
+			"max": 80,
+			"step": 5,
+			"unit": "%",
+			"label": "Video width (Desktop)",
+			"default": 75
+		},
+		{
+			"type": "range",
+			"id": "video_width_tablet",
+			"min": 30,
+			"max": 80,
+			"step": 5,
+			"unit": "%",
+			"label": "Video width (Tablet)",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "video_ratio",
+			"min": 0.4,
+			"max": 4,
+			"step": 0.2,
+			"default": 2,
+			"unit": ":1",
+			"label": "Video ratio"
+		},
+		{
+			"type": "select",
+			"id": "video_position",
+			"label": "Video position",
+			"default": "left",
+			"options": [
+				{
+					"label": "Left",
+					"value": "left"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				}
+			]
+		},
+		{
+			"type": "checkbox",
+			"id": "muted_video",
+			"label": "Muted video",
+			"default": true
+		},
+		{
+			"type": "range",
+			"id": "item_gap",
+			"min": 0,
+			"max": 50,
+			"step": 1,
+			"unit": "px",
+			"label": "Item gap",
+			"default": 15
+		},
+		{
+			"type": "range",
+			"id": "item_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Item border radius",
+			"default": 8
+		},
+		{
+			"type": "checkbox",
+			"id": "box_style",
+			"label": "Box style",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Video heading"
+		},
+		{
+			"type": "inline_richtext",
+			"id": "video_heading_text",
+			"default": "Freshly Launched Cosmetics",
+			"label": "Video heading text"
+		},
+		{
+			"type": "inline_richtext",
+			"id": "video_sub_heading_text",
+			"default": "Celebrity Fashion",
+			"label": "Video sub-heading text"
+		},
+		{
+			"type": "header",
+			"content": "Video heading styles"
+		},
+		{
+			"type": "range",
+			"id": "heading_font_size",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Heading font size",
+			"default": 42
+		},
+		{
+			"type": "range",
+			"id": "heading_font_size_mobile",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Heading font size (mobile)",
+			"default": 24
+		},
+		{
+			"type": "range",
+			"id": "heading_text_spacing",
+			"min": -10,
+			"max": 10,
+			"step": 0.2,
+			"unit": "px",
+			"label": "Heading letter spacing",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "sub_heading_font_size",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Sub-Heading font size",
+			"default": 18
+		},
+		{
+			"type": "range",
+			"id": "sub_heading_font_size_mobile",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Sub-Heading font size (mobile)",
+			"default": 16
+		},
+		{
+			"type": "header",
+			"content": "Button settings"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "Button link",
+			"default": "/"
+		},
+		{
+			"type": "inline_richtext",
+			"id": "button_heading_text",
+			"default": "Explore dy mercer",
+			"label": "Button heading text"
+		},
+		{
+			"type": "range",
+			"id": "button_heading_font_size",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"label": "Heading font size",
+			"default": 32
+		},
+		{
+			"type": "range",
+			"id": "button_heading_font_size_mobile",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Heading font size (mobile)",
+			"default": 24
+		},
+		{
+			"type": "range",
+			"id": "button_heading_text_spacing",
+			"min": -10,
+			"max": 10,
+			"step": 0.2,
+			"unit": "px",
+			"label": "Heading letter spacing",
+			"default": 0
+		},
+		{
+			"type": "inline_richtext",
+			"id": "button_sub_heading_text",
+			"default": "Celebrity Fashion",
+			"label": "Sub-heading text"
+		},
+		{
+			"type": "range",
+			"id": "button_sub_heading_font_size",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"label": "Sub-heading font size",
+			"default": 22
+		},
+		{
+			"type": "range",
+			"id": "button_sub_heading_font_size_mobile",
+			"min": 8,
+			"max": 68,
+			"step": 1,
+			"unit": "px",
+			"label": "Sub-heading font size (mobile)",
+			"default": 18
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"default": "full_width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			]
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Color settings"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "box_background_color",
+			"label": "Box background_color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "video_heading_color",
+			"label": "Video heading color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "video_sub_heading_color",
+			"label": "Video sub-heading color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "background_button_color",
+			"label": "Background button color",
+			"default": "#f9dc4a"
+		},
+		{
+			"type": "color",
+			"id": "heading_button_color",
+			"label": "Heading button color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "sub_heading_button_color",
+			"label": "Sub-Heading button color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "poppins_n6"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [],
+	"presets": [
+		{
+			"name": "🧩 Video with text 1.1",
+			"settings": {
+				"video": "",
+				"video_url": "https://www.youtube.com/watch?v=z1E09WemG7Y",
+				"video_width": 75,
+				"video_width_tablet": 60,
+				"video_ratio": 2,
+				"video_position": "left",
+				"muted_video": true,
+				"item_gap": 15,
+				"item_border_radius": 8,
+				"box_style": false,
+				"video_heading_text": "Freshly Launched Cosmetics",
+				"video_sub_heading_text": "Celebrity Fashion",
+				"heading_font_size": 42,
+				"heading_font_size_mobile": 24,
+				"heading_text_spacing": 0,
+				"sub_heading_font_size": 18,
+				"sub_heading_font_size_mobile": 16,
+				"button_link": "/",
+				"button_heading_text": "Explore dy mercer",
+				"button_heading_font_size": 32,
+				"button_heading_font_size_mobile": 24,
+				"button_heading_text_spacing": 0,
+				"button_sub_heading_text": "Celebrity Fashion",
+				"button_sub_heading_font_size": 22,
+				"button_sub_heading_font_size_mobile": 18,
+				"section_width": "full_width",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_color": "#ffffff",
+				"box_background_color": "#1e1e1e",
+				"video_heading_color": "#ffffff",
+				"video_sub_heading_color": "#ffffff",
+				"background_button_color": "#f9dc4a",
+				"heading_button_color": "#1e1e1e",
+				"sub_heading_button_color": "#1e1e1e",
+				"override_font": true,
+				"heading_font": "poppins_n6",
+				"body_font": "futura_n4"
+			},
+			"blocks": []
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	
+{% endstyle %}
+<script>
+!function(){const d=new ResizeObserver(e=>{e.forEach(e=>{spCalculateIframeVideo(e.target,"iframe")})});function t(){var e,t=document.getElementById("sp-{{ section.id }}");t&&({mute:e="muted"}=(t=t.querySelector(".sp-video-wrapper")).dataset,spRenderVideo(t,".sp-video-background","1","muted"===e?1:0),spCalculateIframeVideo(t,"iframe"),d.observe(t))}window.addEventListener("DOMContentLoaded",e=>{t()}),Shopify&&Shopify?.designMode&&t()}(document);
+</script>

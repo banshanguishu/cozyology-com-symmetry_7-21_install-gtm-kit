@@ -1,0 +1,75 @@
+{% style %}
+  #section-id-{{ section.id }} {
+    text-align: center;
+  }
+  @media (max-width: 767.98px) {
+    #section-id-{{ section.id }} .trustpilot-desktop {
+      display: none;
+    }
+    #section-id-{{ section.id }} .trustpilot-mobile {
+      display: unset;
+    }
+  }
+  @media (min-width: 768px) {
+    #section-id-{{ section.id }} .trustpilot-desktop {
+      display: unset;
+    }
+    #section-id-{{ section.id }} .trustpilot-mobile {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<div id="section-id-{{ section.id }}">
+  {%- assign trustpilot_link = section.settings.trustpilot_link -%}
+  {%- if trustpilot_link != blank -%}
+    <a
+      href="{{ trustpilot_link }}"
+      class="cart-drawer-trustpilot-link"
+      aria-label="查看 Trustpilot 评价"
+      target="_blank"
+      rel="noopener"
+    >
+  {%- endif -%}
+  <div class="trustpilot-desktop">
+    <img
+      width="308px"
+      height="31px"
+      src="{{ 'cart-drawer-score.webp' |  asset_url }}"
+      alt="cart drawer score png"
+    >
+  </div>
+  <div class="trustpilot-mobile">
+    <img
+      width="300px"
+      height="80px"
+      src="{{ 'trustpilot-mobile.webp' |  asset_url }}"
+      alt="cart drawer score png"
+    >
+  </div>
+  {%- if trustpilot_link != blank -%}
+    </a>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Trustpilot",
+  "tag": "section",
+  "class": "trustpilot-section-container",
+  "settings": [
+    {
+      "type": "url",
+      "id": "trustpilot_link",
+      "label": "Trustpilot 跳转链接",
+      "info": "留空则图片不可点击"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trustpilot",
+      "category": "Trustpilot"
+    }
+  ]
+}
+{% endschema %}

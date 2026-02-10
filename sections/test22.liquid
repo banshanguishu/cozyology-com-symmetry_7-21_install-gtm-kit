@@ -1,0 +1,520 @@
+<!-- {% comment %} {% schema %}
+{
+  "name": "Product List",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "product_collection",
+      "label": "Product Collection"
+    },
+    {
+      "type": "number",
+      "id": "product_limit",
+      "label": "Number of Products",
+      "default": 4
+    }
+  ],
+  "presets": [
+      {
+        "name": "Product List By Emily",
+        "category": "Added by emily 2021 "
+      }
+    ]
+}
+{% endschema %} {% endcomment %} -->
+  <div class="container custom-collection-list">
+    <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
+      {% if section.settings.show_sort %}
+        {% render 'faceted-filters', filter_context: collection, clear_url: collection.url, current_sort: current_sort %}
+      {% endif %}
+       <div class="product-list-emily">
+       {% if section.settings.product_collection %}
+          {% assign products = collections[section.settings.product_collection].products %}
+          {% for product in products limit: section.settings.product_limit %}
+            <div class="product-item">
+                <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+                <h3>{{ product.title }}</h3>
+                <!-- <p>{{ product.price | money }}</p> -->
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No products found in this collection.</p>
+        {% endif %}
+    </div>
+    </filter-container>
+   
+    
+  </div>
+  
+
+
+
+
+
+{% schema %}
+{
+  "name": "Test Collection list page",
+  "settings": [
+      {
+        "type": "collection",
+        "id": "product_collection",
+        "label": "Product Collection"
+      },
+      {
+        "type": "number",
+        "id": "product_limit",
+        "label": "Number of Products",
+        "default": 8
+      },
+
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_behind_heading",
+      "label": "Show collection image behind title",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_image_height",
+      "label": "Heading image height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Compact"
+        },
+        {
+          "value": "medium",
+          "label": "Small"
+        },
+        {
+          "value": "large",
+          "label": "Medium"
+        },
+        {
+          "value": "huge",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "id": "overlay_style",
+      "type": "select",
+      "label": "Overlay style",
+      "default": "shadow",
+      "options": [
+        {
+          "value": "full",
+          "label": "Tint"
+        },
+        {
+          "value": "box",
+          "label": "Box"
+        },
+        {
+          "value": "shadow",
+          "label": "Text shadow"
+        },
+        {
+          "value": "full image-overlay--bg-shadow",
+          "label": "Text shadow and tint"
+        },
+        {
+          "value": "no_background",
+          "label": "No background"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "coll_desc_pos",
+      "label": "Description position",
+      "default": "above",
+      "options": [
+        {
+          "value": "above",
+          "label": "Below collection title"
+        },
+        {
+          "value": "below",
+          "label": "Below products"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "coll_num_per_page_int",
+      "min": 16,
+      "max": 50,
+      "step": 2,
+      "label": "Number of products to show per page",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "grid",
+      "label": "Products per row",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendors",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_total",
+      "label": "Show product total",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "info": "[Customize filters](/admin/menus)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_tag_sidebar_by_default",
+      "label": "Collapse filter column",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "collapse_filters_method",
+      "label": "Filter row collapse",
+      "default": "over-12",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "over-6",
+          "label": "Over 6 items"
+        },
+        {
+          "value": "over-12",
+          "label": "Over 12 items"
+        },
+        {
+          "value": "over-18",
+          "label": "Over 18 items"
+        },
+        {
+          "value": "all",
+          "label": "All rows"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter_counts",
+      "label": "Show filter counts",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_two_columns",
+      "label": "Show filter values in two columns",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_grid_filter_name",
+      "label": "Filters to show as buttons",
+      "info": "Counts will not show. Separate options with a comma. E.g. Size,Taille,Größe",
+      "default": "Size,Taille,Größe"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_apply_hide_unavailable",
+      "label": "On selecting a filter, automatically apply 'Hide out of stock'",
+      "default": false,
+      "info": "Requires Availability filter to be enabled"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_filter",
+      "label": "Enable sticky filter column",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sorting dropdown",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_featured",
+      "label": "Enable order: Featured",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_best",
+      "label": "Enable order: Best selling",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_alpha",
+      "label": "Enable order: Alphabetical",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_price",
+      "label": "Enable order: Price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_date",
+      "label": "Enable order: Date added",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "The collection's default sort order will always show."
+    },
+    {
+      "type": "header",
+      "content": "Related collections / Subcollections"
+    },
+    {
+      "type": "paragraph",
+      "content": "Show links to other collections at the top of the page. Use a metafield to change which links show on each collection page. [Read more](https://cleancanvas.co.uk/support/symmetry/related-collections)"
+    },
+    {
+      "type": "collection_list",
+      "id": "related_collections",
+      "label": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "related_collections_style",
+      "label": "Related collections style",
+      "default": "buttons",
+      "options": [
+        {
+          "value": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "value": "gallery",
+          "label": "Gallery"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Related collections gallery layout"
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_gall_aspect_ratio",
+      "label": "Image shape",
+      "default": "1",
+      "options": [
+        {
+          "value": "2",
+          "label": "Landscape (2x1)"
+        },
+        {
+          "value": "1.5",
+          "label": "Landscape (6x4)"
+        },
+        {
+          "value": "1.25",
+          "label": "Landscape (5x4)"
+        },
+        {
+          "value": "1",
+          "label": "Square (1x1)"
+        },
+        {
+          "value": "0.8",
+          "label": "Portrait (4x5)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image alignment",
+      "info": "Used to keep the subject of your image in view",
+      "default": "center center",
+      "options": [
+        {
+          "value": "top left",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "top right",
+          "label": "Top right"
+        },
+        {
+          "value": "center left",
+          "label": "Middle left"
+        },
+        {
+          "value": "center center",
+          "label": "Middle center"
+        },
+        {
+          "value": "center right",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottom left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom right",
+          "label": "Bottom right"
+        }
+      ]
+    },
+    {
+      "id": "rel_coll_gall_enable_margin",
+      "type": "checkbox",
+      "label": "Add spacing around images",
+      "default": true
+    },
+    {
+      "id": "rel_coll_gall_full_width",
+      "type": "checkbox",
+      "label": "Full page width",
+      "default": false
+    },
+    {
+      "id": "rel_coll_gall_overlay_style",
+      "type": "select",
+      "label": "Overlay style",
+      "default": "shadow",
+      "options": [
+        {
+          "value": "full",
+          "label": "Tint"
+        },
+        {
+          "value": "box",
+          "label": "Box"
+        },
+        {
+          "value": "shadow",
+          "label": "Text shadow"
+        },
+        {
+          "value": "full image-overlay--bg-shadow",
+          "label": "Text shadow and tint"
+        },
+        {
+          "value": "no_background",
+          "label": "No background"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_gall_text_alignment",
+      "label": "Text overlay position",
+      "options": [
+        {
+          "value": "top left",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "top right",
+          "label": "Top right"
+        },
+        {
+          "value": "center center",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_grid_mobile",
+      "label": "Images per row - mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ],
+      "default": "2"
+    }
+  ],
+   "presets": [
+      {
+        "name": "Product List By Emily of test",
+        "category": "Added by emily 2021 "
+      }
+    ]
+  
+}
+{% endschema %}

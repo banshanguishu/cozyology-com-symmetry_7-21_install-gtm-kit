@@ -1,0 +1,21 @@
+{% assign collection_handle = request.path | split: '/' | last %}
+{% assign collection = collections[collection_handle] %}
+
+{% if collection %}
+  <h2>{{ collection.title }}</h2>
+  <div class="products">
+    {% for product in collection.products %}
+      <div class="product">
+        <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+        {% if product.featured_image %}
+          <a href="{{ product.url }}">
+            <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+          </a>
+        {% endif %}
+        <!-- <p>{{ product.price | money }}</p> -->
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>请选择一个有效的合集</p>
+{% endif %}

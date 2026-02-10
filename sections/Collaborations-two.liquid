@@ -1,0 +1,131 @@
+<div id="section-id-{{ section.id }}" style="background-color: #F9F6F4">
+  <div class="cp-two-container">
+    <h1 class="cptwo-title">{{ section.settings.title }}</h1>
+    <div class="cptwo-cot">
+      <div class="cptwo-image-section">
+        {%- render 'image' with section.settings.image
+          , size_cols_desktop: 2
+          , custom_aspect_ratio: 2.1
+        -%}
+      </div>
+      <div class="cptwo-des">{{ section.settings.description }}</div>
+      <div class="cptwo-subtitle is-mobile">Incorporating Cozyology:</div>
+      <div class="cptwo-info">{{ section.settings.info }}</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cp-two-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+  }
+
+  .cptwo-title {
+    font-weight: 300;
+    color: #171717;
+    letter-spacing: 1px;
+    text-align: center;
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+  }
+
+  .cptwo-cot {
+    position: relative;
+    width: 100%;
+  }
+
+  .cptwo-cot .is-mobile {
+    display: none;
+  }
+
+  .cptwo-image-section {
+    width: 100%;
+  }
+
+  .cptwo-des {
+    position: absolute;
+    width: 500px;
+    padding: 50px;
+    background-color: #60554d94;
+    bottom: 0;
+    color: #fff;
+    left: 0;
+  }
+
+  .cptwo-info {
+    width: calc(100% - 500px);
+    margin-left: 500px;
+    padding: 25px;
+  }
+
+  @media (max-width: 768px) {
+    .cp-two-container {
+      padding: 15px;
+    }
+
+    .cptwo-cot .is-mobile {
+      display: block;
+    }
+
+    .cptwo-subtitle {
+      font-size: 20px;
+      color: #999999;
+      margin-top: 10px;
+    }
+
+    .cptwo-des {
+      width: auto;
+      padding: 15px;
+      position: relative;
+      background-color: #60554D;
+    }
+
+    .cptwo-info {
+      width: auto;
+      margin: 0;
+      padding: 5px;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Collaborations-Two",
+    "tag": "section",
+    "class": "Collaborations-Two",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Design Process and Collaboration with Cozyology"
+      }, {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Select the main image"
+      }, {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description",
+        "default": "<p>My approach always centers on designing spaces that feel collected and calming. I gravitate toward neutral tones, layered textures, and furnishings that are both classic and current. </p>",
+        "info": "Describe the project challenge"
+      }, {
+        "type": "richtext",
+        "id": "info",
+        "label": "Info Description",
+        "default": "<p>From the start, I knew I wanted continuity throughout the home—but with slight variations to keep each room feeling unique. I love using the same material across multiple spaces, but changing up the color, style, or light filtering to align with the intended function and mood.</p>",
+        "info": "Detailed project description"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collaborations-Two",
+        "category": "Collaborations-Project"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,279 @@
+{{ 'cozy-calculator2.css' | asset_url | stylesheet_tag }}
+
+<div id="section-id-{{ section.id }}">
+  <div class="cozy-cal2-wrapper">
+    <div class="cozy-cal2-title">
+      {{ section.settings.header_title }}
+    </div>
+    <div class="cozy-cal2-title cozy-cal2-subtitle">
+      {{ section.settings.header_subtitle }}
+    </div>
+    <div class="cozy-cal2-main">
+      <div class="cozy-cal2-block cozy-cal2-block-left">
+        <div class="cal2-item cal2-item-a">
+          <div class="cal2-label">
+            <div class="cal2-label-dot"></div>
+            <div class="cal2-label-content">
+              Select Drapery Header Style
+            </div>
+            {% if section.settings.help_link_a != blank %}
+              <a
+                href="{{ section.settings.help_link_a }}"
+                target="_blank"
+                class="cal2-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <select value="PinchPleat/TailorPleat/FrenchPleat/Goblet">
+            <option data-weight="2.2">Pinch Pleat/Tailor Pleat/French Pleat/ Goblet/ Grommet</option>
+            <option data-weight="2.2">Triple Pinch Pleat/Triple Tailor Pleat/Triple French Pleat</option>
+            <option data-weight="3">Soft Top(Rod Pocket)</option>
+          </select>
+        </div>
+
+        <div class="cal2-item cal2-item-b">
+          <div class="cal2-label">
+            <div class="cal2-label-dot"></div>
+            <div class="cal2-label-content">
+              Single Panel Order Width(inch)
+            </div>
+            {% if section.settings.help_link_b != blank %}
+              <a
+                href="{{ section.settings.help_link_b }}"
+                target="_blank"
+                class="cal2-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="inch"
+            value=""
+            min="0"
+            step="0.1"
+            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 46 && event.target.value.indexOf('.') === -1))" />
+        </div>
+
+        <div class="cal2-item cal2-item-c">
+          <div class="cal2-label">
+            <div class="cal2-label-dot"></div>
+            <div class="cal2-label-content">
+              Single Panel Order Length(inch)
+            </div>
+            {% if section.settings.help_link_c != blank %}
+              <a
+                href="{{ section.settings.help_link_c }}"
+                target="_blank"
+                class="cal2-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="inch"
+            value=""
+            min="0"
+            step="0.1"
+            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 46 && event.target.value.indexOf('.') === -1))" />
+        </div>
+
+        <div class="cal2-item cal2-item-d">
+          <div class="cal2-label">
+            <div class="cal2-label-dot"></div>
+            <div class="cal2-label-content">
+              Fabric Collection
+            </div>
+            {% if section.settings.help_link_d != blank %}
+              <a
+                href="{{ section.settings.help_link_d }}"
+                target="_blank"
+                class="cal2-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <select value="Lena-Linen">
+            <option data-weight="390">Lena-Linen</option>
+            <option data-weight="326">Liam - Linen</option>
+            <option data-weight="360">Livia - Linen</option>
+            <option data-weight="530">Layla - Linen</option>
+            <option data-weight="332">Leona -Linen</option>
+            <option data-weight="143">Lull - Linen</option>
+            <option data-weight="210">Leah - Linen</option>
+            <option data-weight="376">Lucan - Linen</option>
+            <option data-weight="176">Leya - Linen</option>
+            <option data-weight="483">Levi - Linen</option>
+            <option data-weight="563">Luna - Linen</option>
+            <option data-weight="308">Lyra - Blackout</option>
+            <option data-weight="240">Lark - Linen</option>
+            <option data-weight="343">Lucien - Linen</option>
+            <option data-weight="410">Lumi - Linen</option>
+            <option data-weight="316">Cassandra - Cotton</option>
+            <option data-weight="540">Cyrus - Cotton</option>
+            <option data-weight="470">Cosette - Cotton</option>
+            <option data-weight="285">Cloud - Cotton</option>
+            <option data-weight="411">Waelyn - Wool</option>
+            <option data-weight="211">Winslet - Wool</option>
+            <option data-weight="386">Willa - Wool</option>
+            <option data-weight="378">Winola - Wool</option>
+            <option data-weight="333">Weyra - Wool</option>
+            <option data-weight="417">Wesley - Wool</option>
+            <option data-weight="228">Waverley - Wool</option>
+            <option data-weight="105">Silk Chic - Sheer</option>
+            <option data-weight="114">Keegan Kids - Sheer</option>
+            <option data-weight="120">Wynona - Sheer</option>
+            <option data-weight="443">Vance - Velvet</option>
+            <option data-weight="229">Vivian - Velvet</option>
+            <option data-weight="220">Veron - Velvet</option>
+            <option data-weight="315">Valoria - Velvet</option>
+            <option data-weight="410">Valerie - Velvet</option>
+            <option data-weight="110">Freya - Fireproof</option>
+            <option data-weight="440">Frida - Fireproof</option>
+            <option data-weight="504">Briar - Botanical</option>
+            <option data-weight="526">Blair - Botanical</option>
+            <option data-weight="401">Tarryn - Textured</option>
+            <option data-weight="176">Tessa - Textured</option>
+            <option data-weight="308">Athena - Artisan</option>
+          </select>
+        </div>
+
+        <div class="cal2-item cal2-item-e">
+          <div class="cal2-label">
+            <div class="cal2-label-dot"></div>
+            <div class="cal2-label-content">
+              Lining Type
+            </div>
+            {% if section.settings.help_link_e != blank %}
+              <a
+                href="{{ section.settings.help_link_e }}"
+                target="_blank"
+                class="cal2-label-help-link">
+                <img
+                  src="{{ 'cozy-calculator-help.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </a>
+            {% endif %}
+          </div>
+          <select value="Unlined">
+            <option data-weight="0">Unlined</option>
+            <option data-weight="63">Light Privary Liner | 30-40% Blackout</option>
+            <option data-weight="174">Standard Privacy Liner | 40-50% Blackout</option>
+            <option data-weight="218">Medium Room Darkening Liner | 70-80% Blackout</option>
+            <option data-weight="250">Standard Room Darkening Liner | 80-90% Blackout</option>
+            <option data-weight="314">Triple Weave Heavyweight Thermal Liner | 95-98% Blackout</option>
+            <option data-weight="122">Lightweight Waterproof Blackout Liner | 100% Blackout</option>
+            <option data-weight="236">Standard Blackout Liner | 100% Blackout</option>
+          </select>
+        </div>
+
+        <button class="cal2-btn">
+          CALCULATE
+        </button>
+
+        <div class="cal2-result">
+          <div class="cal2-result-item">
+            <div class="cal2-result-item-title">
+              <span>Weight Per Panel</span>
+            </div>
+            <div class="cal2-result-item-res">
+              -
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if section.settings.right_block_image %}
+        <div class="cozy-cal2-block cozy-cal2-block-right">
+          <img
+            src="{{ section.settings.right_block_image | img_url: 'master' }}"
+            alt="{{ section.settings.right_block_image.alt | default: 'Calculator Image' }}"
+            class="cal2-right-image">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'cozy-calculator2.js' | asset_url }}" defer></script>
+
+{% schema %}
+  {
+    "name": "Cozy Calculator2",
+    "tag": "section",
+    "class": "cozy-calculator2",
+    "settings": [
+      {
+        "type": "text",
+        "id": "header_title",
+        "label": "Header Title",
+        "default": "Calculate Weight"
+      },
+      {
+        "type": "text",
+        "id": "header_subtitle",
+        "label": "Header Subtitle",
+        "default": "Calculate the weight per panel (hardware weight not included)"
+      },
+      {
+        "type": "image_picker",
+        "id": "right_block_image",
+        "label": "Right Block Image",
+        "info": "Select an image to display in the right block"
+      },
+      {
+        "type": "url",
+        "id": "help_link_a",
+        "label": "Help Link A - Select Drapery Header Style",
+        "info": "Link for the help icon in Select Drapery Header Style section"
+      }, {
+        "type": "url",
+        "id": "help_link_b",
+        "label": "Help Link B - Single Panel Order Width",
+        "info": "Link for the help icon in Single Panel Order Width section"
+      }, {
+        "type": "url",
+        "id": "help_link_c",
+        "label": "Help Link C - Single Panel Order Length",
+        "info": "Link for the help icon in Single Panel Order Length section"
+      }, {
+        "type": "url",
+        "id": "help_link_d",
+        "label": "Help Link D - Fabric Collection",
+        "info": "Link for the help icon in Fabric Collection section"
+      }, {
+        "type": "url",
+        "id": "help_link_e",
+        "label": "Help Link E - Lining Type",
+        "info": "Link for the help icon in Lining Type section"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Cozy Calculator2",
+        "category": "Cozy Calculator"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,1010 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+    #sp-{{ section.id }} {
+        --sp-section-background-color: {{ settings.section_background_color }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: "null" }};
+        --sp-section-text-color: {{ settings.section_text_color | default: "transparent" }};
+
+        background-color: var(--sp-section-background-color);
+        background-image: var(--sp-section-background-gradient-color);
+
+        --sp-item-gap: {{ settings.item_gap_desktop }}px;
+        --sp-pagination-color: {{ settings.pagination_color }};
+        --sp-pagination-highlight-color: {{ settings.pagination_highlight_color }};
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-carousel-outer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: var(--sp-item-gap);
+    }
+
+    #sp-{{ section.id }} .sp-heading-wrapper {
+        --sp-section-heading-width: 0rem;
+        max-width: var(--sp-section-heading-width);
+    }
+
+    #sp-{{ section.id }} .sp-carousel-item {
+        --sp-item-padding: 35px 30px;
+        --sp-testimonial-rating-size: {{ settings.rating_score_size }}px;
+        --sp-testimonial-avatar-size: {{ settings.avatar_size }}px;
+
+        --sp-testimonial-background-color: {{ settings.item_background_color }};
+        --sp-testimonial-shadow-color: {{ settings.item_shadow_color.red }}, {{ settings.item_shadow_color.green }},{{ settings.item_shadow_color.blue }};
+        --sp-testimonial-rating-color: {{ settings.item_rating_color }};
+
+        --sp-testimonial-text-size: {{ settings.item_text_size }}px;
+        --sp-testimonial-text-color: {{ settings.item_text_color }};
+        --sp-testimonial-author-size: {{ settings.item_author_size }}px;
+        --sp-testimonial-author-color: {{ settings.item_author_color }};
+        --sp-testimonial-description-size: {{ settings.item_description_size }}px;
+        --sp-testimonial-description-color: {{ settings.item_description_color }};
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: var(--sp-item-padding);
+        background-color: var(--sp-testimonial-background-color);
+        box-shadow: 0 6px 20px 0 rgba(var(--sp-testimonial-shadow-color), 0.3);
+        text-align: center;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-carousel-wrapper {
+        overflow-x: hidden;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-rating {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 3px;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-rating svg {
+        width: var(--sp-testimonial-rating-size);
+        height: var(--sp-testimonial-rating-size);
+        fill: var(--sp-testimonial-rating-color);
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-avatar {
+        position: relative;
+        width: var(--sp-testimonial-avatar-size);
+        height: var(--sp-testimonial-avatar-size);
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-avatar svg,
+    #sp-{{ section.id }} .sp-testimonial-avatar img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-rating + .sp-testimonial-text {
+        margin-top: 25px;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-text {
+        color: var(--sp-testimonial-text-color);
+        font-size: var(--sp-testimonial-text-size);
+        line-height: 1.5;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-avatar {
+        margin-top: 20px;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-author {
+        margin-top: 5px;
+        color: var(--sp-testimonial-author-color);
+        font-size: var(--sp-testimonial-author-size);
+        line-height: 1;
+    }
+
+    #sp-{{ section.id }} .sp-testimonial-description {
+        margin-top: 5px;
+        color: var(--sp-testimonial-description-color);
+        font-size: var(--sp-testimonial-description-size);
+        line-height: 1;
+    }
+
+    #sp-{{ section.id }} .swiper-pagination {
+        width: 80px;
+        position: static;
+        margin: 25px auto 0;
+        transform: none;
+    }
+
+    #sp-{{ section.id }} .swiper-pagination-bullet {
+        background-color: var(--sp-pagination-color);
+    }
+
+    #sp-{{ section.id }} .swiper-pagination-bullet.swiper-pagination-bullet-active {
+        background-color: var(--sp-pagination-highlight-color);
+    }
+
+    @media (max-width: 767px) {
+        #sp-{{ section.id }} {
+            --sp-item-gap: {{ settings.item_gap_mobile }}px;
+        }
+
+        #sp-{{ section.id }} .sp-carousel-item {
+            --sp-item-padding: 25px var(--sp-column-mobile-padding);
+            --sp-testimonial-rating-size: {{ settings.rating_score_size_mobile }}px;
+            --sp-testimonial-avatar-size: {{ settings.avatar_size_mobile }}px;
+        }
+    }
+
+</style>
+
+<link rel="stylesheet" href="{{ 'sp-swiper-bundle.min.css' | asset_url }}">
+<script data-id="swiper-bundle" src="{{ 'sp-swiper-bundle.min.js' | asset_url }}"></script>
+
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-testimonial-carousel-1"
+     data-section="testimonial-carousel-1"
+     data-variant="variant-2" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}">
+    <div class="sp-section sp-relative sp-section-overflow"
+         data-border="{{ settings.section_border }}">
+        <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-testimonial-carousel-outer">
+                {% assign heading_block = section.blocks | where: 'type', 'heading_item' %}
+                {% for block in heading_block %}
+                    {% assign setting = block.settings %}
+                    <div class="sp-heading-outer {{ setting.heading_position }}" {{ block.shopify_attributes }}>
+                        <style>
+                            {% assign heading_settings = block.settings %}
+                            {% assign heading_selector = section.id | prepend:"#sp-" | append:" .sp-heading-wrapper" %}
+                            
+    {{ heading_selector }} {
+        --sp-section-heading-size: {{ heading_settings.heading_size_mobile }}px;
+        --sp-section-description-size: {{ heading_settings.description_size_mobile }}px;
+        --sp-heading-letter-spacing: {{ heading_settings.text_heading_spacing | default: 0 }}px;
+        --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.6 }};
+
+    }
+    @media (min-width: 768px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.8 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop | times: 0.8 }}px;
+            --sp-section-description-size: max({{ heading_settings.description_size_desktop | times: 0.8 }}px, {{ heading_settings.description_size_mobile }}px);
+        }
+    }
+
+    @media (min-width: 1200px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop }}px;
+            --sp-section-description-size: {{ heading_settings.description_size_desktop }}px;
+        }
+    }
+
+                        </style>
+                        <div class="sp-heading-wrapper"
+                             style="--sp-section-heading-width: {{ setting.heading_max_width | divided_by: 10.0 }}rem">
+                            {% if setting.sub_heading != blank %}
+                                <h5 class="sp-sub-heading {{ setting.sub_heading_size | default: "sp-sub-heading-size-medium" }}">{{ setting.sub_heading }}</h5>
+                            {% endif %}
+                            {% if setting.heading != blank %}
+                                <h2 class="sp-heading">{{ setting.heading }}</h2>
+                            {% endif %}
+                            {% if setting.description != blank and setting.description != '<p></p>' %}
+                                <div class="sp-description">{{ setting.description }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="sp-testimonial-carousel-wrapper" data-plugin="swiper"
+                     data-auto-play="{{ settings.auto_play }}" data-items="{{ settings.number_item_showing }}">
+                    <div class="swiper-wrapper">
+                        {% assign carousel_items = section.blocks | where: 'type', 'testimonial_item' %}
+                        {% assign count = carousel_items.size %}
+                        {% if count > 0 %}
+                            {% if count < 12 %}
+                                {% assign page = 12 | divided_by: count | plus: 1 %}
+                                {% for i in (1..page) %}
+                                    {% for block in carousel_items %}
+                                        {% assign setting = block.settings %}
+                                        <div class="swiper-slide">
+                                            <div id="{{ block.id }}"
+                                                 class="sp-carousel-item" {{ block.shopify_attributes }}>
+                                                <div class="sp-testimonial-rating">
+                                                    {% for i in (1..setting.rating_score) %}
+                                                        <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                             fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                        </svg>
+                                                    {% endfor %}
+                                                </div>
+                                                <h4 class="sp-testimonial-text body-font">{{ setting.text }}</h4>
+                                                <div class="sp-testimonial-avatar">
+                                                    {% if setting.avatar != null %}
+                                                        {{ setting.avatar | image_url: width: 512 | image_tag }}
+                                                    {% else %}
+                                                        {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="sp-testimonial-author heading-font">{{ setting.author }}</div>
+                                                <div class="sp-testimonial-description body-font">{{ setting.description_text }}</div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                {% for block in carousel_items %}
+                                    {% assign setting = block.settings %}
+                                    <div class="swiper-slide">
+                                        <div id="{{ block.id }}"
+                                             class="sp-carousel-item" {{ block.shopify_attributes }}>
+                                            <div class="sp-testimonial-rating">
+                                                {% for i in (1..setting.rating_score) %}
+                                                    <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                    </svg>
+                                                {% endfor %}
+                                            </div>
+                                            <h4 class="sp-testimonial-text body-font">{{ setting.text }}</h4>
+                                            <div class="sp-testimonial-avatar">
+                                                {% if setting.avatar != null %}
+                                                    {{ setting.avatar | image_url: width: 512 | image_tag }}
+                                                {% else %}
+                                                    {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="sp-testimonial-author heading-font">{{ setting.author }}</div>
+                                            <div class="sp-testimonial-description body-font">{{ setting.description_text }}</div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                        {% else %}
+                            {% for i in (1..12) %}
+                                <div class="swiper-slide">
+                                    <div class="sp-carousel-item">
+                                        <div class="sp-testimonial-rating">
+                                            {% for i in (1..5) %}
+                                                <svg class="sp-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M11.4789 3.37002C11.6504 2.87666 12.3481 2.87666 12.5196 3.37002L14.4639 8.9634C14.5395 9.18104 14.7427 9.32861 14.973 9.3333L20.8934 9.45395C21.4157 9.4646 21.6313 10.1282 21.215 10.4437L16.4962 14.0213C16.3126 14.1605 16.235 14.3993 16.3018 14.6198L18.0165 20.2877C18.1678 20.7877 17.6033 21.1978 17.1746 20.8995L12.3139 17.5171C12.1248 17.3855 11.8737 17.3855 11.6846 17.5171L6.82398 20.8995C6.39525 21.1978 5.83077 20.7877 5.98202 20.2877L7.69679 14.6198C7.76351 14.3993 7.68593 14.1605 7.50231 14.0213L2.78351 10.4437C2.36729 10.1282 2.5829 9.4646 3.10511 9.45395L9.02553 9.3333C9.2559 9.32861 9.45901 9.18104 9.53466 8.9634L11.4789 3.37002Z"/>
+                                                </svg>
+                                            {% endfor %}
+                                        </div>
+                                        <h4 class="sp-testimonial-text body-font">Lorem ipsum dolor sit amet,
+                                            consectetur
+                                            adipiscing elit</h4>
+                                        <div class="sp-testimonial-avatar">
+                                            {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray' }}
+                                        </div>
+                                        <div class="sp-testimonial-author heading-font">David Mores</div>
+                                        <div class="sp-testimonial-description body-font">Freelance business</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Testimonial carousel 2",
+	"tag": "section",
+	"class": "sp-testimonial-carousel-1",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "range",
+			"id": "item_gap_desktop",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Items gap (Desktop)",
+			"default": 50
+		},
+		{
+			"type": "range",
+			"id": "item_gap_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Items gap (Mobile)",
+			"default": 35
+		},
+		{
+			"type": "header",
+			"content": "Carousel settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "auto_play",
+			"label": "Auto play",
+			"default": true
+		},
+		{
+			"type": "range",
+			"id": "number_item_showing",
+			"min": 2,
+			"max": 5,
+			"step": 1,
+			"unit": "px",
+			"label": "Number of items displayed",
+			"default": 5
+		},
+		{
+			"type": "header",
+			"content": "Testimonial settings"
+		},
+		{
+			"type": "range",
+			"id": "rating_score_size",
+			"min": 10,
+			"max": 50,
+			"step": 1,
+			"unit": "px",
+			"label": "Rating score size (Desktop)",
+			"default": 26
+		},
+		{
+			"type": "range",
+			"id": "rating_score_size_mobile",
+			"min": 10,
+			"max": 50,
+			"step": 1,
+			"unit": "px",
+			"label": "Rating score size (Mobile)",
+			"default": 22
+		},
+		{
+			"type": "range",
+			"id": "avatar_size",
+			"min": 50,
+			"max": 150,
+			"step": 1,
+			"unit": "px",
+			"label": "Avatar size (Desktop)",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "avatar_size_mobile",
+			"min": 50,
+			"max": 150,
+			"step": 1,
+			"unit": "px",
+			"label": "Avatar size (Mobile)",
+			"default": 80
+		},
+		{
+			"type": "header",
+			"content": "Testimonial text styling"
+		},
+		{
+			"type": "range",
+			"id": "item_text_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Text size (Desktop)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_text_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Text size (Mobile)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_author_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Author text size (Desktop)",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "item_author_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Author text size (Mobile)",
+			"default": 16
+		},
+		{
+			"type": "range",
+			"id": "item_description_size",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Description text size (Desktop)",
+			"default": 14
+		},
+		{
+			"type": "range",
+			"id": "item_description_size_mobile",
+			"min": 8,
+			"max": 64,
+			"step": 1,
+			"unit": "px",
+			"label": "Description text size (Mobile)",
+			"default": 14
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"default": "full_width_no_gap",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Top padding (Desktop)",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Bottom padding (Desktop)",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Top padding (Mobile)",
+			"default": 50
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"unit": "px",
+			"label": "Bottom padding (Mobile)",
+			"default": 50
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section colors"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background color",
+			"default": "#ff51fc"
+		},
+		{
+			"type": "color",
+			"id": "section_text_color",
+			"label": "Text color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "header",
+			"content": "Testimonial colors"
+		},
+		{
+			"type": "color",
+			"id": "item_background_color",
+			"label": "Background color",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "item_shadow_color",
+			"label": "Box shadow color",
+			"default": "#acacac"
+		},
+		{
+			"type": "color",
+			"id": "item_rating_color",
+			"label": "Rating color",
+			"default": "#e6bb35"
+		},
+		{
+			"type": "color",
+			"id": "item_text_color",
+			"label": "Text color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_author_color",
+			"label": "Author color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "color",
+			"id": "item_description_color",
+			"label": "Description color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Pagination colors"
+		},
+		{
+			"type": "color",
+			"id": "pagination_color",
+			"label": "Dot color",
+			"default": "#acacac"
+		},
+		{
+			"type": "color",
+			"id": "pagination_highlight_color",
+			"label": "Highlighted dot color",
+			"default": "#1e1e1e"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "poppins_n6"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "poppins_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Heading",
+			"type": "heading_item",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "This block will always show the priority at the top"
+				},
+				{
+					"type": "header",
+					"content": "Section heading"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "sub_heading",
+					"label": "Subheading"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "Testimonials"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p></p>"
+				},
+				{
+					"type": "select",
+					"id": "heading_position",
+					"label": "Heading alignment",
+					"options": [
+						{
+							"label": "Left",
+							"value": "sp-heading-alignment-left"
+						},
+						{
+							"label": "Center",
+							"value": "sp-heading-alignment-center"
+						},
+						{
+							"label": "Right",
+							"value": "sp-heading-alignment-right"
+						}
+					],
+					"default": "sp-heading-alignment-center"
+				},
+				{
+					"type": "select",
+					"id": "sub_heading_size",
+					"label": "Sub heading size",
+					"options": [
+						{
+							"label": "Small",
+							"value": "sp-sub-heading-size-small"
+						},
+						{
+							"label": "Medium",
+							"value": "sp-sub-heading-size-medium"
+						},
+						{
+							"label": "Large",
+							"value": "sp-sub-heading-size-large"
+						}
+					],
+					"default": "sp-sub-heading-size-medium"
+				},
+				{
+					"type": "range",
+					"id": "heading_size_desktop",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Desktop)",
+					"default": 48
+				},
+				{
+					"type": "range",
+					"id": "heading_size_mobile",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Mobile)",
+					"default": 36
+				},
+				{
+					"type": "range",
+					"id": "description_size_desktop",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Desktop)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "description_size_mobile",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Mobile)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "heading_spacing_scale",
+					"min": 50,
+					"max": 200,
+					"step": 10,
+					"unit": "%",
+					"label": "Heading spacing scale",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "text_heading_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text heading letter spacing",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "heading_max_width",
+					"min": 300,
+					"max": 950,
+					"step": 10,
+					"unit": "px",
+					"label": "Heading max-width",
+					"default": 650
+				}
+			]
+		},
+		{
+			"name": "Testimonial item",
+			"type": "testimonial_item",
+			"settings": [
+				{
+					"type": "range",
+					"id": "rating_score",
+					"min": 1,
+					"max": 5,
+					"step": 1,
+					"label": "Rating score",
+					"default": 5
+				},
+				{
+					"type": "image_picker",
+					"id": "avatar",
+					"label": "Avatar icon"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "text",
+					"label": "Testimonial text",
+					"default": "Awesome support system I have got from shine pages highly recommend to new users of shopify they are much helpful"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "author",
+					"label": "Author",
+					"default": "Fabway Clothing"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "description_text",
+					"label": "Description text",
+					"default": "India"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Testimonial carousel 2",
+			"settings": {
+				"item_gap_desktop": 50,
+				"item_gap_mobile": 35,
+				"auto_play": true,
+				"number_item_showing": 5,
+				"rating_score_size": 26,
+				"rating_score_size_mobile": 22,
+				"avatar_size": 60,
+				"avatar_size_mobile": 80,
+				"item_text_size": 14,
+				"item_text_size_mobile": 14,
+				"item_author_size": 16,
+				"item_author_size_mobile": 16,
+				"item_description_size": 14,
+				"item_description_size_mobile": 14,
+				"section_width": "full_width_no_gap",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_top_padding_mobile": 50,
+				"section_bottom_padding_mobile": 50,
+				"section_border": false,
+				"lazy_load": false,
+				"section_background_gradient_color": "",
+				"section_background_color": "#ff51fc",
+				"section_text_color": "#ffffff",
+				"item_background_color": "#ffffff",
+				"item_shadow_color": "#acacac",
+				"item_rating_color": "#e6bb35",
+				"item_text_color": "#1e1e1e",
+				"item_author_color": "#1e1e1e",
+				"item_description_color": "#1e1e1e",
+				"pagination_color": "#acacac",
+				"pagination_highlight_color": "#1e1e1e",
+				"override_font": true,
+				"heading_font": "poppins_n6",
+				"body_font": "poppins_n4"
+			},
+			"blocks": [
+				{
+					"type": "heading_item",
+					"settings": {
+						"sub_heading": "",
+						"heading": "Testimonials",
+						"description": "",
+						"heading_position": "sp-heading-alignment-center",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 48,
+						"heading_size_mobile": 36,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"heading_max_width": 650
+					}
+				},
+				{
+					"type": "testimonial_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-carousel-1-variant-1-image-1.jpg",
+						"text": "Finally found the one that provides so PUNCH !!! Has just about everything you need to make your store look clean & professional",
+						"author": "Tefui",
+						"description_text": "Fiji"
+					}
+				},
+				{
+					"type": "testimonial_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-carousel-1-variant-1-image-2.jpg",
+						"text": "Very satisfied! Trung helped me when I couldn't install sections after purchase and also made a really good special offer!",
+						"author": "Lindstor",
+						"description_text": "Finland"
+					}
+				},
+				{
+					"type": "testimonial_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-carousel-1-variant-1-image-3.jpg",
+						"text": "Lots of customization options. Needed some slight CSS coding done and they were able to help me out quickly.",
+						"author": "Macarons",
+						"description_text": "United States"
+					}
+				},
+				{
+					"type": "testimonial_item",
+					"settings": {
+						"rating_score": 5,
+						"avatar": "shopify://shop_images/testimonial-carousel-1-variant-1-image-4.jpg",
+						"text": "Awesome support system I have got from shine pages highly recommend to new users of shopify they are much helpful",
+						"author": "Fabway Clothing",
+						"description_text": "India"
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	
+{% endstyle %}
+<script>
+!function(){function t(){var e=document.getElementById("sp-{{ section.id }}");e&&(e=e.querySelector(".sp-testimonial-carousel-wrapper"),new Swiper(e,{effect:"coverflow",centeredSlides:!0,navigation:{nextEl:e.querySelector('.sp-navigation-button[data-arrow="right"]'),prevEl:e.querySelector('.sp-navigation-button[data-arrow="left"]')},pagination:{el:".swiper-pagination",dynamicBullets:!0},speed:600,loopAdditionalSlides:3,loopedSlides:3,loop:!0,autoplay:"true"===e.dataset.autoPlay,slidesPerView:"auto",coverflowEffect:{rotate:0,stretch:0,depth:200,modifier:1,slideShadows:!1},initialSlide:3,breakpoints:{320:{slidesPerView:1.5},768:{slidesPerView:3},1024:{slidesPerView:e.dataset.items||5}}}))}window.addEventListener("DOMContentLoaded",e=>{t()}),Shopify&&Shopify?.designMode&&t()}(document);
+</script>

@@ -1,0 +1,111 @@
+<div id="section-id-{{ section.id }}">
+  <div class="cp-six-container">
+    <div class="cpsix-wrapper">
+      <div class="cpsix-corner-top-left"></div>
+      <div class="cpsix-corner-bottom-right"></div>
+      <h1 class="cpsix-title">{{ section.settings.title }}</h1>
+      {% if section.settings.takeaways %}
+        <div class="cpsix-body">
+          <div class="cpsix-prefix">-</div>
+          <div class="cpsix-content">{{ section.settings.takeaways }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .cp-six-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 0;
+    background-color: #fff;
+  }
+
+  .cpsix-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 28px 0;
+    position: relative;
+  }
+
+  .cpsix-corner-top-left {
+    width: 10px;
+    height: 15px;
+    border-top: 2px solid #8B7461;
+    border-left: 2px solid #8B7461;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .cpsix-corner-bottom-right {
+    width: 10px;
+    height: 15px;
+    border-bottom: 2px solid #8B7461;
+    border-right: 2px solid #8B7461;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .cpsix-title {
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+    color: #8B7461;
+    font-style: italic;
+  }
+
+  .cpsix-body {
+    display: flex;
+    column-gap: 10px;
+    align-items: start;
+  }
+
+  .cpsix-prefix {
+    font-weight: bolder;
+  }
+
+
+  @media (max-width: 768px) {
+    .cp-six-container {
+      width: 100%;
+      margin: 0 auto;
+      padding: 15px;
+      background-color: #fff;
+    }
+
+    .cpsix-wrapper {
+      width: 100%;
+      padding: 16px 16px 0;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Collaborations-Six",
+    "tag": "section",
+    "class": "Collaborations-Six",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Designer’s Takeaways"
+      }, {
+        "type": "richtext",
+        "id": "takeaways",
+        "label": "Takeaways",
+        "info": "Enter takeaways here"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collaborations-Six",
+        "category": "Collaborations-Project"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,686 @@
+{% comment %} 核心逻辑部分 {% endcomment %}
+{%- liquid
+  # 获取当前产品对象
+  assign current_collection = section.settings.source_product_collection
+  assign target_collection = null
+  # 获取当前产品的 Feature Sample Product 元字段
+  assign feature_sample_product = product.metafields.custom.feature_sample_product.value
+-%}
+{% if current_collection %}
+  {% for collection in collections %}
+    {% if collection.id == current_collection.id %}
+      {% assign target_collection = collection %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% if target_collection %}
+  {% assign target_collection_products = target_collection.products %}
+  {% assign target_collection_metafields = target_collection.metafields.custom %}
+{% endif %}
+
+{%- if target_collection -%}
+  <div class="container">
+    <div id="section-id-{{ section.id }}" class="collection-sample-wrapper">
+      {% if section.settings.right_image_left_text %}
+        <div class="left-side">
+          <div class="collection-sample-title"></div>
+          <div class="collection-sample-description"></div>
+          <div class="product-grid-wrapper_ctp"></div>
+          <div class="pagination-wrapper desktop-only">
+            <div class="pagination-wrapper-widget"></div>
+          </div>
+          {% if feature_sample_product.handle %}
+            <div class="pagination-wrapper-btn">
+              <a class="btn btn-primary" href="/products/{{ feature_sample_product.handle }}">
+                {{- section.settings.button_text -}}
+              </a>
+            </div>
+          {% endif %}
+          <div class="pagination-arrow pagination-arrow-left">
+            <img src="{{ 'arrow-top.png' |  asset_url  }}" alt="上一页" width="32px" height="32px" />
+          </div>
+          <div class="pagination-arrow pagination-arrow-right">
+            <img src="{{ 'arrow-top.png' |  asset_url  }}" alt="下一页" width="32px" height="32px" />
+          </div>
+        </div>
+        <div class="right-side">
+          <img class="collection-sample-bigimg">
+        </div>
+      {% else %}
+        <div class="right-side">
+          <img class="collection-sample-bigimg">
+        </div>
+        <div class="left-side">
+          <div class="collection-sample-title"></div>
+          <div class="collection-sample-description"></div>
+          <div class="product-grid-wrapper_ctp"></div>
+          <div class="pagination-wrapper desktop-only">
+            <div class="pagination-wrapper-widget"></div>
+          </div>
+          {% if feature_sample_product.handle %}
+            <div class="pagination-wrapper-btn">
+              <a class="btn btn-primary" href="/products/{{ feature_sample_product.handle }}">
+                {{- section.settings.button_text -}}
+              </a>
+            </div>
+          {% endif %}
+          <div class="pagination-arrow pagination-arrow-left">
+            <img src="{{ 'arrow-top.png' |  asset_url  }}" alt="上一页" width="32px" height="32px" />
+          </div>
+          <div class="pagination-arrow pagination-arrow-right">
+            <img src="{{ 'arrow-top.png' |  asset_url  }}" alt="下一页" width="32px" height="32px" />
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{%- endif -%}
+
+<script>
+  // 使用立即执行函数包裹代码
+  (function() {
+    var targetCollection = {{ target_collection | json }}; // 当前合集
+    var targetCollectionProducts = {{ target_collection_products | json }}; // 合集下的所有产品
+    var targetCollectionMetafields = {{ target_collection_metafields | json }}; // 合集的 metafields
+    var featureSampleProduct = {{ feature_sample_product | json }}; // 获取上一个 section 的 Feature Sample Product
+    // console.log("目标合集:", targetCollection);
+    // console.log("目标合集所有商品:", targetCollectionProducts);
+    // console.log("目标合集元字段:", targetCollectionMetafields);
+    // console.log("目标合集元字段Feature Sample Product:", featureSampleProduct);
+    var _page = 1;
+    var _size = window.innerWidth < 768 ? 999 : 6;    
+    var _total = targetCollectionProducts.length || 0;
+    var currentHitProduct = null;
+    var collectionTitle = targetCollectionMetafields._title || "";
+    var collectionDescription = targetCollectionMetafields._text || "";
+    const productGrid = document.querySelector(".product-grid-wrapper_ctp"); // 商品容器
+    const collectionSampleBigimg = document.querySelector(".collection-sample-bigimg"); // 大图容器
+    const paginationWrapperWidget = document.querySelector(".pagination-wrapper-widget"); // 分页容器
+    const titleDom = document.querySelector(".collection-sample-title"); // 标题容器
+    const descriptionDom = document.querySelector(".collection-sample-description"); // 描述容器
+    // 渲染标题和正文
+    function renderTitleAndDes() {
+      titleDom.innerText = collectionTitle;
+      descriptionDom.innerText = collectionDescription;
+    }
+    // 渲染大图src
+    function setBigImgSrc(src) {
+      collectionSampleBigimg.setAttribute('src', src);
+    }
+    // 渲染分页
+    function renderPaginate() {
+      const pageNum = Math.ceil(_total / _size); // 总按钮数
+      paginationWrapperWidget.innerHTML = ''; // 清空之前的分页内容
+      for (let i = 1; i <= pageNum; i += 1) {
+        const button = document.createElement('button');
+        button.addEventListener('click', () => handlePaginate(i));
+        paginationWrapperWidget.appendChild(button);
+        if (i === _page) {
+          button.classList.add('current');
+        }
+      }
+    }
+    // 点击小图
+    function handleClick(event, product) {
+      const productGridItemDoms = document.querySelectorAll(".product-grid-item");
+      productGridItemDoms.forEach((item) => {
+        item.classList.remove("product-grid-item-active");
+      });
+      const targetElement = event.currentTarget || event.target.closest('.product-grid-item');
+      if (targetElement) {
+        targetElement.classList.add("product-grid-item-active");
+      }
+      const src = product.media[1]?.preview_image?.src || product.media[0]?.preview_image?.src || "";
+      setBigImgSrc(src);
+    }
+    // 点击分页
+    function handlePaginate(page) {
+      console.log("点击分页", page);
+      _page = page;
+      render();
+    }
+    // 左右箭头翻页点击事件处理
+    function initArrowNavigation() {
+      const leftArrow = document.querySelector('.pagination-arrow-left');
+      const rightArrow = document.querySelector('.pagination-arrow-right');
+      if (leftArrow) {
+        leftArrow.addEventListener('click', function() {
+          goToPreviousPage();
+        });
+      }
+      if (rightArrow) {
+        rightArrow.addEventListener('click', function() {
+          goToNextPage();
+        });
+      }
+    }
+    // 上一页
+    function goToPreviousPage() {
+      if (_page > 1) {
+        _page--;
+        render();
+      }
+    }
+    // 下一页
+    function goToNextPage() {
+      const totalPages = Math.ceil(_total / _size);
+      if (_page < totalPages) {
+        _page++;
+        render();
+      }
+    }
+    // 更新箭头状态（禁用/启用）
+    function updateArrowStates() {
+      const leftArrow = document.querySelector('.pagination-arrow-left');
+      const rightArrow = document.querySelector('.pagination-arrow-right');
+      const totalPages = Math.ceil(_total / _size);
+      if (leftArrow) {
+        if (_page <= 1) {
+          leftArrow.classList.add('disabled');
+        } else {
+          leftArrow.classList.remove('disabled');
+        }
+      }
+      if (rightArrow) {
+        if (_page >= totalPages) {
+          rightArrow.classList.add('disabled');
+        } else {
+          rightArrow.classList.remove('disabled');
+        }
+      }
+    }
+    // 渲染
+    function render() {
+      // 计算当前页的起始和结束索引
+      var startIndex = (_page - 1) * _size;
+      var endIndex = Math.min(_page * _size, _total);
+      // 获取当前页的产品列表
+      var currentPageProducts = targetCollectionProducts.slice(startIndex, endIndex);
+      console.log("当前页的产品：", currentPageProducts);
+      productGrid.innerHTML = ''; // 清空之前的内容
+      currentPageProducts.forEach((product, index) => {
+        // 渲染每个产品（根据你的需求，可以创建HTML元素）
+        const imgEl = document.createElement('img'); // 产品图片
+        const imgSrc = product.media[0].preview_image.src
+        imgEl.src = product.media[0].preview_image.src;
+        imgEl.width = 140;
+        const productNameEl = document.createElement('div'); // 产品名称
+        productNameEl.classList.add('product-grid-item__name');
+        let nameElTextContent = "";
+        if (product.title) {
+            const splitTitle = product.title.split("|");
+            nameElTextContent = splitTitle?.[1] || splitTitle?.[0]
+        }
+        productNameEl.textContent = nameElTextContent;
+        const addToCartEl = document.createElement('button'); // 添加到购物车按钮
+        addToCartEl.classList.add('product-grid-item__add');
+        addToCartEl.textContent = '+';
+        addToCartEl.addEventListener('click', (e) => handleAddToCart(e, product));
+        const divEl = document.createElement('div'); // 产品容器
+        divEl.classList.add('product-grid-item');
+        divEl.appendChild(imgEl);
+        divEl.appendChild(productNameEl);
+        divEl.appendChild(addToCartEl);
+        divEl.addEventListener('click', (e) => handleClick(e, product));
+        productGrid.appendChild(divEl);
+        if (index === 0) {
+          setBigImgSrc(product.media[1]?.preview_image?.src || product.media[0]?.preview_image?.src || "")
+        }
+      });
+      renderPaginate();
+      updateArrowStates();
+    }
+    // 获取所有颜色
+    function getAllColor() {
+      console.log("获取所有颜色", window.location);
+      console.log("获取所有颜色", targetCollectionMetafields);
+      const getAllColorsGid = targetCollectionMetafields.get_all_colors;
+      // if (!getAllColorsGid) return;
+      return;
+      // 提取出数字部分的产品 ID
+      var productId = getAllColorsGid.split('/').pop();  // 通过分割字符串，提取最后部分
+      // 构建跳转链接
+      var shopUrl = `${window.location.origin}/products/${productId}`;
+      // 跳转到产品页面
+      window.location.href = shopUrl;
+    }
+    // 取消按钮加载状态
+    function btnLoading(button){
+      button.classList.remove('btn-loading');
+      button.disabled = false; // 恢复按钮状态
+    }
+    // 添加到购物车
+    async function handleAddToCart(event, product) {
+      event.stopPropagation();
+      console.log("添加到购物车当前商品", product);
+      currentHitProduct = product;
+      const productId = product?.variants?.[0]?.id;
+      const button = event.target;
+      console.log("button-----", button);
+      button.classList.add('btn-loading');
+      button.disabled = true; // 禁用按钮以防止重复点击
+      await addToCart(productId, button);
+      // document.dispatchEvent(
+      //   // 打开购物车抽屉
+      //   new CustomEvent('dispatch:cart-drawer:open', { bubbles: true, cancelable: false })
+      // );
+      // document.dispatchEvent(new CustomEvent('on:cart:add',{bubbles:!0,detail:{variantId:product.id}}))
+    }
+    // 通过 Shopify Ajax API 将产品添加到购物车
+    async function addToCart(productId, button) {      
+      const data = {
+        items: [
+          {
+            id: productId, // 产品ID
+            quantity: 1 // 默认添加数量为1
+          }
+        ]
+      };
+      // 发起 AJAX 请求
+      await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Product added to cart:', data);
+        // window.location.href = '/cart';
+        // window.location.reload()
+        {% comment %} updateCartCount(button) {% endcomment %}
+      })
+      .catch(error => {
+        btnLoading(button)
+        console.error('Error adding product to cart:', error);
+      });
+    }
+    // 更新购物车数量
+    function updateCartCount(button) {
+      fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => {
+          const cartCount = cart.item_count; // 获取购物车中的总商品数量
+          console.log("购物车中的总商品数量", cart);
+          refreshCartDrawer(cartCount,button)
+        })
+        .catch(error => {
+          btnLoading(button)
+          console.error('Error updating cart count:', error);
+        });
+    }
+    // 更新购物车弹窗的内容
+    function refreshCartDrawer(cartCount,button) {
+      fetch('/cart', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      })
+        .then(response => response.text())
+        .then(html => {
+          console.log("刷新购物车弹窗内容", html);
+  
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          // reloadCartFooter()
+          if(cartCount <= 1) {// 当购物车是空的时候 特殊处理，先隐藏空样式，再把购物车内容取消隐藏
+            const elements = document.querySelectorAll(
+              '.cart-drawer__content--hidden, .cart-drawer__footer--hidden, .cart-drawer__empty-content--hidden'
+            );
+            elements.forEach(element => {
+              element.classList.remove('cart-drawer__content--hidden');
+              element.classList.remove('cart-drawer__footer--hidden');
+              element.classList.remove('cart-drawer__empty-content--hidden');
+            });
+            const emptyContent = document.querySelector('.cart-drawer__empty-content'); 
+            emptyContent.classList.add('cart-drawer__empty-content--hidden');
+          }
+  
+          // 找到购物车的内容容器（根据主题结构调整选择器）
+          const newCartContent = tempDiv.querySelector('.cart-item-list'); // `.cart-item-list` 是购物车内容的容器
+          let cartContentContainer = document.querySelector('.cart-item-list');
+          cartContentContainer.innerHTML = newCartContent.innerHTML; // 更新购物车内
+          const cartIcon = document.querySelector('.cart-drawer__title'); // 找到购物车数字的 DOM 元素
+          const cartCountIncon = document.querySelector('.cart-link__count'); // 找到购物车数字的 DOM 元素
+  
+          if (cartIcon) {
+            cartIcon.innerHTML = ` Your cart <span class="cart-drawer__title-count">(${cartCount})</span>`  ;
+          }
+          if (cartCountIncon) {
+            cartCountIncon.textContent = cartCount  ;
+          }
+          btnLoading(button)
+          // 打开购物车弹窗
+          document.querySelector('.js-cart-drawer').open();
+      })
+      .catch(error => {
+         btnLoading(button)
+        console.error(error);
+  
+      });
+    }
+    renderTitleAndDes();
+    render();
+    initArrowNavigation();
+  })();
+</script>
+
+{% comment %} 样式部分 {% endcomment %}
+<style>
+   .collection-sample-wrapper {
+     margin: 2rem auto;
+     width: 100%;
+     display: flex;
+     /* justify-content: center; */
+     /* flex-wrap: wrap; */
+     gap: 35px;
+     font-family: Arial, sans-serif;
+   }
+
+   .left-side {
+     width: 60%;
+     /* padding: 0 60px; */
+     position: relative;
+   }
+
+   .right-side {
+     width: 40%;
+     /* padding: 0 30px; */
+     display: flex;
+     align-items: center;
+   }
+
+   .right-side img {
+     width: 100%;
+     max-width: 500px;
+     object-fit: contain;
+   }
+
+   .collection-sample-title {
+     width: 100%;
+     font-size: 34px;
+     font-family: American_bt, Arial, sans-serif;
+     font-weight: normal;
+     color: #171717;
+     text-align: left;
+     font-style: normal;
+     text-transform: none;
+     padding: 0;
+     line-height: 34px;
+   }
+
+   .collection-sample-description {
+     font-family: "Nunito Sans"
+     , sans-serif;
+     font-weight: 400;
+     font-size: 16px;
+     color: #333;
+     line-height: 22px;
+     text-align: left;
+     font-style: normal;
+     text-transform: none;
+     padding: 0 0 16px;
+   }
+
+   .product-grid-wrapper_ctp {
+     width: 100%;
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     /* 每行3列 */
+     min-height: 342px;
+     /* 子元素水平居中 */
+     justify-items: center;
+   }
+   .product-grid-item {
+     text-align: center;
+     position: relative;
+     cursor: pointer;
+     width: 140px;
+   }
+   .product-grid-item-active img {
+     border: 1px solid !important;
+   }
+   .product-grid-item span {
+     font-size: 12px;
+   }
+   .product-grid-item .product-grid-item__name {
+     font-family: "Nunito Sans"
+     , sans-serif;
+     font-size: 12px;
+     color: #333;
+   }
+   .product-grid-item .product-grid-item__add {
+     width: 26px;
+     height: 26px;
+     line-height: 26px;
+     text-align: center;
+     border-radius: 13px;
+     font-size: 14px;
+     font-weight: bold;
+     position: absolute;
+     top: 8px;
+     right: 8px;
+     background-color: #fff;
+     color: #666666;
+   }
+
+   /* @media (max-width: 1440px) {
+     .left-side {
+       width: 60%;
+     }
+     .right-side {
+       width: 40%;
+     }
+   } */
+
+   /* @media (max-width: 1250px) {
+     .left-side {
+       width: 450px;
+       padding: 0 15px;
+     }
+     .product-grid-item {
+       width: 125px;
+     }
+   } */
+
+   /* @media (max-width: 967px) {
+     .right-side {
+       width: 450px;
+       padding: 0 15px;
+     }
+   }
+  */
+   @media (max-width: 768px) {
+    .collection-sample-wrapper {
+      display: flex;
+      gap: 8px;
+      padding-bottom: 210px;
+      position: relative;
+      margin-bottom: 90px;
+      flex-direction: column;
+    }
+    .collection-sample-title {
+      padding: 0 0 16px;
+    }
+    .collection-sample-description {
+      padding: 0 0 16px;
+    }
+    .product-grid-wrapper_ctp {
+      display: flex;
+      gap: 15px;
+      overflow: auto;
+      padding: 0;
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      min-height: auto;
+    }
+    .product-grid-item {
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .left-side {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+      position: static;
+    }
+    .right-side {
+      width: 100%;
+      padding: 0;
+    }
+    .pagination-wrapper {
+      margin-top: 0;
+      /* justify-content: center; */
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      padding: 0;
+      /* flex-direction: column; */
+    }
+    .pagination-wrapper-btn {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+
+   /* 分页导航样式 */
+   .pagination-wrapper {
+     width: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding: 0;
+   }
+   .pagination-wrapper-widget {
+     text-align: center;
+     padding: 20px 0;
+     display: flex;
+   }
+   .pagination-wrapper-widget button,
+   .pagination-wrapper-widget span {
+     margin: 0 5px;
+     display: block;
+     width: 12px;
+     height: 12px;
+     border-radius: 50%;
+     border: 1px solid #C7C7C7;
+     position: relative;
+   }
+   .pagination-wrapper-widget .current {
+     border: 1px solid #232323 !important;
+   }
+   .pagination-wrapper-widget .current::after {
+     content: '';
+     display: block;
+     position: absolute;
+     width: 6px;
+     height: 6px;
+     border-radius: 50%;
+     background-color: #232323;
+     top: 2px;
+     left: 2px;
+   }
+   .pagination-arrow {
+     width: 32px;
+     height: 32px;
+     cursor: pointer;
+     user-select: none;
+     position: absolute;
+     top: 50%;
+     transform: translateY(-24px);
+   }
+   .pagination-arrow.pagination-arrow-left {
+     left: 0;
+   }
+   .pagination-arrow.pagination-arrow-right {
+     right: 0;
+   }
+   .pagination-arrow.pagination-arrow-left img {
+     transform: rotate(-90deg);
+   }
+   .pagination-arrow.pagination-arrow-right img {
+     transform: rotate(90deg);
+   }
+   .pagination-arrow.disabled {
+     opacity: 0.3;
+     cursor: not-allowed;
+     pointer-events: none;
+   }
+   .pagination-wrapper-btn {
+     display: flex;
+     justify-content: center;
+   }
+   /* 使用伪元素 ::after 创建旋转效果 */
+   .btn-loading::after {
+     content: '';
+     /* 必须设置 content 属性才能显示伪元素 */
+     position: absolute;
+     top: 20%;
+     left: 20%;
+     width: 16px;
+     height: 16px;
+     border: 2px solid transparent;
+     /* 透明边框 */
+     border-top: 2px solid #878787;
+     /* 顶部边框使用蓝色 */
+     border-radius: 50%;
+     /* 圆形 */
+     animation: spin 1s linear infinite;
+     /* 旋转动画 */
+   }
+
+   /* 旋转动画的关键帧 */
+   @keyframes spin {
+     0% {
+       transform: rotate(0deg);
+       /* 初始状态，旋转角度为0 */
+     }
+     100% {
+       transform: rotate(360deg);
+       /* 最终状态，旋转360度 */
+     }
+   }
+</style>
+
+{% schema %}
+{
+  "name": "产品关联集合",
+  "tag": "section",
+  "class": "collection-from-product-section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "source_product_collection",
+      "label": "选择关联产品系列"
+    }, {
+      "type": "text",
+      "label": "跳转按钮Label",
+      "id": "button_text",
+      "default": "GET ALL COLORS - $9.99"
+    }, {
+      "type": "checkbox",
+      "id": "right_image_left_text",
+      "label": "右图左字",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "产品关联集合",
+      "category": "产品页面"
+    }
+  ]
+}
+{% endschema %}

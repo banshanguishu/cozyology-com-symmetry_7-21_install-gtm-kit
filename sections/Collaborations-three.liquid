@@ -1,0 +1,96 @@
+<div id="section-id-{{ section.id }}" class="cp-three-container">
+  <div class="cpthree-left">
+    <h1 class="cpthree-left-title">{{ section.settings.title }}</h1>
+    <div class="cpthree-left-content">{{ section.settings.content }}</div>
+  </div>
+  <div class="cpthree-right">
+    {%- render 'image' with section.settings.image
+      , size_cols_desktop: 2
+      , custom_aspect_ratio: 1
+    -%}
+  </div>
+</div>
+
+<style>
+  .cp-three-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+    display: flex;
+    align-items: center;
+    gap: 80px;
+  }
+
+  .cpthree-left {
+    flex: 1;
+    padding: 45px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+    justify-content: center;
+    border-left: 4px solid #BBB3AB;
+  }
+
+  .cpthree-left-title {
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+    color: #8B7461;
+    text-align: left;
+    font-style: normal;
+    text-transform: uppercase;
+  }
+
+  .cpthree-right {
+    width: 500px;
+  }
+
+  @media (max-width: 768px) {
+    .cp-three-container {
+      padding: 25px 15px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cpthree-left {
+      padding: 10px;
+      row-gap: 0;
+    }
+
+    .cpthree-right {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Collaborations-Three",
+    "tag": "section",
+    "class": "Collaborations-Three",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Design Process and Collaboration with Cozyology"
+      }, {
+        "type": "richtext",
+        "id": "content",
+        "label": "Content",
+        "default": "<p>Content right here </p>"
+      }, {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Select the main image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collaborations-Three",
+        "category": "Collaborations-Project"
+      }
+    ]
+  }
+{% endschema %}

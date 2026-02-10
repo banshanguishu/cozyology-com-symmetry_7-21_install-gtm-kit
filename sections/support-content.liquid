@@ -1,0 +1,599 @@
+<div class="support-container" id="section-id-{{ section.id }}">
+  <div class="contact">
+    {% if section.settings.email_link != blank %}
+      <a href="{{ section.settings.email_link }}" target="_blank">
+    {% endif %}
+        <div class="contact-item email-item">
+          <div class="image">
+            <img src="{{ "support-email.svg" | asset_url }}" width="100%" height="100%" />
+          </div>
+          <div class="text">
+            <div class="title">Email</div>
+            <div class="text-divider"></div>
+            <div class="desc">{{ section.settings.email_label }}</div>
+          </div>
+        </div>
+    {% if section.settings.email_link != blank %}
+      </a>
+    {% endif %}
+    <div class="contact-divider"></div>
+    {% if section.settings.phone_link != blank %}
+      <a href="{{ section.settings.phone_link }}" target="_blank">
+    {% endif %}
+        <div class="contact-item phone-item">
+          <div class="image">
+            <img src="{{ "support-phone.svg" | asset_url }}" width="100%" height="100%" />
+          </div>
+          <div class="text">
+            <div class="title">Phone</div>
+            <div class="text-divider"></div>
+            <div class="desc">{{ section.settings.phone_label }}</div>
+          </div>
+        </div>
+    {% if section.settings.phone_link != blank %}
+      </a>
+    {% endif %}
+    <div class="contact-divider"></div>
+    <div class="contact-item message-item">
+      <div class="image">
+        <img src="{{ "support-message.svg" | asset_url }}" width="100%" height="100%" />
+      </div>
+      <div class="text">
+        <div class="title">Leave a Message</div>
+        <div class="text-divider"></div>
+        <div class="desc">{{ section.settings.message_label }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="help">
+    <div class="content-title">Get Help</div>
+    {% if section.settings.help_link != blank %}
+      <a href="{{ section.settings.help_link }}" target="_blank">
+    {% endif %}
+      <img src="{{ "support-1-1@2x.webp" | asset_url }}" class="help-image-web" width="100%" height="100%" />
+      <img src="{{ "support-mobile-1-1@2x.png" | asset_url }}" class="help-image-mobile" width="100%" height="100%" />
+    {% if section.settings.help_link != blank %}
+      </a>
+    {% endif %}
+  </div>
+  <div class="content-row">
+    <div class="content-title">How to measure (Tools & Calculators)</div>
+    <div class="content-items">
+      <div class="content-item">
+        {% if section.settings.measure_link_1 != blank %}
+          <a href="{{ section.settings.measure_link_1 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-2-1@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_1 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.measure_link_2 != blank %}
+          <a href="{{ section.settings.measure_link_2 }}" target="_blank">
+        {% endif %}
+        <img src="{{ "support-2-2@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_2 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.measure_link_3 != blank %}
+          <a href="{{ section.settings.measure_link_3 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-2-3@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_3 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.measure_link_4 != blank %}
+          <a href="{{ section.settings.measure_link_4 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-2-4@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_4 != blank %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="content-row">
+    <div class="content-title">How to measure (Instructions)</div>
+    <div class="content-items">
+      <div class="content-item">
+        {% if section.settings.measure_link_5 != blank %}
+          <a href="{{ section.settings.measure_link_5 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-3-1@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_5 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.measure_link_6 != blank %}
+          <a href="{{ section.settings.measure_link_6 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-3-2@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_6 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.measure_link_7 != blank %}
+          <a href="{{ section.settings.measure_link_7 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-3-3@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.measure_link_7 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item" style="opacity: 0"></div>
+    </div>
+  </div>
+  <div class="content-row">
+    <div class="content-title">Installation</div>
+    <div class="content-items">
+      <div class="content-item">
+        {% if section.settings.installation_link_1 != blank %}
+          <a href="{{ section.settings.installation_link_1 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-4-1@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.installation_link_1 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.installation_link_2 != blank %}
+          <a href="{{ section.settings.installation_link_2 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-4-2@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.installation_link_2 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item" style="opacity: 0"></div>
+      <div class="content-item" style="opacity: 0"></div>
+    </div>
+  </div>
+  <div class="content-row">
+    <div class="content-title">Select</div>
+    <div class="content-items">
+      <div class="content-item">
+        {% if section.settings.select_link_1 != blank %}
+          <a href="{{ section.settings.select_link_1 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-5-1@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.select_link_1 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.select_link_2 != blank %}
+          <a href="{{ section.settings.select_link_2 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-5-2@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.select_link_2 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.select_link_3 != blank %}
+          <a href="{{ section.settings.select_link_3 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-5-3@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.select_link_3 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.select_link_4 != blank %}
+          <a href="{{ section.settings.select_link_4 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-5-4@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.select_link_4 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.select_link_5 != blank %}
+          <a href="{{ section.settings.select_link_4 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-5-5@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.select_link_5 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item" style="opacity: 0"></div>
+      <div class="content-item" style="opacity: 0"></div>
+      <div class="content-item" style="opacity: 0"></div>
+    </div>
+  </div>
+  <div class="content-row">
+    <div class="content-title">Production Details</div>
+    <div class="content-items">
+      <div class="content-item">
+        {% if section.settings.product_link_1 != blank %}
+          <a href="{{ section.settings.product_link_1 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-6-1@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.product_link_1 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.product_link_2 != blank %}
+          <a href="{{ section.settings.product_link_2 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-6-2@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.product_link_2 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.product_link_3 != blank %}
+          <a href="{{ section.settings.product_link_3 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-6-3@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.product_link_3 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.product_link_4 != blank %}
+          <a href="{{ section.settings.product_link_4 }}" target="_blank">
+        {% endif %}
+          <img src="{{ "support-6-4@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.product_link_4 != blank %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="content-item">
+        {% if section.settings.product_link_5 != blank %}
+          <a href="{{ section.settings.product_link_5 }}" target="_blank">
+        {% endif %}      
+          <img src="{{ "support-6-5@2x.webp" | asset_url }}" width="100%" height="100%" />
+        {% if section.settings.product_link_5 != blank %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .support-container {
+      padding: 80px 300px;
+      display: flex;
+      flex-direction: column;
+      row-gap: 20px;
+    }
+    .support-container .contact {
+      padding: 47px 96px;
+      background-color: #f9f5f3;
+      display: flex;
+      justify-content: space-between;
+    }
+    .support-container .contact-item {
+      display: flex;
+      align-items: center;
+      column-gap: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+    .support-container .contact-divider {
+      width: 1px;
+      background-color: #bbb3ab;
+    }
+    .contact .image {
+      width: 46px;
+      height: 46px;
+    }
+    .contact-item .text {
+      color: #171717 !important;
+    }
+    .contact-item .text .title {
+      font-size: 24px;
+      position: relative;
+      margin: 0;
+    }
+    .content-title {
+      font-size: 24px;
+      color: #171717;
+      margin-bottom: 8px;
+      font-family: American_bt, Arial, sans-serif;
+    }
+    .help-image-mobile {
+      display: none;
+    }
+    .content-items {
+      display: flex;
+      column-gap: 32px;
+      row-gap: 30px;
+      flex-wrap: wrap;
+    }
+    .content-item {
+      flex: 0 0 calc(25% - 24px);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .content-item:hover {
+      border-bottom: 2px solid #000;
+    }
+
+    /* 3. 平板横屏 + 小屏桌面（可选，灵活调整） */
+    @media (min-width: 992px) and (max-width: 1300px) {
+      /* 平板横屏 + 13寸笔记本小窗口样式 */
+      .support-container {
+         padding: 40px;
+      }
+      .support-container .contact {
+        padding: 16px 47px !important;
+      }
+      .support-container .contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        row-gap: 8px;
+      }
+      .contact-item .text .title {
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 991px) {
+      /* 平板竖屏样式 */
+      .support-container {
+         padding: 40px;
+      }
+      .support-container .contact {
+        padding: 16px 47px !important;
+      }
+      .support-container .contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        row-gap: 8px;
+      }
+      .contact-item .text .title {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .support-container {
+        padding: 28px 12px;
+      }
+      .contact {
+        padding: 24px !important;
+        flex-direction: column;
+      }
+      .support-container .contact-item {
+        align-items: center;
+        column-gap: 12px;
+      }
+      .contact-divider {
+        width: 100% !important;
+        height: 1px !important;
+        margin: 16px 0;
+      }
+      .contact .image {
+        width: 26px;
+        height: 26px;
+      }
+      .contact-item .text {
+        display: flex;
+        align-items: center;
+      }
+      .contact-item .text .title,
+      .contact-item .text .desc {
+        font-size: 14px;
+      }
+      .text-divider {
+        width: 1px;
+        height: 14px;
+        background-color: #bbb3ab;
+        margin: 0 8px;
+      }
+      .content-title {
+        font-weight: bold;
+        font-size: 18px;
+        color: #171717;
+      }
+      .help-image-mobile {
+        display: block;
+      }
+      .help-image-web {
+        display: none;
+      }
+      .content-items {
+          gap: 16px;
+      }
+      .content-item {
+        flex: 0 0 calc(50% - 13px);
+      }
+    }
+
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const message_box_list = document.getElementsByClassName('contact-item message-item')
+    if (message_box_list[0]) {
+      const message_box = message_box_list[0]
+      message_box.addEventListener("click", () => {
+        const target_btns = document.getElementsByClassName('bcontact-trigger-button bcontact-trigger-button-has-icon')
+        if (target_btns && target_btns.length) {
+            Array.from(target_btns).forEach((btn) => {
+                btn?.click?.()
+            })
+        }
+      })
+    }
+  })
+</script>
+
+{% schema %}
+{
+  "name": "Support Content",
+  "class": "support-content",
+  "settings": [
+    {
+        "type": "text",
+        "id": "email_label",
+        "label": "Email Label",
+        "default": "Care@cozyology"
+    },
+    {
+        "type": "url",
+        "id": "email_link",
+        "label": "Email Link",
+        "info": "Link for the Email"
+    },
+    {
+        "type": "text",
+        "id": "phone_label",
+        "label": "Phone Label",
+        "default": "+1（252）365-6888"
+    },
+    {
+        "type": "url",
+        "id": "phone_link",
+        "label": "Phone Link",
+        "info": "Link for the Phone"
+    },
+    {
+        "type": "text",
+        "id": "message_label",
+        "label": "Message Label",
+        "default": "We'll reply within 24 hours"
+    },
+    {
+        "type": "url",
+        "id": "help_link",
+        "label": "Help Link",
+        "info": "Link for the Help"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_1",
+        "label": "Measure Link 1",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_2",
+        "label": "Measure Link 2",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_3",
+        "label": "Measure Link 3",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_4",
+        "label": "Measure Link 4",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_5",
+        "label": "Measure Link 5",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_6",
+        "label": "Measure Link 6",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "measure_link_7",
+        "label": "Measure Link 7",
+        "info": "Link for the Measure"
+    },
+    {
+        "type": "url",
+        "id": "installation_link_1",
+        "label": "Installation Link 1",
+        "info": "Link for the installation"
+    },
+    {
+        "type": "url",
+        "id": "installation_link_2",
+        "label": "Installation Link 2",
+        "info": "Link for the installation"
+    },
+    {
+        "type": "url",
+        "id": "select_link_1",
+        "label": "Select Link 1",
+        "info": "Link for the Select"
+    },
+    {
+        "type": "url",
+        "id": "select_link_2",
+        "label": "Select Link 2",
+        "info": "Link for the Select"
+    },
+    {
+        "type": "url",
+        "id": "select_link_3",
+        "label": "Select Link 3",
+        "info": "Link for the Select"
+    },
+    {
+        "type": "url",
+        "id": "select_link_4",
+        "label": "Select Link 4",
+        "info": "Link for the Select"
+    },
+    {
+        "type": "url",
+        "id": "select_link_5",
+        "label": "Select Link 5",
+        "info": "Link for the Select"
+    },
+    {
+        "type": "url",
+        "id": "product_link_1",
+        "label": "Product Link 1",
+        "info": "Link for the product"
+    },
+    {
+        "type": "url",
+        "id": "product_link_2",
+        "label": "Product Link 2",
+        "info": "Link for the product"
+    },
+    {
+        "type": "url",
+        "id": "product_link_3",
+        "label": "Product Link 3",
+        "info": "Link for the product"
+    },
+    {
+        "type": "url",
+        "id": "product_link_4",
+        "label": "Product Link 4",
+        "info": "Link for the product"
+    },
+    {
+        "type": "url",
+        "id": "product_link_5",
+        "label": "Product Link 5",
+        "info": "Link for the product"
+    },
+  ],
+  "presets": [
+    {
+      "name": "Support Content",
+      "settings": {}
+    }
+  ]
+}
+{% endschema %}

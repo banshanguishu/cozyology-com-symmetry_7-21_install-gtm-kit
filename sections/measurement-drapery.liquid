@@ -1,0 +1,965 @@
+{% schema %}
+{
+  "name": "测量工具Drapery",
+  "settings": [
+    {
+      "type": "url",
+      "id": "shop_now_url",
+      "label": "Shop Now URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "测量工具Drapery"
+    }
+  ]
+}
+{% endschema %}
+<script>
+  window.CozyologyConfig_Drapery = {
+        shopNowUrl: 'https://cozyology.com',
+        stepTitles: {
+          'step-1': 'Choose Header Style',
+          'step-2': 'Specify the Width',
+          'step-3': 'Specify the Height',
+          'step-4': 'Panels',
+        },
+        resultTexts: {
+          orderInstructions: '',
+          screenshotReminder:
+            'For your records, please <span class="text-[#ba6352]">take a screenshot</span> before proceeding.',
+          finishedTitle: 'Your recommended Single Panel Order Size is',
+          finishedTitleOfRippleFold: 'Your recommended Total Coverage Size is',
+        },
+        contactDetails: `<div class="font-bold text-black">Need quick 1-on-1 help?</div>
+                <div class="mt-[10px] text-gray-500">
+                  <div>
+                    Book a <a
+                      href="https://cozyology.com/products/complimentary-1-on-1-zoom-consultation"
+                      class="text-[#ba6352] underline"
+                      target="_blank"
+                    >
+                      complimentary Zoom </br> consultation
+                    </a>
+                    . Or <a onclick="openEmailPlugin()" class="cursor-pointer text-[#ba6352] underline " target="_blank">
+                     leave us a message
+                    </a>
+                  </div>
+                  <div> 
+                    — we’ll reply within 24 hours </br>
+                    Email: consult@cozyology.com
+                  </div>
+                </div>`,
+        contactDetailsMobile: `<div class="font-bold text-black">Need quick 1-on-1 help?</div>
+                <div class="text-gray-500 mt-[10px]">
+                  Book a <a
+                    href="https://cozyology.com/products/complimentary-1-on-1-zoom-consultation"
+                    class="text-[#ba6352] underline"
+                    target="_blank"
+                  >
+                     complimentary Zoom consultation
+                  </a>
+                  . </br>
+                  Or<a
+                    onclick="openEmailPlugin()"
+                    class="text-[#ba6352] underline cursor-pointer"
+                    target="_blank"
+                  >
+                    leave us a message
+                  </a> — we’ll reply within 24 hours Email: care@cozyology.com
+                </div>`,
+        contactBookNowUrl: 'https://cozyology.com/products/complimentary-1-on-1-zoom-consultation',
+        measurementConfig: {
+          'step-1': {
+            type: 'select',
+            title: 'Which Drape Header Style Do You Prefer?',
+            options: [
+              {
+                id: 'pleated',
+                title: 'PLEATED',
+                imageClass: 'image-pleated',
+                alt: 'Pleated',
+                description: 'For a luxurious full look<br />· Double pinch pleat <br />· Triple pinch pleat',
+                detailUrl: 'https://cozyologycurtains.com/pages/header#pleat',
+                additionalInfo: `Pleated: Measure from the rod to the floor. We automatically subtract 1 inches for the ring's radius.`,
+                jump: 'step-2-0-0',
+              },
+              {
+                id: 'ripple-fold',
+                title: 'RIPPLE FOLD',
+                imageClass: 'image-ripple-fold',
+                alt: 'RIPPLE FOLD',
+                description: 'For a modern, flowing look <br />· Even, wave-like folds <br />· Belt hook system',
+                detailUrl: 'https://cozyologycurtains.com/pages/header#ripplefold',
+                additionalInfo: `Ripple Fold: Measure from the bottom of the rod to the floor. The tool will automatically subtract 5/8 inch for header clearance.`,
+                jump: 'step-2-2-8',
+              },
+              {
+                id: 'soft-top',
+                title: 'SOFT TOP',
+                imageClass: 'image-soft-top',
+                alt: 'Soft Top',
+                description: 'For a soft natural look<br />· Rod Pocket<br />· Back tab',
+                detailUrl: 'https://cozyologycurtains.com/pages/header#softtop',
+                additionalInfo: `Soft Top: Measure from the rod to the floor. We automatically add 0.9 inches for the rod's diameter.`,
+                jump: 'step-2-0',
+              },
+              {
+                id: 'grommets',
+                title: 'GROMMET',
+                imageClass: 'image-grommets',
+                alt: 'Grommet',
+                description: 'For a structured modern look <br />· Grommet',
+                detailUrl: 'https://cozyologycurtains.com/pages/header#grommet',
+                additionalInfo: `Grommet: Measure from the rod to the floor. We automatically add 2.8 inches for the ring's radius.`,
+                jump: 'step-2-0',
+              },
+            ],
+          },
+          'step-2-0': {
+            type: 'select',
+            title: 'Drapery Rod Installed?',
+            options: [
+              {
+                id: 'rod-installed-yes',
+                title: 'YES',
+                imageClass: 'image-drapery-02-9',
+                description: 'I have a rod installed already',
+                jump: 'step-2-1-2',
+              },
+              {
+                id: 'rod-installed-no',
+                title: 'NO',
+                imageClass: 'image-drapery-02-2',
+                description: `I don't have a rod installed yet<br /><span style="color: #999">For more accurate measurement, we recommend you have the rod or track installed</span>`,
+                jump: 'step-2-2-0',
+              },
+            ],
+          },
+          'step-2-0-0': {
+            type: 'select',
+            title: 'Drapery Rod or Track Installed?',
+            options: [
+              {
+                id: 'rod-or-track-installed-yes',
+                title: 'YES',
+                imageClass: 'image-drapery-02-9',
+                description: 'I have a rod / track installed already',
+                jump: 'step-2-0-2',
+              },
+              {
+                id: 'rod-or-track-installed-no',
+                title: 'NO',
+                imageClass: 'image-drapery-02-2',
+                description: `I don't have a rod / track installed yet<br /><span style="color: #999">For more accurate measurement, we recommend you have the rod or track installed</span>`,
+                jump: 'step-2-0-1',
+              },
+            ],
+          },
+          'step-2-0-1': {
+            type: 'select',
+            title: 'Which Hardware Do You Prefer?',
+            options: [
+              {
+                id: 'hardware-Rod',
+                title: 'ROD',
+                imageClass: 'image-drapery-02-6',
+                description: 'For standard decorative curtain rods<br />without internal runners.',
+                jump: 'step-2-2-1',
+              },
+              {
+                id: 'hardware-Track',
+                title: 'TRACK',
+                imageClass: 'image-drapery-02-7',
+                description: `Using a <b>traverse rod with runners</b>?<br />Please select <b>Track</b>.`,
+                {% comment %} featureLink: {
+                  content: 'Learn Why &rarr;',
+                  link: 'https://cozyology.com/',
+                }, {% endcomment %}
+                jump: 'step-2-2-5',
+              },
+            ],
+          },
+          'step-2-0-2': {
+            type: 'select',
+            title: 'Select Your Hardware',
+            options: [
+              {
+                id: 'hardware-Rod-2',
+                title: 'ROD',
+                imageClass: 'image-drapery-02-6',
+                description: 'For standard decorative curtain rods<br />without internal runners.',
+                jump: 'step-2-1-1',
+              },
+              {
+                id: 'hardware-Track-2',
+                title: 'TRACK',
+                imageClass: 'image-drapery-02-7',
+                description: `Using a <b>traverse rod with runners</b>?<br />Please select <b>Track</b>.`,
+                {% comment %} featureLink: {
+                  content: 'Learn Why &rarr;',
+                  link: 'https://cozyology.com/',
+                }, {% endcomment %}
+                jump: 'step-2-2-4',
+              },
+            ],
+          },
+          'step-2-1-1': {
+            type: 'input',
+            title: 'Rod Length?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-3',
+            jump: 'step-3-1-1',
+            options: [
+              {
+                id: 'rod-width-top',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-1-2': {
+            type: 'input',
+            title: 'Rod Length?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-3',
+            jump: 'step-3-1-0',
+            options: [
+              {
+                id: 'rod-width-top-2',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-0': {
+            type: 'input',
+            title: 'Window Width? (Frame outer edge to edge)',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-4',
+            jump: 'step-2-3-2',
+            options: [
+              {
+                id: 'norod-window-width-2',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-1': {
+            type: 'input',
+            title: 'Window Width? (Frame outer edge to edge)',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-4',
+            jump: 'step-2-2-2',
+            options: [
+              {
+                id: 'norod-window-width',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-2': {
+            type: 'input',
+            title: 'Rod Extension Width Beyond Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-5',
+            jump: 'step-3-2-1',
+            description:
+              'Extend 6–15" beyond each side for <a class="text-[#ba6352] underline" target="_blank" href="https://cozyology.com/pages/pleats-quantity-stacked-width">stack space</a> and balance.',
+            options: [
+              {
+                id: 'norod-width-left-extension',
+                title: 'A',
+                label: 'Left Side',
+                min: 0,
+                max: 280,
+              },
+              {
+                id: 'norod-width-right-extension',
+                title: 'B',
+                label: 'Right Side',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-3-2': {
+            type: 'input',
+            title: 'Rod Extension Width Beyond Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-5',
+            jump: 'step-3-2-0',
+            description:
+              'Extend 6–15" beyond each side for <a class="text-[#ba6352] underline" target="_blank" href="https://cozyology.com/pages/pleats-quantity-stacked-width">stack space</a> and balance.',
+            options: [
+              {
+                id: 'norod-width-left-extension-2',
+                title: 'A',
+                label: 'Left Side',
+                min: 0,
+                max: 280,
+              },
+              {
+                id: 'norod-width-right-extension-2',
+                title: 'B',
+                label: 'Right Side',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-3': {
+            type: 'input',
+            title: 'Track Length?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-8',
+            jump: 'step-3-1-4',
+            description:
+              'Measure from the left wall to the right wall, or across the exact area you’d like your curtains to cover.',
+            options: [
+              {
+                id: 'hardware-track-length-1',
+                title: '',
+                label: 'Length',
+                min: 15,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-4': {
+            type: 'input',
+            title: 'Hardware Length?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-10',
+            jump: 'step-3-1-7',
+            options: [
+              {
+                id: 'hardware-track-length-2',
+                title: '',
+                label: 'Length',
+                min: 15,
+                max: 280,
+              },
+            ],
+          },
+          // pleated -> no -> track
+          'step-2-2-5': {
+            type: 'input',
+            title: 'Window Width? (Frame outer edge to edge)',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-4',
+            jump: 'step-2-2-6',
+            additionalInfo: '',
+            options: [
+              {
+                id: 'notrack-window-width',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          // pleated -> no -> track
+          'step-2-2-6': {
+            type: 'input',
+            title: 'Hardware Extension Width Beyond Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-11',
+            jump: 'step-2-2-7',
+            description:
+              'Extend 6–15" beyond each side for <a class="text-[#ba6352] underline" target="_blank" href="https://cozyology.com/pages/pleats-quantity-stacked-width">stack space</a> and balance.',
+            options: [
+              {
+                id: 'notrack-width-left-extension',
+                title: 'A',
+                label: 'Left Side',
+                min: 0,
+                max: 280,
+              },
+              {
+                id: 'notrack-width-right-extension',
+                title: 'B',
+                label: 'Right Side',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          // ceiling mount or wall mount
+          'step-2-2-7': {
+            type: 'select',
+            title: 'How Will Your Hardware Be Installed?',
+            options: [
+              {
+                id: 'hardware-ceiling-mount',
+                title: 'CEILING MOUNT',
+                imageClass: 'image-drapery-03-13',
+                description: 'Brackets are mounted to the ceiling.',
+                jump: 'step-3-1-4',
+              },
+              {
+                id: 'hardware-wall-mount',
+                title: 'WALL MOUNT',
+                imageClass: 'image-drapery-03-14',
+                description: `Brackets are mounted to the wall.`,
+                jump: 'step-3-2-3',
+              },
+            ],
+          },
+          'step-2-2-8': {
+            type: 'input',
+            title: 'Window Width? (Frame outer edge to edge)',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-4',
+            jump: 'step-2-2-9',
+            additionalInfo: '',
+            options: [
+              {
+                id: 'ripplefold-notrack-window-width',
+                title: '',
+                label: 'Width',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-9': {
+            type: 'input',
+            title: 'Hardware Extension Width Beyond Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-02-11',
+            jump: 'step-2-2-10',
+            description:
+              'Extend 6–15" beyond each side for <a class="text-[#ba6352] underline" target="_blank" href="https://cozyology.com/pages/pleats-quantity-stacked-width">stack space</a> and balance.',
+            options: [
+              {
+                id: 'ripplefold-notrack-width-left-extension',
+                title: 'A',
+                label: 'Left Side',
+                min: 0,
+                max: 280,
+              },
+              {
+                id: 'ripplefold-notrack-width-right-extension',
+                title: 'B',
+                label: 'Right Side',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-2-2-10': {
+            type: 'select',
+            title: 'How Will Your Hardware Be Installed?',
+            options: [
+              {
+                id: 'ripplefold-hardware-ceiling-mount',
+                title: 'CEILING MOUNT',
+                imageClass: 'image-drapery-03-13',
+                description: 'Brackets are mounted to the ceiling.',
+                jump: 'step-3-2-6',
+              },
+              {
+                id: 'ripplefold-hardware-wall-mount',
+                title: 'WALL MOUNT',
+                imageClass: 'image-drapery-03-14',
+                description: `Brackets are mounted to the wall.`,
+                jump: 'step-3-2-8',
+              },
+            ],
+          },
+          'step-3-1-1': {
+            type: 'input',
+            title: 'Height from Bottom of Ring Eyelet to Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-1',
+            jump: 'step-3-1-3',
+            options: [
+              {
+                id: 'rod-top-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-1-0': {
+            type: 'input',
+            title: 'Height from Top of Rod to Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-0',
+            jump: 'step-3-1-3',
+            options: [
+              {
+                id: 'rod-top-to-floor-height-2',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-0': {
+            type: 'input',
+            title: 'Window Top to Floor Height?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-2-1',
+            jump: 'step-3-0-2',
+            options: [
+              {
+                id: 'top-to-floor-height-2',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-1': {
+            type: 'input',
+            title: 'Window Top to Floor Height?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-2-1',
+            jump: 'step-3-1-2',
+            options: [
+              {
+                id: 'top-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-0-2': {
+            type: 'input',
+            title: 'Height from Rod to Window Top?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-18',
+            jump: 'step-3-1-3',
+            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
+<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.`,
+            options: [
+              {
+                id: 'rod-extension-above-frame-3',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-1-2': {
+            type: 'input',
+            title: 'Rod Extension Above Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-2',
+            description: `Enter the distance from ring eyelet to window frame (after rod and
+rings are installed).<br /><br /><b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
+<b>Ceiling over 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.`,
+            jump: 'step-3-1-3',
+            options: [
+              {
+                id: 'rod-extension-above-frame',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-1-3': {
+            type: 'select',
+            title: 'Curtain Length Style?',
+            options: [
+              {
+                id: 'length-style-above-floor',
+                title: '1" ABOVE FLOOR',
+                imageClass: 'image-drapery-03-3',
+                description: 'Most recommended<br />Easy upkeep, smooth operation, with a sleek look.',
+                jump: 'step-4-1',
+              },
+              {
+                id: 'length-style-breaks-on-floor',
+                title: 'BREAK ON THE FLOOR',
+                imageClass: 'image-drapery-03-4',
+                description: 'The Custom-Fit<br />A polished appearance, demands precise  measurement.',
+                jump: 'step-4-1',
+              },
+              {
+                id: 'length-style-puddles-on-floor',
+                title: 'SLIGHT PUDDLE ON FLOOR',
+                imageClass: 'image-drapery-03-5',
+                description: 'The Plush Choice<br />Rich and striking, but requires more cleaning',
+                jump: 'step-4-1',
+              },
+            ],
+          },
+          'step-3-1-4': {
+            type: 'input',
+            title: 'Height from Ceiling to Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-6',
+            jump: 'step-3-1-8',
+            // description: `This measurement assumes the track is installed flush to the ceiling. For other installation scenarios, please contact <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>`,
+            options: [
+              {
+                id: 'track-ceiling-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 19,
+                max: 280,
+              },
+            ],
+          },
+          // Hardware visible
+          'step-3-1-5': {
+            type: 'input',
+            title: 'Height from the Bottom of the Hardware to the Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-11',
+            jump: 'step-3-1-3',
+            // description: `If you prefer the curtain to cover the track itself, it's generally not recommended. For more details, please see this <a href="https://cozyology.com/pages/covering-the-track-with-pleated-drapery" target="_blank" style="color: #ba6352; text-decoration: underline;">guide</a>.`,
+            // additionalInfo: `Pleated: we automatically add 3/8"(≈1 cm). This is the small space between the top of the pleat hook and the very top of the curtain header - it will cover your track ring, which is why it's included.<br />`,
+            options: [
+              {
+                id: 'track-bottom-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 19,
+                max: 280,
+              },
+            ],
+          },
+          // Hardware covered
+          'step-3-1-6': {
+            type: 'input',
+            title: 'Height from the Top of the Track to the Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-12',
+            jump: 'step-3-1-3',
+            options: [
+              {
+                id: 'track-top-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 19,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-1-7': {
+            type: 'select',
+            title: 'Hardware Covered or Visible?',
+            options: [
+              {
+                id: 'hardware-visible',
+                title: 'VISIBLE',
+                imageClass: 'image-drapery-03-9',
+                description:
+                  'Hardware remains visible above the curtains<br /><span style="color: #999">Recommended for traverse rods with runners.</span>',
+                jump: 'step-3-1-5',
+              },
+              {
+                id: 'hardware-covered',
+                title: 'COVERED',
+                imageClass: 'image-drapery-03-10',
+                description: `Hardware hidden by the curtains<br /><span style="color: #999">Covering the hardware is not highly recommended.</span>`,
+                {% comment %} featureLink: {
+                  content: 'Learn why &rarr;',
+                  link: 'https://cozyology.com/pages/covering-the-track-with-pleated-drapery',
+                }, {% endcomment %}
+                jump: 'step-3-1-6',
+              },
+            ],
+          },
+          'step-3-1-8': {
+            type: 'select',
+            title: 'Hardware Covered or Visible?',
+            options: [
+              {
+                id: 'hardware-visible-2',
+                title: 'VISIBLE',
+                imageClass: 'image-drapery-03-9',
+                description:
+                  'Hardware remains visible above the curtains<br /><span style="color: #999">Recommended for traverse rods with runners.</span>',
+                jump: 'step-3-2-2',
+              },
+              {
+                id: 'hardware-covered-2',
+                title: 'COVERED',
+                imageClass: 'image-drapery-03-10',
+                description: `Hardware hidden by the curtains<br /><span style="color: #999">Covering the hardware is not highly recommended.</span>`,
+                {% comment %} featureLink: {
+                  content: 'Learn why &rarr;',
+                  link: 'https://cozyology.com/pages/covering-the-track-with-pleated-drapery',
+                }, {% endcomment %}
+                jump: 'step-3-1-3',
+              },
+            ],
+          },
+          'step-3-1-9': {
+            type: 'select',
+            title: 'Hardware Covered or Visible?',
+            options: [
+              {
+                id: 'hardware-visible-3',
+                title: 'VISIBLE',
+                imageClass: 'image-drapery-03-9',
+                description:
+                  'Hardware remains visible above the curtains<br /><span style="color: #999">Recommended for traverse rods with runners.</span>',
+                jump: 'step-3-2-5',
+              },
+              {
+                id: 'hardware-covered-3',
+                title: 'COVERED',
+                imageClass: 'image-drapery-03-10',
+                description: `Hardware hidden by the curtains<br /><span style="color: #999">Covering the hardware is not highly recommended.</span>`,
+                {% comment %} featureLink: {
+                  content: 'Learn why &rarr;',
+                  link: 'https://cozyology.com/pages/covering-the-track-with-pleated-drapery',
+                }, {% endcomment %}
+                jump: 'step-3-1-3',
+              },
+            ],
+          },
+          'step-3-2-2': {
+            type: 'input',
+            title: 'Height from Ceiling to Bottom of Hardware?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-7',
+            jump: 'step-3-1-3',
+            description: `This height equals the ceiling-mount bracket height plus the hardware height (gliders not included). <br /><br />If you select a Cozyology hardware, these values are automatically accounted for in the calculator.`,
+            // additionalInfo:
+            //   'The tool will automatically subtract this measurement to ensure the curtain length is correct. Enter 1 3/8". Most tracks use this distance, and our complimentary adjustable hooks allow fine-tuning.',
+            additionalInfo: '',
+            options: [
+              {
+                id: 'track-ring-ceiling-to-bottom-height',
+                title: '',
+                label: 'Height',
+                isTrackSelector: true,
+              },
+            ],
+          },
+          'step-3-2-3': {
+            type: 'input',
+            title: 'Window Top to Floor Height?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-2-1',
+            jump: 'step-3-2-4',
+            additionalInfo: '',
+            options: [
+              {
+                id: 'wall-mount-top-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-4': {
+            type: 'input',
+            title: 'Hardware Extension Above Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-15',
+            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
+<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.<br /><br />Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>, and we'll help calculate the correct placement for you.`,
+            jump: 'step-3-1-9',
+            options: [
+              {
+                id: 'rod-extension-above-frame-2',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-5': {
+            type: 'input',
+            title: 'Hardware Thickness?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-19',
+            jump: 'step-3-1-3',
+            description: `If you select Cozyology Hardware, these values are automaticall accounted for in the calculator.`,
+            additionalInfo: '',
+            options: [
+              {
+                id: 'track-ring-ceiling-to-bottom-height-2',
+                title: '',
+                label: 'Height',
+                isTrackSelector: true,
+              },
+            ],
+          },
+          'step-3-2-6': {
+            type: 'input',
+            title: 'Height from Ceiling to Floor?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-6',
+            jump: 'step-3-2-7',
+            options: [
+              {
+                id: 'ripplefold-track-ceiling-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 19,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-7': {
+            type: 'input',
+            title: 'Hardware to Install?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-16',
+            jump: 'step-3-1-3',
+            description: `Once you choose your hardware (Cozyology hardware only).the
+tool will automatically factor in the ceiling-to-drapery distance for
+you, as our Ripple Fold system is calibrated specifically for
+Cozyology Ripple Fold tracks.`,
+            additionalInfo: '',
+            options: [
+              {
+                id: 'ripplefold-ring-ceiling-to-bottom-height',
+                title: '',
+                label: 'Height',
+                isSingleSelector: true,
+              },
+            ],
+          },
+          'step-3-2-8': {
+            type: 'input',
+            title: 'Window Top to Floor Height?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-2-1',
+            jump: 'step-3-2-9',
+            additionalInfo: '',
+            options: [
+              {
+                id: 'ripplefold-window-top-to-floor-height',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-9': {
+            type: 'input',
+            title: 'Hardware Extension Above Frame?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-15',
+            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
+<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.<br /><br />Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>, and we'll help calculate the correct placement for you.`,
+            jump: 'step-3-2-10',
+            options: [
+              {
+                id: 'ripplefold-extension-above-frame',
+                title: '',
+                label: 'Height',
+                min: 0,
+                max: 280,
+              },
+            ],
+          },
+          'step-3-2-10': {
+            type: 'input',
+            title: 'Hardware to Install?',
+            subTitle: 'For accuracy, please use a steel measuring tape.',
+            imageClass: 'image-drapery-03-17',
+            jump: 'step-3-1-3',
+            description: `Once you select Cozyology hardware, the tool will automatically account for the distance from the bottom of the hardware to the top of the drapery, as our Ripple Fold system is calibrated specifically for Cozyology Ripple Fold tracks.`,
+            additionalInfo: '',
+            options: [
+              {
+                id: 'ripplefold-how-to-hardware-height',
+                title: '',
+                label: 'Height',
+                isSingleSelector: true,
+              },
+            ],
+          },
+          'step-4-1': {
+            title: 'Single or Split Panels?',
+            type: 'select',
+            options: [
+              {
+                id: 'single-panels',
+                title: 'SINGLE',
+                imageClass: 'image-drapery-04-1',
+                jump: 'step-4-2',
+              },
+              {
+                id: 'split-panels',
+                title: 'SPLIT',
+                imageClass: 'image-drapery-04-2',
+                jump: 'step-4-2',
+              },
+            ],
+          },
+          'step-4-2': {
+            title: '',
+            type: 'finished',
+            options: [],
+          },
+        },
+        trackSelectorOptions: {
+          pleated: {
+            ceiling: [
+              { label: 'Ronan Traverse Rod with Runners – Ceiling Mount', value: '1 1/8', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Taylor Pleated Track - Ceiling Mount', value: '7/8', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' }
+            ],
+            wall: [
+              { label: 'Ronan Traverse Rod with Runners – Wall Mount', value: '1', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Taylor Pleated Track - Wall Mount', value: '3/4', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' }
+            ],
+          },
+        },
+        trackSelectorSingleOptions: {
+          'ripple-fold': {
+            ceiling: [
+              { label: 'Ronan Traverse Rod with Runners – Ceiling Mount', value: '2', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Tyra Ripple Fold Track - Ceiling Mount', value: '5/8', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Talia Ripple Fold Track - Ceiling Mount', value: '1', link: 'https://cozyology.com/products/talia-custom-size-ripple-fold-track' }
+            ],
+            wall: [
+              { label: 'Ronan Traverse Rod with Runners – Wall Mount', value: '7/8', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Tyra Ripple Fold Track - Wall Mount', value: '1/2', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Talia Ripple Fold Track - Wall Mount', value: '5/8', link: 'https://cozyology.com/products/talia-custom-size-ripple-fold-track' }
+            ],
+          },
+        },
+        resultPageTip: 'No further calculation needed - this is the exact size to place the order.',
+      }
+  // 唤起Get in Touch弹窗
+  function openEmailPlugin() {
+      const target_btns = document.getElementsByClassName('bcontact-trigger-button bcontact-trigger-button-has-icon')
+      console.log("target_btns===", target_btns);
+      if (target_btns && target_btns.length) {
+          Array.from(target_btns).forEach((btn) => {
+              btn?.click?.()
+          })
+      }
+  }
+</script>
+<script type="module" src="{{ 'cmt-index.js' | asset_url }}"></script>
+<div id="section-id-{{ section.id }}" class="container">
+  <cozyology-measurement-tool data-style-url="{{ 'cmt-index.css' | asset_url }}" type="drapery">
+    <div style="height: 670px;"></div>
+  </cozyology-measurement-tool>
+</div>

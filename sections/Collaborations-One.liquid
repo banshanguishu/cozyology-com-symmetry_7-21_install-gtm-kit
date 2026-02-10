@@ -1,0 +1,280 @@
+<div id="section-id-{{ section.id }}" class="cpone-one-container">
+  <div class="is-web">
+    <div class="cpone-project-showcase">
+      <div class="cpone-image-section">
+        {%- render 'image' with section.settings.project_image
+          , size_cols_desktop: 2
+          , custom_aspect_ratio: 1.7
+        -%}
+      </div>
+
+      <div class="cpone-project-info">
+        <div class="cpone-project-details">
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Location:</div>
+            <div class="cpone-detail-value">{{ section.settings.location }}</div>
+          </div>
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Project Type:</div>
+            <div class="cpone-detail-value">{{ section.settings.project_type }}</div>
+          </div>
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Square Footage:</div>
+            <div class="cpone-detail-value">{{ section.settings.square_footage }}</div>
+          </div>
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Timeline:</div>
+            <div class="cpone-detail-value">{{ section.settings.timeline }}</div>
+          </div>
+        </div>
+
+        <div class="cpone-challenge-section">
+          {{ section.settings.challenge_description }}
+        </div>
+      </div>
+    </div>
+
+    <div class="cpone-description-section">
+      <h1 class="cpone-main-title">Modern luxury meets timeless coziness.</h1>
+      <div>{{ section.settings.project_description }}</div>
+    </div>
+  </div>
+
+  <div class="is-mobile">
+    <div class="cpone-image-section">
+      {%- render 'image' with section.settings.project_image
+        , size_cols_desktop: 2
+        , custom_aspect_ratio: 1.7
+      -%}
+    </div>
+    <div class="cpone-description-section">
+      <h1 class="cpone-main-title">Modern luxury meets timeless coziness.</h1>
+      <div>{{ section.settings.project_description }}</div>
+    </div>
+    <div class="cpone-mobile-slpit"></div>
+    <div class="cpone-project-info">
+      <div class="cpone-project-details">
+        <div class="cpone-detail-item">
+          <div class="cpone-detail-label">Location:</div>
+          <div class="cpone-detail-value">{{ section.settings.location }}</div>
+        </div>
+        <div class="cpone-detail-item">
+          <div class="cpone-detail-label">Project Type:</div>
+          <div class="cpone-detail-value">{{ section.settings.project_type }}</div>
+        </div>
+        <div class="cpone-detail-item">
+          <div class="cpone-detail-label">Square Footage:</div>
+          <div class="cpone-detail-value">{{ section.settings.square_footage }}</div>
+        </div>
+        <div class="cpone-detail-item">
+          <div class="cpone-detail-label">Timeline:</div>
+          <div class="cpone-detail-value">{{ section.settings.timeline }}</div>
+        </div>
+      </div>
+
+      <div class="cpone-challenge-section">
+        {{ section.settings.challenge_description }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cpone-one-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+  }
+
+  .cpone-one-container .is-mobile {
+    display: none;
+  }
+
+  .cpone-project-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .cpone-image-section {
+    width: 500px;
+    position: relative;
+  }
+
+  .cpone-main-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .cpone-project-info {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .cpone-project-details {
+    /* flex: 1; */
+    position: relative;
+  }
+
+  .cpone-project-details::after {
+    content: "";
+    position: absolute;
+    right: -20px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #ddd;
+  }
+
+  .cpone-challenge-section {
+    flex: 1;
+    margin-top: 0;
+  }
+
+  .cpone-detail-item {
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+
+  .cpone-detail-label {
+    font-weight: 600;
+    color: #a18d7e;
+    min-width: 120px;
+    margin-right: 20px;
+  }
+
+  .cpone-detail-value {
+    color: #434343;
+  }
+
+  .cpone-description-section {
+    margin-top: 20px;
+  }
+
+  .cpone-main-title {
+    font-weight: 300;
+    color: #8b7461;
+    letter-spacing: 1px;
+    font-family: American_bt
+    , Arial
+    , sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .cpone-one-container {
+      padding: 15px;
+    }
+
+    .cpone-one-container .is-web {
+      display: none;
+    }
+
+    .cpone-one-container .is-mobile {
+      display: block;
+    }
+
+    .cpone-project-showcase {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .cpone-image-section {
+      width: 100%;
+    }
+
+    .cpone-project-info {
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+    }
+
+    .cpone-project-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+    }
+
+    .cpone-project-details::after {
+      display: none;
+    }
+
+    .cpone-main-title {
+      color: #8b7461;
+      margin: 0;
+    }
+
+    .cpone-description-section {
+      margin-top: 10px;
+    }
+
+    .cpone-mobile-slpit {
+      width: 100%;
+      height: 1px;
+      background: #DDDDDD;
+      margin-bottom: 1em;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Collaborations-One",
+    "tag": "section",
+    "class": "Collaborations-One",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "project_image",
+        "label": "Project Image",
+        "info": "Select the main project image"
+      },
+      {
+        "type": "text",
+        "id": "location",
+        "label": "Location",
+        "default": "Atlanta, Georgia",
+        "info": "Project location"
+      },
+      {
+        "type": "text",
+        "id": "project_type",
+        "label": "Project Type",
+        "default": "Residential",
+        "info": "Type of project"
+      },
+      {
+        "type": "text",
+        "id": "square_footage",
+        "label": "Square Footage",
+        "default": "4,500 sq. ft.",
+        "info": "Total square footage"
+      }, {
+        "type": "text",
+        "id": "timeline",
+        "label": "Timeline",
+        "default": "6 months",
+        "info": "Project timeline"
+      }, {
+        "type": "richtext",
+        "id": "challenge_description",
+        "label": "Challenge Description",
+        "default": "<p>The challenge was to strike a balance between sophisticated and approachable. I wanted the home to feel elevated but never overly formal, where you could host a dinner party, but also curl up with a blanket and a good book.</p>",
+        "info": "Describe the project challenge"
+      }, {
+        "type": "richtext",
+        "id": "project_description",
+        "label": "Project Description",
+        "default": "<p>This home was designed to feel calm, curated, and collected – with warm layers, timeless neutrals, and thoughtful textures throughout. I wanted it to be a place that felt elevated but never overly formal. Every corner was created with purpose, balancing open airy moments with cozy, intimate nooks. Coziology's window treatments played a huge role in pulling that vision together, adding softness, texture, light control, and a level of finish that instantly made each room feel complete.</p>",
+        "info": "Detailed project description"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collaborations-One",
+        "category": "Collaborations-Project"
+      }
+    ]
+  }
+{% endschema %}

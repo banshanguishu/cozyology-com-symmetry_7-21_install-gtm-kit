@@ -1,0 +1,1481 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+    
+    #sp-{{ section.id }} [data-plugin="sp-carousel"] {
+        --sp-slideshow-progress-duration: {{ settings.change_slide_every | default: 3 }}s;
+        --sp-slideshow-pagination-background-radius: {{ settings.pagination_border_radius }}px;
+        --sp-slideshow-pagination-background-color: {{ settings.pagination_background }};
+        --sp-slideshow-pagination-color: {{ settings.pagination_highlight }};
+    {% if settings.navigation_style == 'fill' %}{% if settings.navigation_background_gradient != blank %} --sp-slideshow-navigation-background-color: transparent;
+        --sp-slideshow-navigation-background-gradient-color: {{ settings.navigation_background_gradient }};
+    {% else %} --sp-slideshow-navigation-background-color: {{ settings.navigation_background }};
+        --sp-slideshow-navigation-background-gradient-color: null;
+    {% endif %}{% else %} --sp-slideshow-navigation-background-color: {{ settings.navigation_background }};
+    {% endif %} --sp-slideshow-navigation-icon-color: {{ settings.navigation_icon }};
+        --sp-navigation-border-width: {{ settings.navigation_button_border_width }}px;
+        --sp-navigation-scale: {{ settings.navigation_button_scale | divided_by: 100.0 }};
+        --sp-slideshow-navigarion-boxshadow-color: {{ settings.navigation_background_shadow }};
+        --sp-slideshow-navigarion-border-radius: {% if settings.navigation_button_radius == 60 %}50%{% else %}{{ settings.navigation_button_radius }}px{% endif %};
+    }
+
+
+    #sp-{{ section.id }} {
+        --section-image-max-width: {{ settings.image_max_width }};
+        --sp-image-aspect-ratio: {{ settings.image_ratio }};
+        --sp-image-border-radius: {{ settings.image_border_radius}}px;
+        --image-border-width: {{settings.image_border_width}}px;
+        --image-border-color: {{settings.image_border_color}};
+        --sp-content-background-radius: {{ settings.content_background_radius}}px;
+        --sp-content-border-width: {{settings.content_border_width}}px;
+        --sp-content-border-color: {{settings.content_border_color}};
+        --sp-content-shadow: {{settings.content_shadow.red}},{{settings.content_shadow.green}},{{settings.content_shadow.blue}};
+        --sp-section-background-color: {{ settings.section_background_color | default: "transparent" }};
+        --sp-section-background-gradient-color: {{ settings.section_background_gradient_color | default: null }};
+        --sp-section-text-color: {{ settings.section_text_color | default: "transparent" }};
+        --sp-content-background-color: {{ settings.content_background_color | default: "transparent" }};
+        --sp-content-background-gradient-color: {{ settings.content_background_gradient_color | default: null }};
+        --sp-section-background-overlay-color: {{ settings.section_background_overlay_color | default: null }};
+        --padding-content: 8rem;
+    }
+    #sp-{{ section.id }} .sp-heading-wrapper {
+        --sp-section-heading-width: 0rem;
+        max-width: var(--sp-section-heading-width);
+    }
+    #sp-{{ section.id }} .sp-content-wrapper {
+        --sp-section-text-color: {{ settings.content_text_color | default: "transparent" }};
+    }
+    #sp-{{ section.id }} [data-plugin="sp-carousel"] {
+        --sp-timeline-line-color: {{ settings.timeline_line_color.red }},{{ settings.timeline_line_color.green }},{{ settings.timeline_line_color.blue }};
+        --sp-slideshow-pagination-color: {{ settings.pagination_default_color }};
+        --sp-slideshow-pagination-active-color: {{ settings.pagination_active_color }};
+        --sp-timeline-text-label-color: {{ settings.timeline_text_label_color }};
+    }
+
+    @media(max-width:1440px) {
+        #sp-{{ section.id }} {
+            --padding-content: 5rem;
+        }
+    }
+    @media(max-width:767px) {
+        #sp-{{ section.id }} {
+            --padding-content: 0;
+        }
+
+    }
+
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-timeline-1"
+     data-section="timeline-1"
+     data-variant="variant-1">
+    <div class="sp-section-outer">
+        <div class="sp-image-wrapper">
+            {% if settings.background_image != null %}
+                <img class="sp-image"
+                     src="{{ settings.background_image | image_url: width: 1920 }}"
+                     alt="{{ settings.background_image.alt | default: "" }}">
+            {% endif %}
+            {% if settings.background_image_mobile != null %}
+                <img class="sp-image sp-image-mobile"
+                     src="{{ settings.background_image_mobile | image_url: width: 1920 }}"
+                     alt="{{ settings.background_image_mobile.alt | default: "" }}">
+            {% endif %}
+        </div>
+        <div class="sp-section"
+             data-border="{{ settings.section_border }}">
+            <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+                <div class="sp-section-inner" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}"
+                     data-cascade>
+                    {% assign heading_block = section.blocks | where: 'type', 'heading_item' %}
+                    {% for block in heading_block %}
+                        {% assign setting = block.settings %}
+                        <style>
+                            {% assign heading_settings = block.settings %}
+                            {% assign heading_selector = section.id | prepend:"#sp-" | append:" .sp-heading-wrapper" %}
+                            
+    {{ heading_selector }} {
+        --sp-section-heading-size: {{ heading_settings.heading_size_mobile }}px;
+        --sp-section-description-size: {{ heading_settings.description_size_mobile }}px;
+        --sp-heading-letter-spacing: {{ heading_settings.text_heading_spacing | default: 0 }}px;
+        --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.6 }};
+
+    }
+    @media (min-width: 768px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.8 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop | times: 0.8 }}px;
+            --sp-section-description-size: max({{ heading_settings.description_size_desktop | times: 0.8 }}px, {{ heading_settings.description_size_mobile }}px);
+        }
+    }
+
+    @media (min-width: 1200px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop }}px;
+            --sp-section-description-size: {{ heading_settings.description_size_desktop }}px;
+        }
+    }
+
+                        </style>
+                        <div class="sp-heading-outer {{ setting.heading_position }}" {{ block.shopify_attributes }}>
+                            <div class="sp-heading-wrapper"
+                                 style="--sp-section-heading-width: {{ setting.heading_max_width | divided_by: 10.0 }}rem">
+                                {% if setting.sub_heading != blank %}
+                                    <h5 class="sp-sub-heading {{ setting.sub_heading_size | default: "sp-sub-heading-size-medium" }}">{{ setting.sub_heading }}</h5>
+                                {% endif %}
+                                {% if setting.heading != blank %}
+                                    <h2 class="sp-heading">{{ setting.heading }}</h2>
+                                {% endif %}
+                                {% if setting.description != blank and setting.description != '<p></p>' %}
+                                    <div class="sp-description">{{ setting.description }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="sp-timeline-wrapper">
+                        <div class="sp-carousel-wrapper" data-plugin="sp-carousel"
+                             data-pagination-style="{{ settings.pagination_style | default: "circle" }}"
+                             data-pagination-position="{{ settings.pagination_position }}"
+                             data-pagination-background="{{ settings.show_background_pagination }}"
+                             data-show-pagination-desktop="{{ settings.show_pagination_desktop }}"
+                             data-show-pagination-mobile="{{ settings.show_pagination_mobile }}"
+                             data-show-navigation-desktop="{{ settings.show_navigation_desktop }}"
+                             data-show-navigation-mobile="{{ settings.show_navigation_mobile }}"
+                             data-navigation-box-shadow="{{ settings.navigation_box_shadow }}"
+                             data-navigation-style="{{ settings.navigation_style | default: "fill" }}"
+                             data-loading="{{ settings.auto_rotate_slide | default: "false" }}"
+                             data-loading-time="{{ settings.change_slide_every | default: 3 }}"
+                        >
+                            <div class="sp-carousel" data-pagination-position="{{ settings.timeline_bar_position | default: "top" }}">
+                                {% assign slideIndex = 0 %}
+                                {% assign timeline_block = section.blocks | where: 'type', 'timeline_item' %}
+                                {% for block in timeline_block %}
+                                    {% assign setting = block.settings %}
+                                    <div id="sp-{{ block.id }}" class="sp-carousel-item" data-type="{{ block.type }}"
+                                         data-slider-index="{{ slideIndex }}" data-text-label="{{ setting.text }}" {{ block.shopify_attributes }}>
+                                        <style>
+
+                                            #sp-{{ section.id }} .sp-dot-text {
+                                                font-size: {{ settings.text_size_desktop }}px;
+                                            }
+
+                                            @media (max-width: 767px) {
+                                                #sp-{{ section.id }} .sp-dot-text {
+                                                    font-size: {{ settings.text_size_mobile }}px;
+                                                }
+                                            }
+                                            {% assign heading_settings = setting %}
+                                            {% assign heading_selector = block.id | prepend:"#sp-" | append:" .sp-content-wrapper" %}
+                                            
+    {{ heading_selector }} {
+        --sp-section-heading-size: {{ heading_settings.heading_size_mobile }}px;
+        --sp-section-description-size: {{ heading_settings.description_size_mobile }}px;
+        --sp-heading-letter-spacing: {{ heading_settings.text_heading_spacing | default: 0 }}px;
+        --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.6 }};
+
+    }
+    @media (min-width: 768px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.8 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop | times: 0.8 }}px;
+            --sp-section-description-size: max({{ heading_settings.description_size_desktop | times: 0.8 }}px, {{ heading_settings.description_size_mobile }}px);
+        }
+    }
+
+    @media (min-width: 1200px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop }}px;
+            --sp-section-description-size: {{ heading_settings.description_size_desktop }}px;
+        }
+    }
+
+                                        </style>
+                                        <div class="sp-timeline-item {{ setting.image_position }}"
+                                             data-show-background="{{ settings.show_background }}"
+                                             data-box-shadow="{{ settings.box_shadow }}">
+                                             
+                                                {%- if setting.timeline_image != blank -%}
+                                                    <div class="sp-image-inner {{ setting.image_shape }}" data-image-hover="{{ settings.image_hover }}">
+                                                        {{ setting.timeline_image | image_url: width: 1920 | image_tag: class: 'sp-image' }}
+                                                    </div>
+                                                {% endif %}
+                                            
+                                            
+                                            <div class="sp-content-wrapper {{ settings.content_alignment }}">
+                                                {% if setting.sub_heading != blank %}
+                                                    <h5 class="sp-sub-heading {{ setting.sub_heading_size | default: "sp-sub-heading-size-medium" }}">{{ setting.sub_heading }}</h5>
+                                                {% endif %}
+                                                {% if setting.heading != blank %}
+                                                    <h2 class="sp-heading">{{ setting.heading }}</h2>
+                                                {% endif %}
+                                                {% if setting.description != blank and setting.description != '<p></p>' %}
+                                                    <div class="sp-description">{{ setting.description }}</div>
+                                                {% endif %}
+                                                {% if setting.button_text != blank  %}
+                                                    <div id="sp-{{ block.id }}" class="sp-button-wrapper" data-alignment="center" {{ block.shopify_attributes }}>
+                                                        {% assign button_selector = block.id | append:" .sp-button" | prepend:"#sp-" %}
+                                                        {% assign button_settings = block.settings %}
+                                                        <style>
+                                                            {% comment %}
+    Render button style variables
+    Pass button selector to apply
+{% endcomment %}
+{{ button_selector }}{
+    --sp-button-border-width:{{ button_settings.button_border_width | append:"px" }};
+    --sp-button-radius: {{ button_settings.button_radius | append:"px" }};
+    --sp-button-text-spacing: {{ button_settings.button_text_spacing | append:"px" }};
+    --sp-button-scale: {{ button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% if button_settings.button_scale_mobile >= 100 %}
+        --sp-button-font-scale: {{ button_settings.button_scale_mobile | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+    {% endif %}
+    {% if button_settings.button_scale_mobile < 100 %}
+        --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale_mobile | divided_by: 2 | plus: button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% endif %}
+}
+@media(min-width: 992px){
+    {{ button_selector }}{
+        --sp-button-scale: {{ button_settings.button_scale | divided_by: 100.0 }};
+        {% if button_settings.button_scale >= 100 %}
+            --sp-button-font-scale: {{ button_settings.button_scale | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+        {% endif %}
+        {% if button_settings.button_scale < 100 %}
+            --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale | divided_by: 2 | plus: button_settings.button_scale | divided_by: 100.0 }};
+        {% endif %}
+    }
+}
+                                                            #sp-{{ block.id }} .sp-button {
+                                                                --sp-button-background-color: {{ settings.button_background }};
+                                                                --sp-button-background-gradient-color: {{ settings.button_background_gradient | default: "none" }};
+                                                                --sp-button-text-color: {{ settings.button_text }};
+                                                            }
+                                                        </style>
+                                                        <a {% if setting.button_link == blank %} aria-disabled="true" {% else %}
+                                                            href="{{ setting.button_link }}" {% endif %}
+                                                                class="sp-button {{ setting.button_style | default: "sp-button-link" }}" data-button-hover="{{ settings.button_hover }}">{{ setting.button_text }}</a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Timeline 1.1",
+	"tag": "section",
+	"class": "sp-timeline-1",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "select",
+			"id": "timeline_bar_position",
+			"label": "Timeline bar position",
+			"options": [
+				{
+					"label": "Top",
+					"value": "top"
+				},
+				{
+					"label": "Bottom",
+					"value": "bottom"
+				}
+			],
+			"default": "top"
+		},
+		{
+			"type": "range",
+			"id": "text_size_desktop",
+			"min": 14,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": " Timeline bar text size (Desktop)",
+			"default": 24
+		},
+		{
+			"type": "range",
+			"id": "text_size_mobile",
+			"min": 14,
+			"max": 86,
+			"step": 1,
+			"unit": "px",
+			"label": "Timeline bar text size (Mobile)",
+			"default": 16
+		},
+		{
+			"type": "header",
+			"content": "Content settings"
+		},
+		{
+			"type": "select",
+			"id": "image_max_width",
+			"label": "Image max-width",
+			"options": [
+				{
+					"label": "30%",
+					"value": "30%"
+				},
+				{
+					"label": "50%",
+					"value": "50%"
+				},
+				{
+					"label": "70%",
+					"value": "70%"
+				}
+			],
+			"default": "30%"
+		},
+		{
+			"type": "select",
+			"id": "content_alignment",
+			"label": "Content alignment",
+			"default": "sp-content-text-left",
+			"options": [
+				{
+					"label": "Left",
+					"value": "sp-content-text-left"
+				},
+				{
+					"label": "Center",
+					"value": "sp-content-text-center"
+				},
+				{
+					"label": "Right",
+					"value": "sp-content-text-right"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "image_ratio",
+			"min": 0.3,
+			"max": 2,
+			"step": 0.1,
+			"default": 0.8,
+			"unit": ":1",
+			"label": "Image ratio"
+		},
+		{
+			"type": "range",
+			"id": "image_border_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"default": 16,
+			"unit": "px",
+			"label": "Image border radius"
+		},
+		{
+			"type": "range",
+			"id": "image_border_width",
+			"min": 0,
+			"max": 20,
+			"step": 1,
+			"unit": "px",
+			"label": "Border size image",
+			"default": 0
+		},
+		{
+			"type": "checkbox",
+			"id": "show_background",
+			"label": "Show background",
+			"default": false
+		},
+		{
+			"type": "checkbox",
+			"id": "box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "range",
+			"id": "content_background_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Container border radius",
+			"default": 30
+		},
+		{
+			"type": "range",
+			"id": "content_border_width",
+			"min": 0,
+			"max": 10,
+			"step": 0.5,
+			"unit": "px",
+			"label": "Border size",
+			"default": 1
+		},
+		{
+			"type": "header",
+			"content": "Background section"
+		},
+		{
+			"type": "image_picker",
+			"id": "background_image",
+			"label": "Image (Desktop)"
+		},
+		{
+			"type": "image_picker",
+			"id": "background_image_mobile",
+			"label": "Image (Mobile)"
+		},
+		{
+			"type": "header",
+			"content": "Navigation button"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_navigation_desktop",
+			"label": "Show navigation (Desktop)",
+			"default": false
+		},
+		{
+			"type": "checkbox",
+			"id": "show_navigation_mobile",
+			"label": "Show navigation (Mobile)",
+			"default": false
+		},
+		{
+			"type": "checkbox",
+			"id": "navigation_box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "select",
+			"id": "navigation_style",
+			"label": "Button style",
+			"options": [
+				{
+					"label": "Button fill",
+					"value": "fill"
+				},
+				{
+					"label": "Button outline",
+					"value": "outline"
+				},
+				{
+					"label": "Only icon",
+					"value": "icon"
+				}
+			],
+			"default": "fill"
+		},
+		{
+			"type": "range",
+			"id": "navigation_button_scale",
+			"min": 50,
+			"max": 150,
+			"step": 10,
+			"unit": "%",
+			"label": "Button scale",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "navigation_button_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Button border radius",
+			"default": 40
+		},
+		{
+			"type": "range",
+			"id": "navigation_button_border_width",
+			"min": 0.5,
+			"max": 5,
+			"step": 0.5,
+			"unit": "px",
+			"label": "Button border size",
+			"info": "Apply to button outline style",
+			"default": 1
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 100
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 100
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": true
+		},
+		{
+			"type": "select",
+			"id": "image_hover",
+			"label": "Image hover",
+			"options": [
+				{
+					"label": "None",
+					"value": "sp-image-hover-none"
+				},
+				{
+					"label": "Zoom in",
+					"value": "sp-image-hover-zoom-in"
+				}
+			],
+			"default": "sp-image-hover-zoom-in"
+		},
+		{
+			"type": "select",
+			"id": "button_hover",
+			"label": "Button hover",
+			"options": [
+				{
+					"label": "None",
+					"value": "none"
+				},
+				{
+					"label": "Fly",
+					"value": "fly"
+				},
+				{
+					"label": "Opacity",
+					"value": "opacity"
+				}
+			],
+			"default": "fly"
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#3D5A53"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "color",
+			"id": "section_text_color",
+			"label": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_overlay_color",
+			"label": "Overlay"
+		},
+		{
+			"type": "header",
+			"content": "Timeline bar color"
+		},
+		{
+			"type": "color",
+			"id": "timeline_line_color",
+			"label": "Line",
+			"default": "#FF9A9A"
+		},
+		{
+			"type": "color",
+			"id": "pagination_default_color",
+			"label": "Pagination default",
+			"default": "#3D5A53"
+		},
+		{
+			"type": "color",
+			"id": "pagination_active_color",
+			"label": "Pagination active",
+			"default": "#FF9A9A"
+		},
+		{
+			"type": "color",
+			"id": "timeline_text_label_color",
+			"label": "Text label",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "header",
+			"content": "Content container color"
+		},
+		{
+			"type": "color",
+			"id": "content_background_color",
+			"label": "Background"
+		},
+		{
+			"type": "color_background",
+			"id": "content_background_gradient_color",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "color",
+			"id": "content_text_color",
+			"label": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "color",
+			"id": "image_border_color",
+			"label": "Border image",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "color",
+			"id": "content_border_color",
+			"label": "Border background"
+		},
+		{
+			"type": "color",
+			"id": "content_shadow",
+			"label": "Shadow",
+			"default": "#000000"
+		},
+		{
+			"type": "header",
+			"content": "Navigation button color"
+		},
+		{
+			"type": "color",
+			"id": "navigation_background",
+			"label": "Background",
+			"default": "#FFF"
+		},
+		{
+			"type": "color_background",
+			"id": "navigation_background_gradient",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible.",
+			"default": "linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2%, rgba(255, 255, 255, 0.4) 100%)"
+		},
+		{
+			"type": "color",
+			"id": "navigation_icon",
+			"label": "Icon",
+			"default": "#FFF"
+		},
+		{
+			"type": "color",
+			"id": "navigation_background_shadow",
+			"label": "Shadow",
+			"default": "#23468F"
+		},
+		{
+			"type": "header",
+			"content": "Button color"
+		},
+		{
+			"type": "color",
+			"id": "button_background",
+			"label": "Background",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "color_background",
+			"id": "button_background_gradient",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "color",
+			"id": "button_text",
+			"label": "Text",
+			"default": "#000000"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "futura_n4"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Heading",
+			"type": "heading_item",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "This block will always show the priority at the top"
+				},
+				{
+					"type": "header",
+					"content": "Section heading"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "sub_heading",
+					"label": "Subheading",
+					"default": "TIMELINE HISTORY"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "OUR STORE GOES THROUGH THE YEARS"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p></p>"
+				},
+				{
+					"type": "select",
+					"id": "heading_position",
+					"label": "Heading alignment",
+					"options": [
+						{
+							"label": "Left",
+							"value": "sp-heading-alignment-left"
+						},
+						{
+							"label": "Center",
+							"value": "sp-heading-alignment-center"
+						},
+						{
+							"label": "Right",
+							"value": "sp-heading-alignment-right"
+						}
+					],
+					"default": "sp-heading-alignment-left"
+				},
+				{
+					"type": "select",
+					"id": "sub_heading_size",
+					"label": "Sub heading size",
+					"options": [
+						{
+							"label": "Small",
+							"value": "sp-sub-heading-size-small"
+						},
+						{
+							"label": "Medium",
+							"value": "sp-sub-heading-size-medium"
+						},
+						{
+							"label": "Large",
+							"value": "sp-sub-heading-size-large"
+						}
+					],
+					"default": "sp-sub-heading-size-medium"
+				},
+				{
+					"type": "range",
+					"id": "heading_size_desktop",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Desktop)",
+					"default": 48
+				},
+				{
+					"type": "range",
+					"id": "heading_size_mobile",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Mobile)",
+					"default": 32
+				},
+				{
+					"type": "range",
+					"id": "description_size_desktop",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Desktop)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "description_size_mobile",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Mobile)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "heading_spacing_scale",
+					"min": 50,
+					"max": 200,
+					"step": 10,
+					"unit": "%",
+					"label": "Heading spacing scale",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "text_heading_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text heading letter spacing",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "heading_max_width",
+					"min": 300,
+					"max": 950,
+					"step": 10,
+					"unit": "px",
+					"label": "Heading max-width",
+					"default": 950
+				}
+			]
+		},
+		{
+			"name": "Event label",
+			"type": "timeline_item",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Text",
+					"default": "<p>2020</p>"
+				},
+				{
+					"type": "header",
+					"content": "Image"
+				},
+				{
+					"type": "image_picker",
+					"id": "timeline_image",
+					"label": "Image"
+				},
+				{
+					"type": "select",
+					"id": "image_shape",
+					"label": "Image shape",
+					"options": [
+						{
+							"label": "Default",
+							"value": ""
+						},
+						{
+							"label": "Round",
+							"value": "sp-image-round"
+						},
+						{
+							"label": "Blob 1",
+							"value": "sp-image-blod-1"
+						},
+						{
+							"label": "Blob 2",
+							"value": "sp-image-blod-2"
+						},
+						{
+							"label": "Blob 3",
+							"value": "sp-image-blod-3"
+						},
+						{
+							"label": "Blob 4",
+							"value": "sp-image-blod-4"
+						},
+						{
+							"label": "Blob 5",
+							"value": "sp-image-blod-5"
+						},
+						{
+							"label": "Blob 6",
+							"value": "sp-image-blod-6"
+						}
+					],
+					"default": ""
+				},
+				{
+					"type": "select",
+					"id": "image_position",
+					"label": "Image position",
+					"options": [
+						{
+							"label": "Left",
+							"value": "sp-image-position-left"
+						},
+						{
+							"label": "Right",
+							"value": "sp-image-position-right"
+						}
+					],
+					"default": "sp-image-position-left"
+				},
+				{
+					"type": "header",
+					"content": "Content"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "sub_heading",
+					"label": "Subheading"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "Close Store"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>"
+				},
+				{
+					"type": "select",
+					"id": "sub_heading_size",
+					"label": "Sub heading size",
+					"options": [
+						{
+							"label": "Small",
+							"value": "sp-sub-heading-size-small"
+						},
+						{
+							"label": "Medium",
+							"value": "sp-sub-heading-size-medium"
+						},
+						{
+							"label": "Large",
+							"value": "sp-sub-heading-size-large"
+						}
+					],
+					"default": "sp-sub-heading-size-medium"
+				},
+				{
+					"type": "range",
+					"id": "heading_size_desktop",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Desktop)",
+					"default": 36
+				},
+				{
+					"type": "range",
+					"id": "heading_size_mobile",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Mobile)",
+					"default": 24
+				},
+				{
+					"type": "range",
+					"id": "description_size_desktop",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Desktop)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "description_size_mobile",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Mobile)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "heading_spacing_scale",
+					"min": 50,
+					"max": 200,
+					"step": 10,
+					"unit": "%",
+					"label": "Heading spacing scale",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "text_heading_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text heading letter spacing",
+					"default": 0
+				},
+				{
+					"type": "header",
+					"content": "Button"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button label",
+					"info": "Leave the label blank to hide the button.",
+					"default": "EXPLORE NOW"
+				},
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link",
+					"default": "/"
+				},
+				{
+					"type": "select",
+					"id": "button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"label": "Button link",
+							"value": "sp-button-link"
+						},
+						{
+							"label": "Button fill",
+							"value": "sp-button-fill"
+						},
+						{
+							"label": "Button outline",
+							"value": "sp-button-outline"
+						}
+					],
+					"default": "sp-button-fill"
+				},
+				{
+					"type": "range",
+					"id": "button_text_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text button letter spacing",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_scale",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Desktop)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_scale_mobile",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Mobile)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_radius",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Button border radius",
+					"default": 40
+				},
+				{
+					"type": "range",
+					"id": "button_border_width",
+					"min": 0.5,
+					"max": 5,
+					"step": 0.5,
+					"unit": "px",
+					"label": "Button border size",
+					"default": 1
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Timeline 1.1",
+			"settings": {
+				"timeline_bar_position": "top",
+				"text_size_desktop": 24,
+				"text_size_mobile": 16,
+				"image_max_width": "30%",
+				"content_alignment": "sp-content-text-left",
+				"image_ratio": 0.8,
+				"image_border_radius": 16,
+				"image_border_width": 0,
+				"show_background": false,
+				"box_shadow": false,
+				"content_background_radius": 30,
+				"content_border_width": 1,
+				"background_image": "",
+				"background_image_mobile": "",
+				"show_navigation_desktop": false,
+				"show_navigation_mobile": false,
+				"navigation_box_shadow": false,
+				"navigation_style": "fill",
+				"navigation_button_scale": 100,
+				"navigation_button_radius": 40,
+				"navigation_button_border_width": 1,
+				"section_width": "",
+				"section_top_padding": 100,
+				"section_bottom_padding": 100,
+				"section_border": false,
+				"lazy_load": true,
+				"image_hover": "sp-image-hover-zoom-in",
+				"button_hover": "fly",
+				"section_background_color": "#3D5A53",
+				"section_background_gradient_color": "",
+				"section_text_color": "#FFFFFF",
+				"section_background_overlay_color": "",
+				"timeline_line_color": "#FF9A9A",
+				"pagination_default_color": "#3D5A53",
+				"pagination_active_color": "#FF9A9A",
+				"timeline_text_label_color": "#FFFFFF",
+				"content_background_color": "",
+				"content_background_gradient_color": "",
+				"content_text_color": "#FFFFFF",
+				"content_border_color": "",
+				"image_border_color": "#FFFFFF",
+				"content_shadow": "#000000",
+				"navigation_background": "#FFF",
+				"navigation_background_gradient": "linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2%, rgba(255, 255, 255, 0.4) 100%)",
+				"navigation_icon": "#FFF",
+				"navigation_background_shadow": "#23468F",
+				"button_background": "#FFFFFF",
+				"button_background_gradient": "",
+				"button_text": "#000000",
+				"override_font": true,
+				"heading_font": "futura_n4",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "heading_item",
+					"settings": {
+						"sub_heading": "TIMELINE HISTORY",
+						"heading": "OUR STORE GOES THROUGH THE YEARS",
+						"description": "<p></p>",
+						"heading_position": "sp-heading-alignment-left",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 48,
+						"heading_size_mobile": 32,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"heading_max_width": 950
+					}
+				},
+				{
+					"type": "timeline_item",
+					"settings": {
+						"text": "<p>2016</p>",
+						"timeline_image": "shopify://shop_images/timeline-1-variant-1-image-1.png",
+						"image_shape": "",
+						"image_position": "sp-image-position-left",
+						"sub_heading": "",
+						"heading": "Open Store",
+						"description": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"button_text": "EXPLORE NOW",
+						"button_link": "/",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 40,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "timeline_item",
+					"settings": {
+						"text": "<p>2017</p>",
+						"timeline_image": "shopify://shop_images/timeline-1-variant-1-image-2.png",
+						"image_shape": "",
+						"image_position": "sp-image-position-left",
+						"sub_heading": "",
+						"heading": "Grow Business",
+						"description": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"button_text": "EXPLORE NOW",
+						"button_link": "/",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 40,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "timeline_item",
+					"settings": {
+						"text": "<p>2018</p>",
+						"timeline_image": "shopify://shop_images/timeline-1-variant-1-image-3.png",
+						"image_shape": "",
+						"image_position": "sp-image-position-left",
+						"sub_heading": "",
+						"heading": "Expanding the market in Usa",
+						"description": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"button_text": "EXPLORE NOW",
+						"button_link": "/",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 40,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "timeline_item",
+					"settings": {
+						"text": "<p>2019</p>",
+						"timeline_image": "shopify://shop_images/timeline-1-variant-1-image-4.png",
+						"image_shape": "",
+						"image_position": "sp-image-position-left",
+						"sub_heading": "",
+						"heading": "Expanding the market in London",
+						"description": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"button_text": "EXPLORE NOW",
+						"button_link": "/",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 40,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "timeline_item",
+					"settings": {
+						"text": "<p>2020</p>",
+						"timeline_image": "shopify://shop_images/timeline-1-variant-1-image-5.png",
+						"image_shape": "",
+						"image_position": "sp-image-position-left",
+						"sub_heading": "",
+						"heading": "Close Store",
+						"description": "<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0,
+						"button_text": "EXPLORE NOW",
+						"button_link": "/",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 40,
+						"button_border_width": 1
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}}{--sp-margin-item: 5rem}#sp-{{section.id}} .sp-section-outer .sp-image-wrapper{background:var(--sp-section-background-color) var(--sp-section-background-gradient-color)}#sp-{{section.id}} .sp-section-outer .sp-image-wrapper:after{background:var(--sp-section-background-overlay-color)}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-carousel[data-pagination-position=top] .sp-dots-wrapper{padding-bottom:var(--sp-carousel-pagination-margin)}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-dots-wrapper{--sp-carousel-pagination-margin: 50px}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-dots-wrapper::before{background:rgba(var(--sp-timeline-line-color), 0.4)}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-dots-wrapper .sp-dots-inner .flickity-page-dots .dot .sp-dot-text{color:var(--sp-timeline-text-label-color);font-family:var(--sp-body-font-family);font-weight:var(--sp-body-font-weight);line-height:var(--sp-description-line-height)}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-dots-wrapper .sp-dots-inner .flickity-page-dots .dot.is-selected .dot-overlay{background:var(--sp-slideshow-pagination-active-color)}#sp-{{section.id}} .sp-timeline-wrapper [data-plugin=sp-carousel] .sp-dots-wrapper .sp-dots-inner .flickity-page-dots .dot .dot-overlay{border:2px solid rgba(var(--sp-timeline-line-color), 0.4)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item.sp-image-position-left:has(.sp-image-inner) .sp-content-wrapper{padding-left:var(--padding-content)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item.sp-image-position-right:has(.sp-image-inner) .sp-content-wrapper{padding-right:var(--padding-content)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item[data-show-background=true]{background:var(--sp-content-background-color) var(--sp-content-background-gradient-color);border-radius:var(--sp-content-background-radius);border:var(--sp-content-border-width) solid var(--sp-content-border-color)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item[data-show-background=true][data-box-shadow=true]{box-shadow:0 8px 30px 0 rgba(var(--sp-content-shadow), 0.15)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item:has(.sp-image-inner) .sp-image-inner{width:var(--section-image-max-width);aspect-ratio:calc(var(--sp-image-aspect-ratio)/1);border-radius:var(--sp-image-border-radius);border:var(--image-border-width) solid var(--image-border-color)}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item:has(.sp-image-inner) .sp-content-wrapper{width:calc(100% - var(--section-image-max-width))}#sp-{{section.id}} .sp-heading-outer+.sp-timeline-wrapper{margin-top:var(--sp-margin-item)}@media(max-width: 767px){#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item:has(.sp-image-inner) .sp-image-inner{width:100%}#sp-{{section.id}} .sp-timeline-wrapper .sp-timeline-item:has(.sp-image-inner) .sp-content-wrapper{width:100%}}
+{% endstyle %}
+<script>
+!function(){function e(){var e=document.getElementById("sp-{{ section.id }}");if(e){e=e.querySelector('[data-plugin="sp-carousel"]');const n=e.querySelector(".sp-carousel");var{}=e.dataset;const t=new Flickity(n,{draggable:">1",freeScroll:!1,pageDots:!0,prevNextButtons:!0,wrapAround:!0,autoPlay:!1,pauseAutoPlayOnHover:!1,adaptiveHeight:!0,watchCSS:!1,initialIndex:0,cellAlign:"left",contain:!0,groupCells:!0,fade:!0,on:{ready:function(){spRenderPagination(n,!1),spCalculateNavigationSingle(n,".sp-timeline-item",0)}}});t.on("resize",function(){var e=t["selectedIndex"];spCalculateNavigationSingle(n,".sp-timeline-item",e)}),t.on("select",function(e){spCalculateNavigationSingle(n,".sp-timeline-item",e)})}}window.addEventListener("DOMContentLoaded",function(){e()}),Shopify&&Shopify?.designMode&&e()}(document);
+</script>

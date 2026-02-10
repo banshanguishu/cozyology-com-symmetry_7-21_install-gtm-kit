@@ -1,0 +1,587 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+{% assign item_key = '--sp-section-text-size' %}
+<style>
+    {% comment %}
+    Render body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-body-font: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    }
+
+{% endif %}
+    
+    #sp-{{ section.id }} {
+        {{item_key}}: {{ settings.text_size_mobile }}px;
+        
+    }
+    @media(min-width: 768px){
+        #sp-{{ section.id }} {
+            {{item_key}}: {{ settings.text_size_desktop | times: 0.8  }}px;
+        }
+    }
+    @media(min-width: 1200px){
+        #sp-{{ section.id }} {
+            {{item_key}}: {{ settings.text_size_desktop }}px;
+        }
+    }
+
+
+    #sp-{{ section.id }} .sp-scrolling-section {
+        --sp-section-vertical-spacing: {{ settings.vertical_spacing_mobile | divided_by: 10.0 }}rem;
+        --section-border-size: {{ settings.border_size_section | divided_by:10.0 }}rem;
+        --sp-section-gap-between: {{ settings.gap_between_mobile | divided_by: 10.0 | times: 0.5 }}rem;
+        --sp-text-letter-spacing: {{ settings.text_letter_spacing | divided_by: 10.0 }}rem;
+        --sp-section-border-size-text: {{ settings.border_size_text | divided_by: 10.0 }}rem;
+    }
+
+
+    @media(min-width:768px) {
+        #sp-{{ section.id }} .sp-scrolling-section {
+            --sp-section-vertical-spacing: {{ settings.vertical_spacing_desktop | divided_by: 10.0 }}rem;
+            --sp-section-gap-between: {{ settings.gap_between_desktop | divided_by: 10.0 | times: 0.5 }}rem;
+        }
+
+    }
+    {% assign button_selector = section.id | append:" .sp-button" | prepend:"#sp-" %}
+    {% assign button_settings = section.settings %}
+    {% comment %}
+    Render button style variables
+    Pass button selector to apply
+{% endcomment %}
+{{ button_selector }}{
+    --sp-button-border-width:{{ button_settings.button_border_width | append:"px" }};
+    --sp-button-radius: {{ button_settings.button_radius | append:"px" }};
+    --sp-button-text-spacing: {{ button_settings.button_text_spacing | append:"px" }};
+    --sp-button-scale: {{ button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% if button_settings.button_scale_mobile >= 100 %}
+        --sp-button-font-scale: {{ button_settings.button_scale_mobile | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+    {% endif %}
+    {% if button_settings.button_scale_mobile < 100 %}
+        --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale_mobile | divided_by: 2 | plus: button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% endif %}
+}
+@media(min-width: 992px){
+    {{ button_selector }}{
+        --sp-button-scale: {{ button_settings.button_scale | divided_by: 100.0 }};
+        {% if button_settings.button_scale >= 100 %}
+            --sp-button-font-scale: {{ button_settings.button_scale | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+        {% endif %}
+        {% if button_settings.button_scale < 100 %}
+            --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale | divided_by: 2 | plus: button_settings.button_scale | divided_by: 100.0 }};
+        {% endif %}
+    }
+}
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-scrolling-text-1" data-section="scrolling-text-1" data-variant="variant-9">
+    <div class=" {% if settings.full_width == true %}sp-container-fluid sp-container-no-gap{% else %}sp-container{% endif %}">
+        <div class="sp-scrolling-section body-font" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}" data-cascade>
+            <div class="sp-background-image">
+                {%- if settings.background_image != blank -%}
+                    {{ settings.background_image | image_url: width: 1920 | image_tag }}
+                {% endif %}
+                <div class="sp-overlay"></div>
+            </div>
+            {% for i in (1..7) %}
+                <div class="sp-list-text sp-scroll-text {{ settings.scroll_direction }}">
+                    {% for block in section.blocks %}
+
+                        
+                            <div id="sp-block-{{ block.id }}" class="sp-item  {% if block.settings.outline_text == true %}sp-outline-text{% endif %}" {{ block.shopify_attributes }}>
+                                <style>
+                                    {% assign button_selector = block.id | append:" .sp-button" | prepend:"#sp-block-" %}
+                                    {% assign button_settings = block.settings %}
+                                    {% comment %}
+    Render button style variables
+    Pass button selector to apply
+{% endcomment %}
+{{ button_selector }}{
+    --sp-button-border-width:{{ button_settings.button_border_width | append:"px" }};
+    --sp-button-radius: {{ button_settings.button_radius | append:"px" }};
+    --sp-button-text-spacing: {{ button_settings.button_text_spacing | append:"px" }};
+    --sp-button-scale: {{ button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% if button_settings.button_scale_mobile >= 100 %}
+        --sp-button-font-scale: {{ button_settings.button_scale_mobile | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+    {% endif %}
+    {% if button_settings.button_scale_mobile < 100 %}
+        --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale_mobile | divided_by: 2 | plus: button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% endif %}
+}
+@media(min-width: 992px){
+    {{ button_selector }}{
+        --sp-button-scale: {{ button_settings.button_scale | divided_by: 100.0 }};
+        {% if button_settings.button_scale >= 100 %}
+            --sp-button-font-scale: {{ button_settings.button_scale | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+        {% endif %}
+        {% if button_settings.button_scale < 100 %}
+            --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale | divided_by: 2 | plus: button_settings.button_scale | divided_by: 100.0 }};
+        {% endif %}
+    }
+}
+                                </style>
+                                {%- if block.settings.image != blank -%}
+                                    <div class="sp-item-image"> 
+                                        {{ block.settings.image | image_url: width: 58 | image_tag }}
+                                    </div>
+                                {% endif %}
+                                {% if block.settings.button_text != blank %}
+                                    <a {% if block.settings.button_link == blank %} aria-disabled="true" {% else %}
+                                        href="{{ block.settings.button_link }}" {% endif %}
+                                            class="sp-button {{ block.settings.button_style | default: "sp-button-link" }}"
+                                            data-button-hover="{{ settings.button_hover }}">{{ block.settings.button_text }}</a>
+                                {% endif %}
+                                {% if block.settings.text != blank %}  
+                                    <div class="sp-item-text sp-text">
+                                        {{ block.settings.text }}
+                                    </div>
+                                {% endif %}
+                            </div> 
+                        
+                    {% endfor %}
+                  </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Scrolling Text 1.9",
+	"tag": "section",
+	"class": "sp-scrolling-text-3",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Scrolling"
+		},
+		{
+			"type": "select",
+			"id": "scroll_direction",
+			"label": "Scroll direction",
+			"options": [
+				{
+					"label": "Right to left",
+					"value": "sp-right-to-left"
+				},
+				{
+					"label": "Left to right",
+					"value": "sp-left-to-right"
+				}
+			],
+			"default": "sp-left-to-right"
+		},
+		{
+			"type": "range",
+			"id": "scrolling_speed",
+			"min": 0,
+			"max": 20,
+			"step": 1,
+			"label": "Scrolling speed",
+			"default": 10,
+			"unit": "s"
+		},
+		{
+			"type": "header",
+			"content": "Background image"
+		},
+		{
+			"type": "image_picker",
+			"id": "background_image",
+			"label": "Image"
+		},
+		{
+			"type": "header",
+			"content": "Section setting"
+		},
+		{
+			"type": "range",
+			"id": "vertical_spacing_desktop",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 60,
+			"unit": "px",
+			"label": "Vertical spacing (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "vertical_spacing_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 40,
+			"unit": "px",
+			"label": "Vertical spacing (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "gap_between_desktop",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 60,
+			"unit": "px",
+			"label": "Gap between (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "gap_between_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"default": 30,
+			"unit": "px",
+			"label": "Gap between (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "border_size_section",
+			"min": 0,
+			"max": 10,
+			"step": 1,
+			"default": 0,
+			"unit": "px",
+			"label": "Border size section"
+		},
+		{
+			"type": "checkbox",
+			"id": "full_width",
+			"label": "Make section full width",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Text setting"
+		},
+		{
+			"type": "range",
+			"id": "border_size_text",
+			"min": 0.5,
+			"max": 5,
+			"step": 0.5,
+			"default": 1,
+			"unit": "px",
+			"label": "Border size text"
+		},
+		{
+			"type": "range",
+			"id": "text_size_desktop",
+			"min": 18,
+			"max": 86,
+			"step": 1,
+			"default": 64,
+			"unit": "px",
+			"label": "Text size (Desktop)"
+		},
+		{
+			"type": "range",
+			"id": "text_size_mobile",
+			"min": 18,
+			"max": 86,
+			"step": 1,
+			"default": 32,
+			"unit": "px",
+			"label": "Text size (Mobile)"
+		},
+		{
+			"type": "range",
+			"id": "text_letter_spacing",
+			"min": -10,
+			"max": 10,
+			"step": 0.2,
+			"default": 0,
+			"unit": "px",
+			"label": "Text letter spacing"
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#E8E8E8"
+		},
+		{
+			"type": "color_background",
+			"id": "section_background_gradient_color",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "color",
+			"id": "section_text_color",
+			"label": "Text",
+			"default": "#303030"
+		},
+		{
+			"type": "color",
+			"id": "section_border_color",
+			"label": "Border section",
+			"default": "#000000"
+		},
+		{
+			"type": "color_background",
+			"id": "section_overlay_gradient_color",
+			"label": "Overlay gradient"
+		},
+		{
+			"type": "header",
+			"content": "Button color"
+		},
+		{
+			"type": "color",
+			"id": "button_section_background_color",
+			"label": "Background",
+			"default": "#FF3838"
+		},
+		{
+			"type": "color_background",
+			"id": "button_section_background_gradient_color",
+			"label": "Background gradient",
+			"info": "Background gradient replaces background where possible."
+		},
+		{
+			"type": "color",
+			"id": "button_section_text_color",
+			"label": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Content",
+			"type": "item",
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "text",
+					"label": "Text",
+					"default": "FASHION"
+				},
+				{
+					"type": "checkbox",
+					"id": "outline_text",
+					"label": "Outline text",
+					"default": false
+				},
+				{
+					"type": "header",
+					"content": "Image"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image / Icon",
+					"info": "Image size automatically adapts to the section font size."
+				},
+				{
+					"type": "header",
+					"content": "Button"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button label",
+					"info": "Leave the label blank to hide the button.",
+					"default": "Button text"
+				},
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link"
+				},
+				{
+					"type": "select",
+					"id": "button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"label": "Button link",
+							"value": "sp-button-link"
+						},
+						{
+							"label": "Button fill",
+							"value": "sp-button-fill"
+						},
+						{
+							"label": "Button outline",
+							"value": "sp-button-outline"
+						}
+					],
+					"default": "sp-button-fill"
+				},
+				{
+					"type": "range",
+					"id": "button_text_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text button letter spacing",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_scale",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Desktop)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_scale_mobile",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Mobile)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_radius",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Button border radius",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_border_width",
+					"min": 0.5,
+					"max": 5,
+					"step": 0.5,
+					"unit": "px",
+					"label": "Button border size",
+					"default": 1
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Scrolling Text 1.9",
+			"settings": {
+				"scroll_direction": "sp-left-to-right",
+				"scrolling_speed": 10,
+				"vertical_spacing_desktop": 60,
+				"vertical_spacing_mobile": 40,
+				"gap_between_desktop": 60,
+				"gap_between_mobile": 30,
+				"border_size_section": 0,
+				"full_width": true,
+				"lazy_load": false,
+				"border_size_text": 1,
+				"text_size_desktop": 64,
+				"text_size_mobile": 32,
+				"text_letter_spacing": 0,
+				"section_background_color": "#E8E8E8",
+				"section_text_color": "#303030",
+				"section_border_color": "#000000",
+				"button_section_background_color": "#FF3838",
+				"button_section_text_color": "#FFFFFF",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "item",
+					"settings": {
+						"text": "FASHION",
+						"outline_text": false,
+						"image": "shopify://shop_images/scrolling-text-1-variant-9-image_1.png",
+						"button_text": "",
+						"button_link": "",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 0,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "item",
+					"settings": {
+						"text": "COLLECTION",
+						"outline_text": false,
+						"image": "shopify://shop_images/scrolling-text-1-variant-9-image_2.png",
+						"button_text": "",
+						"button_link": "",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 0,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "item",
+					"settings": {
+						"text": "FASHION",
+						"outline_text": false,
+						"image": "shopify://shop_images/scrolling-text-1-variant-9-image_2.png",
+						"button_text": "",
+						"button_link": "",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_scale_mobile": 100,
+						"button_radius": 0,
+						"button_border_width": 1
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}}{--section-text-color: {{settings.section_text_color}};--sp-section-background-color: {{settings.section_background_color}};--sp-section-background-gradient-color: {{settings.section_background_gradient_color}};--sp-button-background-color: {{settings.button_section_background_color}};--sp-button-background-gradient-color: {{settings.button_section_background_gradient_color}}}#sp-{{section.id}} .sp-scrolling-section{background:var(--sp-section-background-color) var(--sp-section-background-gradient-color);padding-top:var(--sp-section-vertical-spacing);padding-bottom:var(--sp-section-vertical-spacing);border-top:var(--section-border-size) solid;border-bottom:var(--section-border-size) solid;border-color:{{settings.section_border_color}}}#sp-{{section.id}} .sp-scrolling-section .sp-background-image .sp-overlay{background:{{settings.section_overlay_gradient_color}}}#sp-{{section.id}} .sp-list-text{--scroll-speed: {{settings.scrolling_speed}}s;animation:marquee var(--scroll-speed) linear infinite}#sp-{{section.id}} .sp-list-text.sp-left-to-right{animation:marqueertf var(--scroll-speed) linear infinite}#sp-{{section.id}} .sp-list-text .sp-item .sp-item-text{font-size:var(--sp-section-text-size);color:var(--section-text-color);font-weight:var(--sp-body-font-weight);line-height:var(--sp-description-line-height);font-family:var(--sp-body-font);letter-spacing:var(--sp-text-letter-spacing);margin:0 var(--sp-section-gap-between);font-style:var(--sp-body-font-style)}#sp-{{section.id}} .sp-list-text .sp-item .sp-item-image{width:var(--sp-section-text-size);margin:0 var(--sp-section-gap-between)}#sp-{{section.id}} .sp-list-text .sp-item.sp-outline-text .sp-item-text{-webkit-text-fill-color:rgba(0,0,0,0);-webkit-text-stroke-width:var(--sp-section-border-size-text);-webkit-text-stroke-color:var(--section-text-color)}#sp-{{section.id}} .sp-list-text .sp-item .sp-button{color:{{settings.button_section_text_color}};font-weight:var(--sp-body-font-weight);line-height:var(--sp-description-line-height);font-family:var(--sp-body-font);text-decoration:none;margin:0 var(--sp-section-gap-between);--sp-button-padding-top: 1rem;--sp-button-padding-left: 3rem}
+{% endstyle %}

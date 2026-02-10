@@ -1,0 +1,1097 @@
+<div data-section-id="{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
+{% paginate collection.products by section.settings.coll_num_per_page_int %}
+  
+{%- liquid
+  if section.settings.show_image_behind_heading and collection.image
+    assign header_image_enabled = true
+  else
+    assign header_image_enabled = false
+  endif
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+
+  assign show_filters = section.settings.enable_filtering
+  if collection.filters == empty
+    assign show_filters = false
+  endif
+-%}
+
+{%- liquid
+  assign related_collections_count = 0
+  if section.settings.related_collections != empty
+    for loop_collection in section.settings.related_collections
+      unless loop_collection.handle == collection.handle
+        assign related_collections_count = related_collections_count | plus: 1
+      endunless
+    endfor
+  endif
+-%}
+
+{%- if related_collections_count > 0 -%}
+  {% capture related_collection_html %}
+    {% if section.settings.related_collections_style == 'buttons' %}
+      <div class="container{% if header_image_enabled %} container--not-mobile{% endif %} lightish-spaced-row-above">
+        <related-collection-link-buttons class="related-collection-links related-collection-links--buttons align-center{% if header_image_enabled %} image-overlay__over{% endif %}" data-expander-btn-text="{{ 'sections.collection.view_all_related_collections' | t }}">
+          {%- for loop_collection in section.settings.related_collections -%}
+            {%- unless loop_collection.handle == collection.handle -%}
+              <a class="btn btn--tertiary" href="{{ loop_collection.url }}">{{ loop_collection.title | escape }}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+        </related-collection-link-buttons>
+      </div>
+    {% else %}
+      {% unless section.settings.rel_coll_gall_full_width %}
+        <div class="container container--not-mobile lightish-spaced-row-above lightish-spaced-row-above--not-mobile{% if section.settings.rel_coll_grid_mobile == 'hide' %} desktop-only{% endif %}">
+      {% endunless %}
+      <div class="
+        gallery
+        gallery--height-adapt
+        gallery--grid-desktop-{{ related_collections_count | at_most: 4 }}
+        gallery--grid-mobile-{{ section.settings.rel_coll_grid_mobile }}
+        {%- if section.settings.rel_coll_grid_mobile != 'hide' -%}
+          {%- assign rel_coll_grid_mobile_int = section.settings.rel_coll_grid_mobile | plus: 0 -%}
+          {%- if related_collections_count > rel_coll_grid_mobile_int %} gallery--mobile-carousel{% endif %}
+        {%- endif -%}
+        {%- if section.settings.rel_coll_gall_enable_margin %} gallery--with-margins{% endif %}
+        related-collection-links
+        related-collection-links--gallery
+        {%- if section.settings.rel_coll_gall_full_width %} related-collection-links--is-full-width{% endif %}
+        {%- if header_image_enabled %} related-collection-links--under-image-header{% endif %}
+        {%- if section.settings.rel_coll_grid_mobile == 'hide' %} desktop-only{% endif %}">
+        <carousel-slider class="carousel{% if section.settings.rel_coll_gall_mobile_layout == 'hide' %} desktop-only{% endif %}" inactive>
+          <div class="slider slider--no-scrollbar" id="slider-{{ section.id }}">
+            <div class="slider__grid">
+              {%- for loop_collection in section.settings.related_collections -%}
+                {%- unless loop_collection.handle == collection.handle -%}
+                  <div class="slider__item
+                      gallery__item
+                      image-overlay
+                      image-overlay--bg-{{ section.settings.rel_coll_gall_overlay_style }}
+                      image-overlay--edge-boxes
+                      {% unless section.settings.rel_coll_gall_full_width and section.settings.rel_coll_gall_enable_margin == false %}image-overlay--edge-boxes--pad-to-corner{% endunless %}
+                      ">
+                    <a class="image-overlay__image-link" href="{{ loop_collection.url }}">
+                      <div class="image-overlay__image gallery__image img-stretch">
+                        {%- liquid
+                          if loop_collection.featured_image
+                            assign rel_coll_image = loop_collection.featured_image
+                          else
+                            assign rel_coll_image = false
+                          endif
+                          assign custom_aspect_ratio = section.settings.rel_coll_gall_aspect_ratio | times: 1.0
+                        -%}
+                        {%- if rel_coll_image -%}
+                          {%- liquid
+                            assign desktop_image_cols = section.settings.grid | at_most: section.blocks.size
+                          -%}
+                          {%- render 'image' with rel_coll_image, custom_aspect_ratio: custom_aspect_ratio, custom_crop: section.settings.image_position, size_cols_mobile: section.settings.rel_coll_grid_mobile, size_cols_desktop: desktop_image_cols -%}
+                        {%- else -%}
+                          <div class="placeholder-image dark">
+                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        {%- endif -%}
+                      </div>
+
+                      <div class="text-overlay text-overlay--v-{{ section.settings.rel_coll_gall_text_alignment | split: ' ' | first }} text-overlay--h-{{ section.settings.rel_coll_gall_text_alignment | split: ' ' | last }} image-overlay__over">
+                        <div class="text-overlay__inner">
+                          <div class="text-overlay__text">
+                            <h2 class="text-overlay__title h4">{{ loop_collection.title | escape }}</h2>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+          </div>
+          <div class="slider-nav slider-nav--floating desktop-only no-js-hidden">
+            <button type="button" class="slider-nav__btn has-ltr-icon" name="prev" aria-controls="slider-{{ section.id }}">
+              <span class="visually-hidden">{{ 'general.slider.previous' | t }}</span>
+              {%- render 'icon-chevron-left', stroke_width: 1.3 -%}
+            </button>
+            <button type="button" class="slider-nav__btn has-ltr-icon" name="next" aria-controls="slider-{{ section.id }}">
+              <span class="visually-hidden">{{ 'general.slider.next' | t }}</span>
+              {%- render 'icon-chevron-right', stroke_width: 1.3 -%}
+            </button>
+          </div>
+        </carousel-slider>
+      </div>
+      {% unless section.settings.rel_coll_gall_full_width %}
+        </div>
+      {% endunless %}
+    {% endif %}
+  {% endcapture %}
+{%- endif -%}
+
+{% if header_image_enabled %}
+  {%- liquid
+    assign show_header = false
+    if section.settings.show_title
+      assign show_header = true
+    endif
+    if collection.description != blank and section.settings.coll_desc_pos == 'above'
+      assign show_header = true
+    endif
+    if related_collections_count > 0 and section.settings.related_collections_style == 'buttons'
+      assign show_header = true
+    endif
+  -%}
+  {%- if show_header -%}
+    <div class="page-header page-header--with-background img-fill image-overlay image-overlay--bg-{{ section.settings.overlay_style }} page-header--padded-{{ section.settings.heading_image_height }}">
+      <div class="image-overlay__image">
+        {%- render 'image' with collection.image, loading: 'eager', fetchpriority: 'high' -%}
+      </div>
+      <div class="text-overlay text-overlay--inline text-overlay--v-center text-overlay--h-center image-overlay__over" {%- render 'animation-attrs', attrs: 'data-cc-animate data-cc-animate-delay="0.2s"' -%}>
+        <div class="text-overlay__inner">
+          <div class="text-overlay__text">
+            {%- if section.settings.show_title -%}
+              <h1 class="text-overlay__title super-large-text">{{ collection.title | escape }}</h1>
+            {%- endif -%}
+
+            {% if collection.description != blank and section.settings.coll_desc_pos == 'above' %}
+              <div class="text-overlay__rte rte cf align-center reading-width large-text">{{ collection.description }}</div>
+            {% endif %}
+
+            {%- if related_collections_count > 0 and section.settings.related_collections_style == 'buttons' -%}
+              {{ related_collection_html }}
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{% else %}
+  {{ related_collection_html }}
+  {%- liquid
+    assign show_header = false
+    if section.settings.show_title
+      assign show_header = true
+    endif
+    if collection.description != blank and section.settings.coll_desc_pos == 'above'
+      assign show_header = true
+    endif
+  -%}
+  {%- if show_header -%}
+    <div class="page-header page-header--with-upper-spacing">
+      <div class="container">
+        {%- if section.settings.show_title -%}
+          <h1 class="pagetitle h3">{{ collection.title | escape }}</h1>
+        {%- endif -%}
+
+        {% if collection.description != blank and section.settings.coll_desc_pos == 'above' %}
+          <div class="rte cf align-center reading-width">{{ collection.description }}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
+  {%- if related_collections_count > 0 and header_image_enabled and section.settings.related_collections_style != 'buttons' -%}
+    {{ related_collection_html }}
+  {%- endif -%}
+
+  <div class="emily-box container{% if settings.use_fullwidth_layout %} container--no-max{% endif %}{% if show_header == false %} lightly-spaced-row-above{% endif %}">
+    <div class="utility-bar" data-ajax-container data-ajax-scroll-to>
+      <div class="utility-bar__left">
+        {% if section.settings.show_sort or show_filters %}
+          <a href="#" class="toggle-btn utility-bar__item{% if section.settings.collapse_tag_sidebar_by_default == false %} toggle-btn--revealed-desktop{% endif %}{% if show_filters == false %} mobile-only{% endif %}" data-toggle-filters>
+            <span class="btn-icon">{% render 'icon-filter' %}</span>
+            <span>{{ 'products.filtering.filter' | t }}</span>
+            {% liquid
+              assign filter_count = 0
+              for filter in collection.filters
+                assign filter_count = filter_count | plus: filter.active_values.size
+                if filter.type == 'price_range'
+                  if filter.min_value.value != nil or filter.max_value.value != nil
+                    assign filter_count = filter_count | plus: 1
+                  endif
+                endif
+              endfor
+            %}
+            {% if filter_count > 0 %}
+              <span class="toggle-btn__count">({{ filter_count }})</span>
+            {% endif %}
+            <span class="toggle-btn__chevron has-motion has-ltr-icon">{% render 'icon-chevron-right', stroke_width: 1.3 %}</span>
+          </a>
+        {% endif %}
+      </div>
+
+      {% if section.settings.show_total and paginate.items > 0 %}
+        <div class="utility-bar__centre">
+          <div class="utility-bar__item">{{ 'sections.collection.product_count' | t: count: paginate.items }}</div>
+        </div>
+      {% endif %} 
+
+      <div class="utility-bar__right">
+        {% if section.settings.show_sort %}
+          <span class="utility-bar__item desktop-only">
+            <link-dropdown class="link-dropdown link-dropdown--right-aligned">
+              <div class="visually-hidden" id="sort-dropdown-heading">{{ 'products.sorting.sort_by_label' | t | escape }}</div>
+              <button class="link-dropdown__button has-motion" aria-expanded="false" aria-controls="sort-dropdown-options" aria-describedby="sort-dropdown-heading">
+                <span class="link-dropdown__button-text">
+                  {%- for option in collection.sort_options -%}
+                    {%- if current_sort == option.value -%}
+                      {{ option.name | escape }}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                </span>
+                <span class="link-dropdown__button-icon has-motion">{% render 'icon-chevron-down', stroke_width: 1.3 %}</span>
+              </button>
+              <div class="link-dropdown__options" id="sort-dropdown-options">
+                {%- for option in collection.sort_options -%}
+                  {%- liquid
+                    if section.settings.sort_show_featured == false and option.value == 'manual' and collection.default_sort_by != 'manual'
+                      continue
+                    endif
+                    if section.settings.sort_show_best == false and option.value == 'best-selling' and collection.default_sort_by != 'best-selling'
+                      continue
+                    endif
+                    if section.settings.sort_show_alpha == false and option.value == 'title-ascending' and collection.default_sort_by != 'title-ascending'
+                      continue
+                    endif
+                    if section.settings.sort_show_alpha == false and option.value == 'title-descending' and collection.default_sort_by != 'title-descending'
+                      continue
+                    endif
+                    if section.settings.sort_show_price == false and option.value == 'price-ascending' and collection.default_sort_by != 'price-ascending'
+                      continue
+                    endif
+                    if section.settings.sort_show_price == false and option.value == 'price-descending' and collection.default_sort_by != 'price-descending'
+                      continue
+                    endif
+                    if section.settings.sort_show_date == false and option.value == 'created-ascending' and collection.default_sort_by != 'created-ascending'
+                      continue
+                    endif
+                    if section.settings.sort_show_date == false and option.value == 'created-descending' and collection.default_sort_by != 'created-descending'
+                      continue
+                    endif
+                  -%}
+                  <a href="{{ request.path | sort_by: option.value | escape }}" class="link-dropdown__link{% if current_sort == option.value %} link-dropdown__link--active{% endif %}">{{ option.name | escape }}</a>
+                {%- endfor -%}
+              </div>
+            </link-dropdown>
+          </span>
+        {% endif %}
+        <span class="utility-bar__item mobile-only">
+          <div class="layout-switchers">
+            <a class="layout-switch layout-switch--two-columns{% if settings.prod_thumb_mob_per_row == '2' %} layout-switch--active{% endif %}" href="#" aria-label="{{ 'sections.collection.grid_layout' | t }}">{%- render 'icon-grid', stroke_width: 1.3 -%}</a>
+            <a class="layout-switch layout-switch--one-column{% if settings.prod_thumb_mob_per_row == '1' %} layout-switch--active{% endif %}" href="#" aria-label="{{ 'sections.collection.list_layout' | t }}">{%- render 'icon-box', stroke_width: 1.3 -%}</a>
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <!-- 把产品按照类型分组-->
+    {% assign product_types = '' %}
+    {% for product in collection.products %}
+      {% unless product_types contains product.type %}
+        {% assign product_types = product_types | append: product.type | append: ',' %}
+      {% endunless %}
+    {% endfor %}
+    {% assign product_types = product_types | split: ',' | uniq %}
+  
+    <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
+      {% if section.settings.show_sort or show_filters %}
+        {% render 'faceted-filters', filter_context: collection, clear_url: collection.url, current_sort: current_sort %}
+      {% endif %}
+  
+      <div class="filters-adjacent collection-listing collection-listing-emily" data-ajax-container>
+        {% if collection.products.size == 0 %}
+          <h5 class="align-centre fully-spaced-row">{{ 'sections.collection.empty' | t }}</h5>
+        {% else %}
+          <a ></a>
+            {% comment %} <img src="{{ 'product_img.webp' |  asset_url  }}" width="100%" height="auto" /> {% endcomment %}
+          
+            {% assign group_idx = 0 %}
+           {% for type in product_types %}
+              {% assign group_idx = group_idx | plus: 1 %}
+              {% comment %} ===== 首组顶部配置图 ===== {% endcomment %}
+              {% comment %}在第 6 次迭代后插入图片 {% endcomment %}
+              {%- if group_idx == 7 and section.settings.show_first_group_image -%}
+                <div class="first-group-banner">
+                  <a href="{{ section.settings.first_group_image_link }}">
+                    <picture>
+                      <source media="(max-width: 767px)"
+                              srcset="{{ section.settings.first_group_image_mobile | image_url: width: 768 }}">
+                      <img width="100%" height="auto" src="{{ section.settings.first_group_image_pc | image_url: width: 1500 }}"
+                          alt="{{ section.settings.first_group_image_pc.alt | escape }}"
+                          loading="lazy">
+                    </picture>
+                  </a>
+                </div>
+              {%- endif -%}
+
+              <div style="border-bottom:1px solid #ccc;margin:20px 0;padding-bottom:20px">
+                <h2 class="text-center" >{{ type }}</h2>
+                {% comment %} 
+                  至少为每个类型的一个产品设置元字段
+                  - 遍历该类型的所有产品
+                  - 只要找到第一个有metafield值的产品，就会使用该值
+                  
+                {% endcomment %}
+                {% assign type_intro = '' %}
+                {% assign intro_found = false %}
+                {% for product in collection.products %}            
+                  {% if product.type == type and intro_found == false %}
+                    {% if product.metafields.custom.product_attributes != blank %}
+                      {% assign type_intro = product.metafields.custom.product_attributes %}
+                      {% assign intro_found = true %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %} 
+          
+                <!-- 显示元字段内容 -->
+                {% if type_intro != blank %}
+                  <section class="text-center">
+                    <div class="product-list-intro">
+                      {{ type_intro | metafield_tag }}
+                    </div>
+                  </section>
+                {% endif %}              
+              </div>
+               <!-- 计算当前类型的产品总数 -->
+              {% assign type_product_count = 0 %}
+              {% for product in collection.products %}
+                  {% if product.type == type %}
+                      {% assign type_product_count = type_product_count | plus: 1 %}
+                  {% endif %}
+              {% endfor %}
+              
+              <!-- 生成唯一的ID用于JavaScript -->
+              {% assign type_id = type | handleize %}
+              
+              <div class="product-grid product-grid--per-row-{{ section.settings.grid }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }}" id="product-grid-{{ type_id }}">
+                {% assign product_index = 0 %}
+                {% for product in collection.products %}
+                    {% if product.type == type %}
+                        {% assign product_index = product_index | plus: 1 %}
+                        {% assign prioritised_loading = false %}
+                        {% if product_index <= section.settings.grid %}
+                            {% assign prioritised_loading = true %}
+                        {% endif %}
+                        
+                        <!-- 前12个产品默认显示，其余隐藏 -->
+                        {% if product_index <= 12 %}
+                            <div class="product-item" data-type="{{ type_id }}">
+                                {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                            </div>
+                        {% else %}
+                            <div class="product-item" data-type="{{ type_id }}" style="display: none;">
+                                {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+              </div>
+              
+              <!-- 只有当产品数量超过12个时才显示加载更多按钮 -->
+              {% if type_product_count > 12 %}
+              <div class="load-more-container" id="load-more-{{ type_id }}" style="text-align: center; margin: 20px 0; cursor: pointer;" onclick="loadMoreProducts('{{ type_id }}', {{ type_product_count }})">
+                  <img src="{{ 'Load More.svg' |  asset_url  }}" alt="加载更多" width="18px" height="18px" />
+                  <div class="load-btn">Load More</div>
+              </div>
+              {% endif %}
+
+              {% comment %} <div class="product-grid product-grid--per-row-{{ section.settings.grid }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }}">
+                {% for product in collection.products %}
+                    {% assign prioritised_loading = false %}
+                     {% if forloop.index0 < section.settings.grid %}
+                       {% assign prioritised_loading = true %}
+                      {% endif %}
+                      {% if product.type == type %}
+                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                      {% endif %}
+                    {% endfor %}
+              </div> {% endcomment %}
+
+              {% endfor %}
+        {% endif %}
+      </div>
+    </filter-container>
+
+
+
+  </div>
+
+  <div class="container pagination-row" data-ajax-container>{% render 'pagination-control', paginate: paginate %}</div>
+
+  {% endpaginate %}
+
+  {% if collection.description != blank and section.settings.coll_desc_pos == 'below' %}
+    <div class="container container--reading-width fully-spaced-row" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
+      <div class="rte cf">{{ collection.description }}</div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+
+  function btnLoading(button){
+      button.classList.remove('loading');
+      button.disabled = false; // 恢复按钮状态
+  }
+  
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('.collection-listing-emily').addEventListener('click', function (event) {
+        if (event.target.classList.contains('add-to-cart-test')) {
+          // 处理点击事件
+           const productId = event.target.getAttribute('data-product-id');
+            if (productId) {
+                const button = event.target; // 获取点击的按钮
+                button.classList.add('loading');
+                button.disabled = true; // 禁用按钮以防止重复点击
+                addToCart(productId,button);
+            } else {
+              console.error('未找到产品 ID');
+            }
+        }
+      });
+});
+
+
+    // 通过 Shopify Ajax API 将产品添加到购物车
+    function addToCart(productId, button) {      
+      const data = {
+        items: [
+          {
+            id: productId,   // 产品ID
+            quantity: 1       // 默认添加数量为1
+          }
+        ]
+      };
+    
+      // 发起 AJAX 请求
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Product added to cart:', data);
+        // window.location.href = '/cart';
+        // window.location.reload()
+        updateCartCount(button)
+        
+      })
+      .catch(error => {
+        btnLoading(button)
+        console.error('Error adding product to cart:', error);
+      });
+    }
+   // 更新购物车数量
+  function updateCartCount(button) {
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        const cartCount = cart.item_count; // 获取购物车中的总商品数量
+        refreshCartDrawer(cartCount,button)
+      })
+      .catch(error => {
+        btnLoading(button)
+        console.error('Error updating cart count:', error);
+      });
+  }
+  // 更新购物车弹窗的内容
+  function refreshCartDrawer(cartCount,button) {
+      fetch('/cart', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      })
+        .then(response => response.text())
+        .then(html => {
+           const tempDiv = document.createElement('div');
+           tempDiv.innerHTML = html;
+           reloadCartFooter()
+          
+            if( cartCount <= 1 ){//当购物车是空的时候 特殊处理，先隐藏空样式，再把购物车内容取消隐藏
+                 const elements = document.querySelectorAll(
+                    '.cart-drawer__content--hidden, .cart-drawer__footer--hidden, .cart-drawer__empty-content--hidden'
+                  );
+                elements.forEach(element => {
+                   element.classList.remove('cart-drawer__content--hidden');
+                    element.classList.remove('cart-drawer__footer--hidden');
+                    element.classList.remove('cart-drawer__empty-content--hidden');
+                });
+                 const emptyContent = document.querySelector('.cart-drawer__empty-content'); 
+                emptyContent.classList.add('cart-drawer__empty-content--hidden');
+            }
+            
+           // 找到购物车的内容容器（根据主题结构调整选择器）
+            const newCartContent = tempDiv.querySelector('.cart-item-list'); // `.cart-item-list` 是购物车内容的容器
+            let cartContentContainer = document.querySelector('.cart-item-list');
+            cartContentContainer.innerHTML = newCartContent.innerHTML; // 更新购物车内容
+
+            const cartIcon = document.querySelector('.cart-drawer__title'); // 找到购物车数字的 DOM 元素
+            const cartCountIncon = document.querySelector('.cart-link__count'); // 找到购物车数字的 DOM 元素
+          
+            if (cartIcon) {
+              cartIcon.innerHTML = ` Your cart <span class="cart-drawer__title-count">(${cartCount})</span>`  ;
+            }
+            if (cartCountIncon) {
+              cartCountIncon.textContent = cartCount  ;
+            }
+          
+            btnLoading(button)
+          // 打开购物车弹窗
+            document.querySelector('.js-cart-drawer').open();
+          
+        })
+       .catch(error => {
+           btnLoading(button)
+        });
+  }
+  // 更新footer
+  function reloadCartFooter() {
+    fetch('/?section_id=sections--22811779662142__cart-drawer')
+      .then(response => response.text())
+      .then(html => {
+           const tempDiv = document.createElement('div');
+           tempDiv.innerHTML = html;
+           const newCartContent = tempDiv.querySelector('.cart-drawer__footer'); // `.cart-item-list` 是购物车内容的容器
+           const cartContentContainer = document.querySelector('.cart-drawer__footer');
+           cartContentContainer.innerHTML = newCartContent.innerHTML; // 更新购物车内容
+      })
+      .catch(error => {
+        console.error('Error loading cart footer:', error);
+      });
+  }
+  //加载更多功能
+  function loadMoreProducts(typeId, totalCount) {
+      // 获取当前类型的所有隐藏产品
+      const hiddenProducts = document.querySelectorAll(`[data-type="${typeId}"][style*="display: none"]`);
+      const loadMoreBtn = document.getElementById(`load-more-${typeId}`);
+      
+      // 每次显示12个产品
+      const showCount = Math.min(12, hiddenProducts.length);
+      
+      for (let i = 0; i < showCount; i++) {
+          hiddenProducts[i].style.display = 'block';
+      }
+      
+      // 检查是否还有隐藏的产品
+      const remainingHidden = document.querySelectorAll(`[data-type="${typeId}"][style*="display: none"]`);
+      
+      // 如果没有更多隐藏的产品，隐藏加载更多按钮
+      if (remainingHidden.length === 0) {
+          loadMoreBtn.style.display = 'none';
+      }
+  }
+
+</script>
+
+
+
+
+{% schema %}
+  {
+    "name": "Collection pages custom",
+    "settings": [
+      {
+    "type": "header",
+    "content": "产品分组中间的配图"
+  },
+  {
+    "type": "checkbox",
+    "id": "show_first_group_image",
+    "label": "启用产品分组中间的配图",
+    "default": true
+  },
+  {
+    "type": "url",
+    "id": "first_group_image_link",
+    "label": "图片点击链接"
+  },
+  {
+    "type": "image_picker",
+    "id": "first_group_image_pc",
+    "label": "PC 端图片"
+  },
+  {
+    "type": "image_picker",
+    "id": "first_group_image_mobile",
+    "label": "移动端图片"
+  },
+
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_behind_heading",
+      "label": "Show collection image behind title",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_image_height",
+      "label": "Heading image height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Compact"
+        },
+        {
+          "value": "medium",
+          "label": "Small"
+        },
+        {
+          "value": "large",
+          "label": "Medium"
+        },
+        {
+          "value": "huge",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "id": "overlay_style",
+      "type": "select",
+      "label": "Overlay style",
+      "default": "shadow",
+      "options": [
+        {
+          "value": "full",
+          "label": "Tint"
+        },
+        {
+          "value": "box",
+          "label": "Box"
+        },
+        {
+          "value": "shadow",
+          "label": "Text shadow"
+        },
+        {
+          "value": "full image-overlay--bg-shadow",
+          "label": "Text shadow and tint"
+        },
+        {
+          "value": "no_background",
+          "label": "No background"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "coll_desc_pos",
+      "label": "Description position",
+      "default": "above",
+      "options": [
+        {
+          "value": "above",
+          "label": "Below collection title"
+        },
+        {
+          "value": "below",
+          "label": "Below products"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "coll_num_per_page_int",
+      "min": 100,
+      "max": 1000,
+      "step": 100,
+      "label": "Number of products to show per page",
+      "default": 1000
+    },
+    {
+      "type": "range",
+      "id": "grid",
+      "label": "Products per row",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendors",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_total",
+      "label": "Show product total",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "info": "[Customize filters](/admin/menus)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_tag_sidebar_by_default",
+      "label": "Collapse filter column",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "collapse_filters_method",
+      "label": "Filter row collapse",
+      "default": "over-12",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "over-6",
+          "label": "Over 6 items"
+        },
+        {
+          "value": "over-12",
+          "label": "Over 12 items"
+        },
+        {
+          "value": "over-18",
+          "label": "Over 18 items"
+        },
+        {
+          "value": "all",
+          "label": "All rows"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter_counts",
+      "label": "Show filter counts",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_two_columns",
+      "label": "Show filter values in two columns",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_grid_filter_name",
+      "label": "Filters to show as buttons",
+      "info": "Counts will not show. Separate options with a comma. E.g. Size,Taille,Größe",
+      "default": "Size,Taille,Größe"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_apply_hide_unavailable",
+      "label": "On selecting a filter, automatically apply 'Hide out of stock'",
+      "default": false,
+      "info": "Requires Availability filter to be enabled"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_filter",
+      "label": "Enable sticky filter column",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sorting dropdown",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_featured",
+      "label": "Enable order: Featured",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_best",
+      "label": "Enable order: Best selling",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_alpha",
+      "label": "Enable order: Alphabetical",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_price",
+      "label": "Enable order: Price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_show_date",
+      "label": "Enable order: Date added",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "The collection's default sort order will always show."
+    },
+    {
+      "type": "header",
+      "content": "Related collections / Subcollections"
+    },
+    {
+      "type": "paragraph",
+      "content": "Show links to other collections at the top of the page. Use a metafield to change which links show on each collection page. [Read more](https://cleancanvas.co.uk/support/symmetry/related-collections)"
+    },
+    {
+      "type": "collection_list",
+      "id": "related_collections",
+      "label": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "related_collections_style",
+      "label": "Related collections style",
+      "default": "buttons",
+      "options": [
+        {
+          "value": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "value": "gallery",
+          "label": "Gallery"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Related collections gallery layout"
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_gall_aspect_ratio",
+      "label": "Image shape",
+      "default": "1",
+      "options": [
+        {
+          "value": "2",
+          "label": "Landscape (2x1)"
+        },
+        {
+          "value": "1.5",
+          "label": "Landscape (6x4)"
+        },
+        {
+          "value": "1.25",
+          "label": "Landscape (5x4)"
+        },
+        {
+          "value": "1",
+          "label": "Square (1x1)"
+        },
+        {
+          "value": "0.8",
+          "label": "Portrait (4x5)"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image alignment",
+      "info": "Used to keep the subject of your image in view",
+      "default": "center center",
+      "options": [
+        {
+          "value": "top left",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "top right",
+          "label": "Top right"
+        },
+        {
+          "value": "center left",
+          "label": "Middle left"
+        },
+        {
+          "value": "center center",
+          "label": "Middle center"
+        },
+        {
+          "value": "center right",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottom left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom right",
+          "label": "Bottom right"
+        }
+      ]
+    },
+    {
+      "id": "rel_coll_gall_enable_margin",
+      "type": "checkbox",
+      "label": "Add spacing around images",
+      "default": true
+    },
+    {
+      "id": "rel_coll_gall_full_width",
+      "type": "checkbox",
+      "label": "Full page width",
+      "default": false
+    },
+    {
+      "id": "rel_coll_gall_overlay_style",
+      "type": "select",
+      "label": "Overlay style",
+      "default": "shadow",
+      "options": [
+        {
+          "value": "full",
+          "label": "Tint"
+        },
+        {
+          "value": "box",
+          "label": "Box"
+        },
+        {
+          "value": "shadow",
+          "label": "Text shadow"
+        },
+        {
+          "value": "full image-overlay--bg-shadow",
+          "label": "Text shadow and tint"
+        },
+        {
+          "value": "no_background",
+          "label": "No background"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_gall_text_alignment",
+      "label": "Text overlay position",
+      "options": [
+        {
+          "value": "top left",
+          "label": "Top left"
+        },
+        {
+          "value": "top center",
+          "label": "Top center"
+        },
+        {
+          "value": "top right",
+          "label": "Top right"
+        },
+        {
+          "value": "center center",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "select",
+      "id": "rel_coll_grid_mobile",
+      "label": "Images per row - mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ],
+      "default": "2"
+    }
+  ],
+   "presets": [
+      {
+        "name": "Collection pages custom",
+        "category": "Added by emily 2021 "
+      }
+    ]
+}
+{% endschema %}
+
+<style>
+@media screen and (max-width: 767px) {
+  .utility-bar {
+    position: sticky;
+    z-index: 100;
+    background: #fff;
+  }
+   .utility-bar .utility-bar__left {
+        color: #c16452;
+    }
+    .emily-box .utility-bar--sticky-mobile-copy{
+      display:none
+    }
+}
+
+</style>
+<script>
+  const windowWidth = window.innerWidth;
+  if (windowWidth <= 767) {
+    const richtext = document.querySelector('.section-rich-text-sticky');
+    const utilityBar = document.querySelector('.utility-bar');
+    utilityBar.style.top = `${richtext.clientHeight + 34}px`;
+    utilityBar.style.width = `calc(100% + 32px)`;
+    utilityBar.style.padding = `0 16px`;
+    utilityBar.style.transform = `translateX(-16px)`;
+  }
+</script>

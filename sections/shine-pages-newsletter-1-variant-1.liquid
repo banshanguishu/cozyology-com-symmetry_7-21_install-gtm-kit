@@ -1,0 +1,1162 @@
+{% comment %} Variables  {% endcomment %}
+{% assign settings = section.settings %}
+<style>
+    {% comment %}
+    Render heading & body font family
+{% endcomment %}
+{%- if settings.override_font != blank -%}
+    {%- capture font_settings_list -%}
+        {{ settings.heading_font | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.heading_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.body_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }};;
+        {{ settings.hightlight_font | font_modify: 'style', 'italic' | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }};;
+    {%- endcapture -%}
+    {%- assign font_array = font_settings_list | split: ';;' -%}
+{% endif %}
+{%- if settings.override_font != blank -%}
+    {%- for font in font_array -%}
+        {%- unless font contains 'error' -%}
+            {{ font }}{%- endunless -%}
+    {%- endfor -%}
+    #sp-{{ section.id }} {
+    --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+    --sp-heading-font-weight: {{ settings.heading_font.weight }};
+    --sp-heading-font-style: {{ settings.heading_font.style }};
+    --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+    --sp-body-font-weight: {{ settings.body_font.weight }};
+    --sp-body-font-style: {{ settings.body_font.style }};
+    --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+    --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+    --sp-highlight-font-style: {{ settings.highlight_font.style }};
+    }
+    {% if custom_selector != blank %}
+        {{ custom_selector }} {
+        --sp-heading-font-family: {{ settings.heading_font.family }},{{ settings.heading_font.fallback_families }};
+        --sp-heading-font-weight: {{ settings.heading_font.weight }};
+        --sp-heading-font-style: {{ settings.heading_font.style }};
+        --sp-body-font-family: {{ settings.body_font.family }},{{ settings.body_font.fallback_families }};
+        --sp-body-font-weight: {{ settings.body_font.weight }};
+        --sp-body-font-style: {{ settings.body_font.style }};
+        --sp-highlight-font-family: {{ settings.highlight_font.family }},{{ settings.highlight_font.fallback_families }};
+        --sp-highlight-font-weight: {{ settings.highlight_font.weight }};
+        --sp-highlight-font-style: {{ settings.highlight_font.style }};
+        }
+    {% endif %}
+{% endif %}
+    {% comment %}
+    Render padding section, heading content max width
+{% endcomment %}
+
+    #sp-{{ section.id }} .sp-section {
+    {% if settings.section_top_padding_mobile and  settings.section_bottom_padding_mobile %}
+        --sp-section-top-padding: {{ settings.section_top_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding_mobile | divided_by: 10.0 | round: 0 }}rem;
+    {% else %}
+        --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+        --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.5 | round: 0 }}rem;
+    {% endif %}
+        }
+
+    @media (min-width: 768px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | times: 0.7 | round: 0 }}rem;
+        }
+    }
+
+    @media (min-width: 1260px) {
+        #sp-{{ section.id }} .sp-section {
+            --sp-section-top-padding: {{ settings.section_top_padding | divided_by: 10.0 | round: 0 }}rem;
+            --sp-section-bottom-padding: {{ settings.section_bottom_padding | divided_by: 10.0 | round: 0 }}rem;
+        }
+    }
+
+
+</style>
+<div id="sp-{{ section.id }}" class="sp-{{ section.id }} sp-section-newsletter-1" data-section="newsletter-1"
+     data-variant="variant-1" data-image-position="{{ settings.image_position }}" data-image-fit="{{ settings.image_side_overflow }}" data-lazy="sp-{% if settings.lazy_load %}lazy-section{% endif %}" data-cascade>
+    
+        {%- if settings.section_background_image != blank -%}
+            <div class="sp-image-background">
+                {{ settings.section_background_image | image_url: width: 3840 | image_tag: class: 'sp-image' }}
+            </div>
+        {% endif %}
+        <div class="sp-overlay"></div>
+    <div class="sp-section sp-section-no-heading" data-border="{{ settings.section_border }}">
+
+        <div class="{% case settings.section_width %}{% when 'boxed' %}sp-container{% when 'full_width' %}sp-container-fluid{% else %}sp-container-fluid sp-container-no-gap{% endcase %}">
+            <div class="sp-newsletter-wrapper">
+                <div class="sp-content-inner {{ settings.content_position }}">
+                    <div class="sp-content-wrapper {{ settings.content_alignment }} {% if settings.show_border %}show-border {% endif %} {% if settings.show_background %}show-background{% endif %} {% if settings.box_shadow == true %}has-box-shadow{% endif %}">
+                        {% for block in section.blocks %}
+                            {% if block.type == "block_subimage" %}
+                                <div class="sp-image-icon-wrapper" {{ block.shopify_attributes }}>
+                                    <style>
+                                        .sp-{{ section.id }} .sp-image-icon{
+                                            width: {{ block.settings.image_width_desktop }}px;
+                                            height: auto;
+                                            object-fit: cover;
+                                            max-width: 100%;
+                                        }
+                                        @media(max-width:767px) {
+                                            .sp-{{ section.id }} .sp-image-icon{
+                                                width: {{ block.settings.image_width_mobile }}px
+                                            }
+                                        }
+                                    </style>
+                                    {% if block.settings.image %}
+                                        {{ block.settings.image | image_url: width: 250 | image_tag: class: 'sp-image-icon' }}
+                                    {% else %}
+                                        {{ 'image' | placeholder_svg_tag: 'sp-placeholder-image-gray sp-image-icon' }}
+                                    {% endif %}
+                                </div>
+                            {%endif %}
+                            {% if block.type == "block_content" %}
+                                {% assign setting = block.settings %}
+                                {% assign heading_settings = setting %}
+                                {% assign heading_selector = section.id | prepend:"#sp-" | append:" .sp-content-wrapper" %}
+                                
+                                <div class="sp-content" {{ block.shopify_attributes }}>
+                                    <style>
+                                        
+    {{ heading_selector }} {
+        --sp-section-heading-size: {{ heading_settings.heading_size_mobile }}px;
+        --sp-section-description-size: {{ heading_settings.description_size_mobile }}px;
+        --sp-heading-letter-spacing: {{ heading_settings.text_heading_spacing | default: 0 }}px;
+        --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.6 }};
+
+    }
+    @media (min-width: 768px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 | times: 0.8 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop | times: 0.8 }}px;
+            --sp-section-description-size: max({{ heading_settings.description_size_desktop | times: 0.8 }}px, {{ heading_settings.description_size_mobile }}px);
+        }
+    }
+
+    @media (min-width: 1200px) {
+        {{ heading_selector }} {
+            --sp-heading-spacing-scale: {{ heading_settings.heading_spacing_scale | divided_by: 100.0 }};
+            --sp-section-heading-size: {{ heading_settings.heading_size_desktop }}px;
+            --sp-section-description-size: {{ heading_settings.description_size_desktop }}px;
+        }
+    }
+
+                                    </style>
+                                    {% if setting.sub_heading != blank %}
+                                        <h5 class="sp-sub-heading {{ setting.sub_heading_size | default: "sp-sub-heading-size-medium" }}">{{ setting.sub_heading }}</h5>
+                                    {% endif %}
+                                    {% if setting.heading != blank %}
+                                        <h2 class="sp-heading">{{ setting.heading }}</h2>
+                                    {% endif %}
+                                    {% if setting.description != blank and setting.description != '<p></p>' %}
+                                        <div class="sp-description">{{ setting.description }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}    
+                                           
+                            {% if block.type == "block_email_input" %}
+                                {% assign setting = block.settings %}
+                                <style>
+                                   #sp-{{ section.id }}  .sp-form {
+                                    --sp-input-form-border-radius: {{setting.input_form_border_radius}}px;
+                                    --sp-input-form-border-size: {{setting.input_form_border_size}}px;
+                                    --sp-input-border-color: {{ settings.input_form_border }};
+                                    --sp-input-form-text-color: {{settings.input_form_text}};
+                                    --sp-background-form-text-color: transparent;
+                                    --sp-input-border-active-color: {{ settings.input_form_border }};
+                                    --sp-input-form-text-active-color: {{settings.input_form_text}};
+                                    --sp-background-form-text-active-color: transparent;
+                                    }
+                                </style>
+                                <div class="sp-email-container" {{ block.shopify_attributes }}>
+                                    {%- form 'customer', id: 'ContactFooter', class: 'sp-form' -%}
+                                          
+                                      <div class="sp-subcribe-container">
+                                        <div class="sp-field sp-block-email">
+                                            <div class="sp-field-input">
+                                                <label class="sp-form-label"> {{ setting.email_placeholder }} </label>
+                                                <input
+                                                    id="sp-newsletter-{{ section.id }}"
+                                                    type="email"
+                                                    name="contact[email]"
+                                                    class="sp-email-input sp-form-input"
+                                                    value="{{ form.email }}"
+                                                    aria-required="true"
+                                                    autocorrect="off"
+                                                    autocapitalize="off"
+                                                    autocomplete="email"
+                                                    placeholder=""
+                                                    {% if form.errors %}
+                                                    autofocus
+                                                    aria-invalid="true"
+                                                    aria-describedby="ContactFooter-error"
+                                                    {% elsif form.posted_successfully? %}
+                                                    aria-describedby="ContactFooter-success"
+                                                    {% endif %}
+                                                    pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                                                    required
+                                                >
+                                            </div>
+                                        </div>
+                                          
+                                        {% if setting.button_text != blank  %}
+                                            <div id="sp-{{ block.id }}" class="sp-button-wrapper" data-alignment="center">
+                                                {% if setting.button_text != blank %}
+                                                    {% assign button_selector = section.id | append:" .sp-email-container" | prepend:"#sp-" %}
+                                                    {% assign button_settings = block.settings %}
+                                                    <style>
+                                                        {% comment %}
+    Render button style variables
+    Pass button selector to apply
+{% endcomment %}
+{{ button_selector }}{
+    --sp-button-border-width:{{ button_settings.button_border_width | append:"px" }};
+    --sp-button-radius: {{ button_settings.button_radius | append:"px" }};
+    --sp-button-text-spacing: {{ button_settings.button_text_spacing | append:"px" }};
+    --sp-button-scale: {{ button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% if button_settings.button_scale_mobile >= 100 %}
+        --sp-button-font-scale: {{ button_settings.button_scale_mobile | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+    {% endif %}
+    {% if button_settings.button_scale_mobile < 100 %}
+        --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale_mobile | divided_by: 2 | plus: button_settings.button_scale_mobile | divided_by: 100.0 }};
+    {% endif %}
+}
+@media(min-width: 992px){
+    {{ button_selector }}{
+        --sp-button-scale: {{ button_settings.button_scale | divided_by: 100.0 }};
+        {% if button_settings.button_scale >= 100 %}
+            --sp-button-font-scale: {{ button_settings.button_scale | minus: 100.0 | divided_by: 2 | plus: 100 | divided_by: 100.0 }};
+        {% endif %}
+        {% if button_settings.button_scale < 100 %}
+            --sp-button-font-scale: {{ 100.0 | minus: button_settings.button_scale | divided_by: 2 | plus: button_settings.button_scale | divided_by: 100.0 }};
+        {% endif %}
+    }
+}
+                                                    </style>
+                                                    <button class="sp-button {{ setting.button_style | default: "sp-button-link" }}" data-button-hover="{{ settings.button_hover }}">{{ setting.button_text }}</button>
+                                                {% endif %}    
+                                            </div>
+                                        {% endif %}
+                                      </div>
+                                      {%- if form.posted_successfully? -%}
+                                        <div class="sp-form-message sp-form-success">
+                                            <svg aria-hidden="true" focusable="false" class="icon icon-success" viewBox="0 0 13 13">
+                                            <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"></path>
+                                            <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"></path>
+                                            <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white"></path>
+                                            </svg>
+                                            <span>{{ 'shinepages.form.input_success' | t }}</span>
+                                        </div>
+                                      {%- elsif form.errors -%}
+                                        <div class="sp-form-message sp-form-error">
+                                            <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
+                                                <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                                                <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                                                <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                                                <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7"/>
+                                              </svg>              
+                                              <span>{{ 'shinepages.form.input_error' | t }}</span>
+                                        </div>
+                                        {% endif %}
+                                    {%- endform -%}
+                                  </div>
+                            {%endif %}
+                            {% if block.type == "block_social" %}
+                                {% assign setting = block.settings %}
+                                <div class="sp-newsletter-social" {{ block.shopify_attributes }}>
+                                    <style>
+                                        .sp-{{ section.id }} .sp-icon-social{
+                                            width: {{ setting.icon_size_desktop }}px;
+                                            height: auto;
+                                            object-fit: scale-down;
+                                            max-width: 100%;
+                                        }
+                                        @media(max-width:767px) {
+                                            .sp-{{ section.id }} .sp-icon-social{
+                                                width: {{ setting.icon_size_mobile }}px
+                                            }
+                                        }
+                                    </style>
+                                    <div class="sp-sub-text">{{ setting.sub_text_social }}</div>
+                                    <div class="sp-list-social">
+                                        {% if setting.image_1 %}
+                                            <a {% if setting.icon_link_1 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_1 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_1 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %}   
+                                        {% if setting.image_2 %}
+                                            <a {% if setting.icon_link_2 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_2 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_2 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %} 
+                                        {% if setting.image_3 %}
+                                            <a {% if setting.icon_link_3 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_3 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_3 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %} 
+                                        {% if setting.image_4 %}
+                                            <a {% if setting.icon_link_4 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_4 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_4 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %}
+                                        {% if setting.image_5 %}
+                                            <a {% if setting.icon_link_5 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_5 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_5 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %}
+                                        {% if setting.image_6 %}
+                                            <a {% if setting.icon_link_6 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_6 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_6 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %}  
+                                        {% if setting.image_7 %}
+                                            <a {% if setting.icon_link_7 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_7 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_7 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %} 
+                                        {% if setting.image_8 %}
+                                            <a {% if setting.icon_link_8 == blank %} aria-disabled="true" {% else %}  href="{{ setting.icon_link_8 }}" {% endif %} class="sp-social-item">
+                                                {{ setting.image_8 | image_url: width: 60 | image_tag: class: 'sp-icon-social' }}
+                                            </a>                  
+                                        {% endif %}  
+                                    </div>
+                                </div>
+                            {% endif %}      
+                        {% endfor %}    
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>
+{% schema %}
+{
+	"name": "🧩 Newsletter 1.1",
+	"tag": "section",
+	"class": "sp-newsletter-1",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Background section"
+		},
+		{
+			"type": "image_picker",
+			"id": "section_background_image",
+			"label": "Image"
+		},
+		{
+			"type": "header",
+			"content": "Content settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_background",
+			"label": "Show background",
+			"default": false
+		},
+		{
+			"type": "checkbox",
+			"id": "show_border",
+			"label": "Show border",
+			"default": false
+		},
+		{
+			"type": "select",
+			"id": "content_position",
+			"label": "Content position",
+			"default": "sp-content-alignment-middle-center",
+			"options": [
+				{
+					"label": "Top Left",
+					"value": "sp-content-alignment-top-left"
+				},
+				{
+					"label": "Top Center",
+					"value": "sp-content-alignment-top-center"
+				},
+				{
+					"label": "Top Right",
+					"value": "sp-content-alignment-top-right"
+				},
+				{
+					"label": "Middle Left",
+					"value": "sp-content-alignment-middle-left"
+				},
+				{
+					"label": "Middle Center",
+					"value": "sp-content-alignment-middle-center"
+				},
+				{
+					"label": "Middle Right",
+					"value": "sp-content-alignment-middle-right"
+				},
+				{
+					"label": "Bottom Left",
+					"value": "sp-content-alignment-bottom-left"
+				},
+				{
+					"label": "Bottom Center",
+					"value": "sp-content-alignment-bottom-center"
+				},
+				{
+					"label": "Bottom Right",
+					"value": "sp-content-alignment-bottom-right"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "content_alignment",
+			"label": "Content alignment",
+			"default": "sp-content-text-center",
+			"options": [
+				{
+					"label": "Left",
+					"value": "sp-content-text-left"
+				},
+				{
+					"label": "Center",
+					"value": "sp-content-text-center"
+				},
+				{
+					"label": "Right",
+					"value": "sp-content-text-right"
+				}
+			]
+		},
+		{
+			"type": "range",
+			"id": "content_max_width",
+			"min": 300,
+			"max": 1300,
+			"step": 10,
+			"unit": "px",
+			"label": "Content max-width",
+			"default": 650
+		},
+		{
+			"type": "range",
+			"id": "subimage_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Subimage border radius",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "content_background_radius",
+			"min": 0,
+			"max": 60,
+			"step": 1,
+			"unit": "px",
+			"label": "Content background border radius",
+			"default": 0
+		},
+		{
+			"type": "range",
+			"id": "content_border_width",
+			"min": 0.5,
+			"max": 10,
+			"step": 0.5,
+			"unit": "px",
+			"label": "Border size",
+			"default": 1
+		},
+		{
+			"type": "checkbox",
+			"id": "box_shadow",
+			"label": "Box shadow",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Section padding"
+		},
+		{
+			"type": "select",
+			"id": "section_width",
+			"label": "Content section width",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Full width no gap",
+					"value": "full_width_no_gap"
+				}
+			],
+			"default": "boxed"
+		},
+		{
+			"type": "range",
+			"id": "section_top_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Top padding",
+			"default": 80
+		},
+		{
+			"type": "range",
+			"id": "section_bottom_padding",
+			"min": 0,
+			"max": 150,
+			"step": 10,
+			"unit": "px",
+			"label": "Bottom padding",
+			"default": 80
+		},
+		{
+			"type": "checkbox",
+			"id": "section_border",
+			"label": "Separate section with border",
+			"default": false
+		},
+		{
+			"type": "header",
+			"content": "Effects"
+		},
+		{
+			"type": "checkbox",
+			"id": "lazy_load",
+			"label": "Lazy load",
+			"default": true
+		},
+		{
+			"type": "select",
+			"id": "button_hover",
+			"label": "Button hover",
+			"options": [
+				{
+					"label": "None",
+					"value": "none"
+				},
+				{
+					"label": "Fly",
+					"value": "fly"
+				},
+				{
+					"label": "Opacity",
+					"value": "opacity"
+				}
+			],
+			"default": "fly"
+		},
+		{
+			"type": "header",
+			"content": "Section color"
+		},
+		{
+			"type": "color",
+			"id": "section_background_color",
+			"label": "Background",
+			"default": "#FFF3E9"
+		},
+		{
+			"type": "color_background",
+			"id": "section_overlay_color",
+			"label": "Overlay"
+		},
+		{
+			"type": "header",
+			"content": "Content color"
+		},
+		{
+			"type": "color_background",
+			"id": "content_background_gradient_color",
+			"label": "Background gradient"
+		},
+		{
+			"type": "color",
+			"id": "content_text_color",
+			"label": "Text",
+			"default": "#1E1E1E"
+		},
+		{
+			"type": "color",
+			"id": "content_border_color",
+			"label": "Border",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "color",
+			"id": "content_shadow",
+			"label": "Shadow",
+			"default": "#888888"
+		},
+		{
+			"type": "header",
+			"content": "Input form"
+		},
+		{
+			"type": "color",
+			"id": "input_form_text",
+			"label": "Text",
+			"default": "#868686"
+		},
+		{
+			"type": "color",
+			"id": "input_form_border",
+			"label": "Border",
+			"default": "#A9A9A9"
+		},
+		{
+			"type": "header",
+			"content": "Button subscribe"
+		},
+		{
+			"type": "color",
+			"id": "button_subscribe_background",
+			"label": "Background",
+			"default": "#000000"
+		},
+		{
+			"type": "color_background",
+			"id": "button_subscribe_background_gradient",
+			"label": "Background gradient"
+		},
+		{
+			"type": "color",
+			"id": "button_subscribe_text",
+			"label": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"type": "header",
+			"content": "Typography"
+		},
+		{
+			"type": "checkbox",
+			"id": "override_font",
+			"label": "Override fonts of the theme",
+			"default": true,
+			"info": "If you check this option, the fonts of the section will work"
+		},
+		{
+			"type": "font_picker",
+			"id": "heading_font",
+			"label": "Heading font",
+			"default": "futura_n4"
+		},
+		{
+			"type": "font_picker",
+			"id": "body_font",
+			"label": "Body font",
+			"default": "futura_n4"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Sub Image",
+			"type": "block_subimage",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image/icon"
+				},
+				{
+					"type": "range",
+					"id": "image_width_desktop",
+					"min": 50,
+					"max": 250,
+					"step": 2,
+					"label": "Image width (Desktop)",
+					"default": 60,
+					"unit": "px"
+				},
+				{
+					"type": "range",
+					"id": "image_width_mobile",
+					"min": 20,
+					"max": 200,
+					"step": 2,
+					"label": "Image width (Mobile)",
+					"default": 48,
+					"unit": "px"
+				}
+			]
+		},
+		{
+			"name": "Content",
+			"type": "block_content",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "sub_heading",
+					"label": "Subheading"
+				},
+				{
+					"type": "inline_richtext",
+					"id": "heading",
+					"label": "Heading",
+					"default": "GET OUR NEWSLETTER"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p>Exclusive discounts, early access to new styles, and special content</p>"
+				},
+				{
+					"type": "select",
+					"id": "sub_heading_size",
+					"label": "Sub heading size",
+					"options": [
+						{
+							"label": "Small",
+							"value": "sp-sub-heading-size-small"
+						},
+						{
+							"label": "Medium",
+							"value": "sp-sub-heading-size-medium"
+						},
+						{
+							"label": "Large",
+							"value": "sp-sub-heading-size-large"
+						}
+					],
+					"default": "sp-sub-heading-size-medium"
+				},
+				{
+					"type": "range",
+					"id": "heading_size_desktop",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Desktop)",
+					"default": 36
+				},
+				{
+					"type": "range",
+					"id": "heading_size_mobile",
+					"min": 18,
+					"max": 86,
+					"step": 1,
+					"unit": "px",
+					"label": "Heading size (Mobile)",
+					"default": 24
+				},
+				{
+					"type": "range",
+					"id": "description_size_desktop",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Desktop)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "description_size_mobile",
+					"min": 12,
+					"max": 24,
+					"step": 1,
+					"unit": "px",
+					"label": "Description size (Mobile)",
+					"default": 16
+				},
+				{
+					"type": "range",
+					"id": "heading_spacing_scale",
+					"min": 50,
+					"max": 200,
+					"step": 10,
+					"unit": "%",
+					"label": "Heading spacing scale",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "text_heading_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text heading letter spacing",
+					"default": 0
+				}
+			]
+		},
+		{
+			"name": "Social information",
+			"type": "block_social",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "inline_richtext",
+					"id": "sub_text_social",
+					"label": "Text",
+					"default": "FOLLOW US:"
+				},
+				{
+					"type": "range",
+					"id": "icon_size_desktop",
+					"min": 1,
+					"max": 100,
+					"step": 1,
+					"label": "Icon size (Desktop)",
+					"default": 24,
+					"unit": "px"
+				},
+				{
+					"type": "range",
+					"id": "icon_size_mobile",
+					"min": 1,
+					"max": 100,
+					"step": 1,
+					"label": "Icon size (Mobile)",
+					"default": 24,
+					"unit": "px"
+				},
+				{
+					"type": "header",
+					"content": "Social 1"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_1",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_1",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 2"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_2",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_2",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 3"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_3",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_3",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 4"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_4",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_4",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 5"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_5",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_5",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 6"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_6",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_6",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 7"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_7",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_7",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Social 8"
+				},
+				{
+					"type": "image_picker",
+					"id": "image_8",
+					"label": "Image/icon"
+				},
+				{
+					"type": "url",
+					"id": "icon_link_8",
+					"label": "Link URL"
+				}
+			]
+		},
+		{
+			"name": "Email input settings",
+			"type": "block_email_input",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "range",
+					"id": "input_form_border_radius",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Input form border radius",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "input_form_border_size",
+					"min": 0,
+					"max": 10,
+					"step": 0.5,
+					"unit": "px",
+					"label": "Input form border size",
+					"default": 1.5
+				},
+				{
+					"type": "text",
+					"id": "email_placeholder",
+					"label": "Placeholder text",
+					"default": "Enter your E-mail"
+				},
+				{
+					"type": "header",
+					"content": "Button"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button label",
+					"info": "Leave the label blank to hide the button.",
+					"default": "SUBSCRIBE NOW"
+				},
+				{
+					"type": "select",
+					"id": "button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"label": "Button link",
+							"value": "sp-button-link"
+						},
+						{
+							"label": "Button fill",
+							"value": "sp-button-fill"
+						},
+						{
+							"label": "Button outline",
+							"value": "sp-button-outline"
+						}
+					],
+					"default": "sp-button-fill"
+				},
+				{
+					"type": "range",
+					"id": "button_text_spacing",
+					"min": -10,
+					"max": 10,
+					"step": 0.2,
+					"unit": "px",
+					"label": "Text button letter spacing",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_scale",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Desktop)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_scale_mobile",
+					"min": 50,
+					"max": 150,
+					"step": 10,
+					"unit": "%",
+					"label": "Button scale (Mobile)",
+					"default": 100
+				},
+				{
+					"type": "range",
+					"id": "button_radius",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"unit": "px",
+					"label": "Button border radius",
+					"default": 0
+				},
+				{
+					"type": "range",
+					"id": "button_border_width",
+					"min": 0.5,
+					"max": 5,
+					"step": 0.5,
+					"unit": "px",
+					"label": "Button border size",
+					"default": 1
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "🧩 Newsletter 1.1",
+			"settings": {
+				"show_background": false,
+				"show_border": false,
+				"content_position": "sp-content-alignment-middle-center",
+				"content_alignment": "sp-content-text-center",
+				"content_max_width": 650,
+				"subimage_radius": 0,
+				"content_background_radius": 0,
+				"content_border_width": 1,
+				"box_shadow": false,
+				"section_width": "boxed",
+				"section_top_padding": 80,
+				"section_bottom_padding": 80,
+				"section_border": false,
+				"lazy_load": true,
+				"button_hover": "fly",
+				"section_background_color": "#FFF3E9",
+				"section_overlay_color": "",
+				"content_background_gradient_color": "",
+				"content_text_color": "#1E1E1E",
+				"content_border_color": "#FFFFFF",
+				"content_shadow": "#888888",
+				"input_form_text": "#868686",
+				"input_form_border": "#A9A9A9",
+				"button_subscribe_background": "#000000",
+				"button_subscribe_text": "#FFFFFF",
+				"override_font": true,
+				"heading_font": "futura_n4",
+				"body_font": "futura_n4"
+			},
+			"blocks": [
+				{
+					"type": "block_subimage",
+					"settings": {
+						"image": "shopify://shop_images/newsletter-1-variant-1-image_2.png",
+						"image_width_desktop": 60,
+						"image_width_mobile": 48
+					}
+				},
+				{
+					"type": "block_content",
+					"settings": {
+						"sub_heading": "",
+						"heading": "GET OUR NEWSLETTER",
+						"description": "<p>Exclusive discounts, early access to new styles, and special content</p>",
+						"sub_heading_size": "sp-sub-heading-size-medium",
+						"heading_size_desktop": 36,
+						"heading_size_mobile": 24,
+						"description_size_desktop": 16,
+						"description_size_mobile": 16,
+						"heading_spacing_scale": 100,
+						"text_heading_spacing": 0
+					}
+				},
+				{
+					"type": "block_email_input",
+					"settings": {
+						"email_placeholder": "Enter your E-mail",
+						"input_form_border_radius": 0,
+						"input_form_border_size": 1.5,
+						"button_text": "SUBSCRIBE NOW",
+						"button_style": "sp-button-fill",
+						"button_text_spacing": 0,
+						"button_scale": 100,
+						"button_radius": 0,
+						"button_border_width": 1
+					}
+				},
+				{
+					"type": "block_social",
+					"settings": {
+						"sub_text_social": "FOLLOW US:",
+						"icon_size_desktop": 24,
+						"icon_size_mobile": 24,
+						"image_1": "shopify://shop_images/newsletter-1-variant-1-icon_1.png",
+						"icon_link_1": "",
+						"image_2": "shopify://shop_images/newsletter-1-variant-1-icon_2.png",
+						"icon_link_2": "",
+						"image_3": "shopify://shop_images/newsletter-1-variant-1-icon_3.png",
+						"icon_link_3": "",
+						"image_4": "shopify://shop_images/newsletter-1-variant-1-icon_4.png",
+						"icon_link_4": "",
+						"image_5": "shopify://shop_images/newsletter-1-variant-1-icon_5.png",
+						"icon_link_5": ""
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	#sp-{{section.id}}{--sp-section-background-color: {{settings.section_background_color}};--sp-section-background-gradient-color: {{settings.section_overlay_color}};--sp-section-text-color: {{settings.content_text_color}};--content-max-width: {{settings.content_max_width}}px;--sp-content-background-color: {{settings.content_background_gradient_color}};--sp-content-background-radius: {{settings.content_background_radius}}px;--sp-content-border-width: {{settings.content_border_width}}px;--sp-content-border-color: {{settings.content_border_color}};--sp-content-shadow: {{settings.content_shadow}};--sp-subimage-radius: {{settings.subimage_radius}}px;position:relative}#sp-{{section.id}} .sp-section{background:var(--sp-section-background-color)}#sp-{{section.id}} .sp-overlay{background:var(--sp-section-background-gradient-color)}#sp-{{section.id}} .sp-newsletter-wrapper{position:relative}#sp-{{section.id}} .sp-content-wrapper{width:var(--content-max-width);border-radius:var(--sp-content-background-radius)}#sp-{{section.id}} .sp-content-wrapper.show-background{background:var(--sp-content-background-color)}#sp-{{section.id}} .sp-content-wrapper.show-border{border:var(--sp-content-border-width) solid var(--sp-content-border-color)}#sp-{{section.id}} .sp-content-wrapper.has-box-shadow{box-shadow:0 8px 30px 0 var(--sp-content-shadow)}#sp-{{section.id}} .sp-email-container .sp-subcribe-container .sp-field:has(input:focus) .sp-email-input{padding:calc(var(--sp-button-padding-top)*var(--sp-button-scale) + 5px) 20px calc(var(--sp-button-padding-top)*var(--sp-button-scale) - 5px) 20px}#sp-{{section.id}} .sp-email-container .sp-subcribe-container .sp-email-input{--sp-button-padding-top: 1.4rem;padding:calc(var(--sp-button-padding-top)*var(--sp-button-scale)) 20px;font-family:var(--sp-body-font-family);font-weight:var(--sp-body-font-weight);font-style:var(--sp-body-font-style);font-size:calc(var(--sp-button-font-size)*var(--sp-button-font-scale))}#sp-{{section.id}} .sp-email-container .sp-button-wrapper{--sp-button-background-color: {{settings.button_subscribe_background}};--sp-button-background-gradient-color: {{settings.button_subscribe_background_gradient}};--sp-button-text-color: {{settings.button_subscribe_text}}}#sp-{{section.id}} .sp-newsletter-social .sp-sub-text{color:var(--sp-section-text-color);font-size:14px;font-family:var(--sp-body-font-family)}#sp-{{section.id}} .sp-newsletter-social .sp-sub-text a{color:var(--sp-section-text-color)}#sp-{{section.id}} .sp-newsletter-social .sp-list-social{display:inline-flex;flex-wrap:wrap;column-gap:20px;row-gap:20px}#sp-{{section.id}} .sp-newsletter-social .sp-list-social .sp-social-item{display:inline-flex;transition:all .3s ease-in-out}#sp-{{section.id}} .sp-newsletter-social .sp-list-social .sp-social-item:hover{transform:scale(1.1)}#sp-{{section.id}} .sp-image-icon-wrapper{margin-top:5rem}#sp-{{section.id}} .sp-image-icon-wrapper .sp-image-icon{border-radius:var(--sp-subimage-radius)}#sp-{{section.id}} .sp-button-wrapper{--sp-button-margin-top: 5rem}#sp-{{section.id}} .sp-button-wrapper .sp-button.sp-button-fill{border:none}
+{% endstyle %}
+<script>
+!function(){function t(){var e=document.getElementById("sp-{{ section.id }}");if(e){const n=e.querySelector(".sp-content-wrapper");e.querySelector(".email-input"),e.querySelector(".sp-email-container");if(n){const o=n.closest(".sp-content-inner");o&&new ResizeObserver(e=>{var t=n.offsetHeight+40;o.style.height=t+"px"}).observe(e)}}}window.addEventListener("DOMContentLoaded",e=>{t()}),Shopify&&Shopify?.designMode&&t()}(document);
+</script>
