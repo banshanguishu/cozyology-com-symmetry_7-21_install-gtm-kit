@@ -2311,12 +2311,12 @@ const MediaGallery = class extends HTMLElement {
       this.mediaLists.push(
         this.galleryModal.querySelectorAll(".gallery-viewer__thumb")
       );
-      theme.addDelegateEventListener(
-        this,
-        "click",
-        ".show-gallery",
-        this.openGalleryViewer.bind(this)
-      );
+      // theme.addDelegateEventListener(
+      //   this,
+      //   "click",
+      //   ".show-gallery",
+      //   this.openGalleryViewer.bind(this)
+      // );
       if (this.hasAttribute("data-zoom-preload")) {
         this.mainImageContainer.addEventListener(
           "mouseover",
@@ -2349,6 +2349,7 @@ const MediaGallery = class extends HTMLElement {
         });
       }
     }, 3000);
+    this.initMediaByAlt()
   }
   setFromVariantPicker() {
     if (this.mediaGroupingEnabled) {
@@ -2425,6 +2426,7 @@ const MediaGallery = class extends HTMLElement {
         !0
       );
     }
+    this.renderMediaAlts(evt.detail?.variant?.featured_media?.id);
   }
   getMediaGroupFromOptionSelectors(evt) {
     if (evt) {
@@ -2446,6 +2448,106 @@ const MediaGallery = class extends HTMLElement {
       }
     }
     return this.variantMediaData;
+  }
+  initMediaByAlt() {
+    const dataEl = this.querySelector(".alt-data-variant-media");
+    let payload;
+    if (dataEl) {
+      try {
+        payload = JSON.parse(dataEl.textContent);
+      } catch (_) {}
+    }
+
+    const mediaList = Array.isArray(payload)
+      ? payload
+      : payload && Array.isArray(payload.media)
+        ? payload.media
+        : [];
+
+    this.initFeatureId =
+      payload && !Array.isArray(payload) && payload.initFeatureId != null
+        ? payload.initFeatureId
+        : null;
+
+    const hasData = mediaList && Array.isArray(mediaList) && mediaList.length > 0
+
+    this.defaultAltMediaList = hasData ? mediaList.slice(0, 6) : [];
+
+    const firstAltIndex = mediaList.findIndex((media) => media.alt != null);
+    const map = new Map()
+    if (firstAltIndex !== -1) {
+      let currentMediaId = null;
+      for (let i = firstAltIndex; i < mediaList.length; i++) {
+        const media = mediaList[i];
+        if (media.alt) {
+          currentMediaId = media.id;
+        }
+        map.set(currentMediaId, [...(map.get(currentMediaId) || []), media]);
+      }
+    }
+
+    this.initByAltMedias = map;
+    this.renderMediaAlts(this.initFeatureId);
+  }
+  renderMediaAlts(featureMediaid) {
+    const root = this.querySelector("[data-media-alts]");
+    if (!root) return;
+    const grid = root.querySelector("[data-media-alts-grid]");
+    if (!grid) return;
+
+    grid.textContent = ""; // 每次重新渲染前先清空
+
+    let mediaAlts = [];
+
+    if (this.initByAltMedias && typeof this.initByAltMedias.get === "function") {
+      mediaAlts = this.initByAltMedias.get(featureMediaid) || [];
+    }
+
+    // filtered需要排除alt有值的那个对象，因为alt有值的默认展示在大图上面
+    let filtered = mediaAlts.filter((media) => {
+      const alt = media && media.alt;
+      return alt == null || String(alt).trim() === "";
+    });
+
+    if (filtered.length < 7) {
+      filtered = [...filtered, ...(this.defaultAltMediaList.slice(0, 7 - filtered.length))]
+    }
+
+    if (filtered.length === 0) return;
+
+    const itemsToRender = filtered.slice(0, 6);
+    for (const media of itemsToRender) {
+      const src =
+        media &&
+        media.preview_image &&
+        media.preview_image.src
+          ? media.preview_image.src
+          : media && media.src
+            ? media.src
+            : "";
+      if (!src) continue;
+
+      const item = document.createElement("li");
+      item.className = "slider__item media-alts__item";
+      if (media && media.id != null) item.dataset.mediaId = String(media.id);
+
+      const link = document.createElement("a");
+      link.className = `thumbnail thumbnail--media-${
+        media && media.media_type ? media.media_type : "image"
+      }`;
+      link.href = "#";
+
+      const img = document.createElement("img");
+      img.className = "media-alts__img";
+      img.src = src;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+
+      link.appendChild(img);
+      item.appendChild(link);
+      grid.appendChild(item);
+    }
   }
   setActiveMediaGroup(groupName) {
     this.mediaGroupChanged = this.currentMediaGroup !== groupName;
@@ -2582,6 +2684,16 @@ const MediaGallery = class extends HTMLElement {
   selectThumbnail(evt, thumbnail) {
     evt.preventDefault();
     this.setActiveMedia(thumbnail.parentNode.dataset.mediaId, !0);
+    if (this.mainImageContainer) {
+      theme.scrollToRevealElement(this.mainImageContainer);
+    }
+    const mediaAltsItem = thumbnail.closest(".media-alts__item");
+    if (mediaAltsItem) {
+      this.querySelectorAll(".media-alts__item--active").forEach((el) => {
+        el.classList.remove("media-alts__item--active");
+      });
+      mediaAltsItem.classList.add("media-alts__item--active");
+    }
   }
   selectMainMedia(evt) {
     if (evt.detail.slide.dataset.mediaId) {

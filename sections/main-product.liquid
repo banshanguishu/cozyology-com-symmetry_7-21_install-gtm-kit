@@ -25,6 +25,17 @@
       endif
     endfor
   endif
+
+  assign is_hardware = false
+  assign hardware_type_id = "474667417918"
+
+  for c in product.collections
+    assign current_collection_id = c.id | append: ''
+    if current_collection_id == hardware_type_id
+      assign is_hardware = true
+      break
+    endif
+  endfor
 -%}
 
 {%- if product.media.size > 1 -%}
@@ -98,6 +109,7 @@
                       class="block show-gallery"
                       href="{{ media.preview_image | image_url: width: zoom_size }}"
                       aria-label="{{ 'products.product.media.load_image' | t: index: forloop.index }}"
+                      data-media-index="{{ forloop.index0 }}"
                     >
                   {%- endif -%}
 
@@ -118,7 +130,7 @@
               {%- endfor -%}
             </div>
           </div>
-
+          {% if is_hardware %}
           {%- if product.media.size > 1 -%}
             <div class="slider-nav slider-nav--floating desktop-only js-only">
               <button
@@ -142,6 +154,7 @@
               </button>
             </div>
           {%- endif -%}
+          {% endif %}
         </carousel-slider>
 
         {%- if section.settings.gallery_layout contains 'collage'
@@ -204,6 +217,40 @@
       </div>
 
       {% if product.media.size > 1 %}
+        {% unless is_hardware %}
+          <script class="alt-data-variant-media" type="application/json">
+            {
+              "media": {{- product.media | json -}},
+              "initFeatureId": {{- featured_media.id | json -}}
+            }
+          </script>
+          <style>
+            @media (min-width: 768px) {
+              .media-alts {
+                display: block;
+              }
+              .thumbnails {
+                display: none;
+              }
+            }
+            @media (max-width: 767.98px) {
+              .media-alts {
+                display: none;
+              }
+              .thumbnails {
+                display: block;
+              }
+            }
+          </style>
+          <div class="media-alts" data-media-alts>
+            <ul class="slider__grid media-alts__grid" data-media-alts-grid></ul>
+            {% if product.media.size > 7 %}
+              <button class="media-alts__see-more" type="button" data-media-alts-see-more>
+                See More
+              </button>
+            {% endif %}
+          </div>
+        {% endunless %}
         <carousel-slider class="carousel block thumbnails{% unless section.settings.gallery_layout contains 'carousel' %} mobile-only{% endunless %}">
           <div class="slider slider--no-scrollbar">
             <ul class="slider__grid">
@@ -235,13 +282,11 @@
                 </li>
               {% endfor %}
             </ul>
-            <!--
-              {% if product.media.size > 6 %}
-                <div class="see-more">
-                  <a href="#" id="see-more-button">See More</a>
-                </div>
-              {% endif %}
-            -->
+            {% comment %} {% if product.media.size > 6 %}
+              <div class="see-more">
+                <a href="#" id="see-more-button">See More</a>
+              </div>
+            {% endif %} {% endcomment %}
           </div>
         </carousel-slider>
         <!-- Emily -->
@@ -249,15 +294,28 @@
           <div class="media-modal__content">
             <span class="media-modal__close" id="modal-close">&times;</span>
             <div class="media-modal__gallery">
-              <button class="media-modal__prev" id="prev-slide">&#10094;</button>
               <div class="media-modal__slides">
                 {% for media in product.media %}
+                  {%- liquid
+                    assign media_alt_text = media.alt
+                    if media_alt_text == product.title
+                      assign media_alt_text = blank
+                    endif
+                  -%}
                   <div class="media-modal__slide">
-                    <img src="{{ media.preview_image | image_url: width: 600 }}" alt="{{ media.alt | escape }}">
+                    <img src="{{ media.preview_image | image_url: width: 600 }}" alt="{{ media_alt_text | default: '' | escape }}">
+                    {%- if media_alt_text != blank -%}
+                      <div class="media-modal-alt__title" data-alt="{{ media_alt_text | escape }}">
+                        {{ media_alt_text | escape }}
+                      </div>
+                    {%- endif -%}
                   </div>
                 {% endfor %}
               </div>
-              <button class="media-modal__next" id="next-slide">&#10095;</button>
+              <div class="media-modal__nav">
+                <button class="media-modal__prev" id="prev-slide">&#10094;</button>
+                <button class="media-modal__next" id="next-slide">&#10095;</button>
+              </div>
             </div>
           </div>
         </div>
@@ -265,21 +323,27 @@
         <!-- Emily -->
         <script>
           document.addEventListener('DOMContentLoaded', function () {
-            var seeMoreButton = document.getElementById('see-more-button');
             var modal = document.getElementById('media-modal');
+            if (modal && modal.parentNode != document.body) {
+              document.body.appendChild(modal);
+            }
             var modalClose = document.getElementById('modal-close');
             var prevSlideButton = document.getElementById('prev-slide');
             var nextSlideButton = document.getElementById('next-slide');
             var slides = document.querySelectorAll('.media-modal__slide');
             var currentSlide = 0;
 
-            if (seeMoreButton) {
-              seeMoreButton.addEventListener('click', function (event) {
-                event.preventDefault();
-                modal.style.display = 'block';
-                showSlide(currentSlide);
-              });
-            }
+            document.addEventListener('click', function (event) {
+              var btn = event.target.closest('[data-media-alts-see-more]') || event.target.closest('.block.show-gallery');
+              if (!btn) return;
+              if (!modal) return;
+              event.preventDefault();
+              modal.style.display = 'block';
+              if (btn.dataset.mediaIndex != null) {
+                currentSlide = Number(btn.dataset.mediaIndex);
+              }
+              showSlide(currentSlide);
+            });
 
             if (modalClose) {
               modalClose.addEventListener('click', function () {
@@ -308,11 +372,40 @@
               });
             }
 
-            window.addEventListener('click', function (event) {
-              if (event.target === modal) {
+            if (modal) {
+              var escapeSelector = function (value) {
+                if (window.CSS && CSS.escape) return CSS.escape(value);
+                return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+              };
+              modal.addEventListener('click', function (event) {
+                var titleEl = event.target.closest('.media-modal-alt__title');
+                if (titleEl) {
+                  var altValue = titleEl.dataset.alt || '';
+                  if (altValue) {
+                    var input = document.querySelector('.ymq-option-label input[value="' + escapeSelector(altValue) + '"]');
+                    if (input && input.nextElementSibling) {
+                      input.nextElementSibling.click();
+                    }
+                  }
+                  modal.style.display = 'none';
+                  // var mainImage = document.querySelector('.main-image');
+                  // if (mainImage && window.theme && typeof theme.scrollToRevealElement === 'function') {
+                  //   theme.scrollToRevealElement(mainImage);
+                  // }
+                  if (window) {
+                    window.scrollTo({ top: 100, behavior: 'smooth' });
+                  }
+                  return;
+                }
+                if (modal.style.display !== 'block') return;
+                if (!event.target) return;
+                if (event.target.closest('.media-modal__nav')) return;
+                if (event.target.closest('.media-modal__slide img')) return;
+                if (event.target.closest('.media-modal-alt__title')) return;
+                if (event.target.closest('#modal-close')) return;
                 modal.style.display = 'none';
-              }
-            });
+              });
+            }
           });
         </script>
       {% endif %}
