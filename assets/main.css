@@ -7746,6 +7746,7 @@ hotspots-image .image-overlay {
 
 .media-modal__slide img {
   height: 100%;
+  object-fit: contain;
 }
 
 .media-modal-alt__title {
