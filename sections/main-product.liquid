@@ -303,7 +303,7 @@
                     endif
                   -%}
                   <div class="media-modal__slide">
-                    <img src="{{ media.preview_image | image_url: width: 600 }}" alt="{{ media_alt_text | default: '' | escape }}">
+                    <img src="{{ media.preview_image | image_url: width: 1600 }}" alt="{{ media_alt_text | default: '' | escape }}">
                     {%- if media_alt_text != blank -%}
                       <div class="media-modal-alt__title" data-alt="{{ media_alt_text | escape }}">
                         {{ media_alt_text | escape }}
