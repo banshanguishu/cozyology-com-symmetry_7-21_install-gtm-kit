@@ -282,11 +282,13 @@
                 </li>
               {% endfor %}
             </ul>
-            {% comment %} {% if product.media.size > 6 %}
-              <div class="see-more">
-                <a href="#" id="see-more-button">See More</a>
-              </div>
-            {% endif %} {% endcomment %}
+            <!--
+              {% if product.media.size > 6 %}
+                <div class="see-more">
+                  <a href="#" id="see-more-button">See More</a>
+                </div>
+              {% endif %}
+            -->
           </div>
         </carousel-slider>
         <!-- Emily -->
@@ -294,6 +296,7 @@
           <div class="media-modal__content">
             <span class="media-modal__close" id="modal-close">&times;</span>
             <div class="media-modal__gallery">
+              {% comment %} <button class="media-modal__prev" id="prev-slide">&#10094;</button> {% endcomment %}
               <div class="media-modal__slides">
                 {% for media in product.media %}
                   {%- liquid
@@ -303,7 +306,7 @@
                     endif
                   -%}
                   <div class="media-modal__slide">
-                    <img src="{{ media.preview_image | image_url: width: 1600 }}" alt="{{ media_alt_text | default: '' | escape }}">
+                    <img src="{{ media.preview_image | image_url: width: 1024 }}" alt="{{ media_alt_text | default: '' | escape }}">
                     {%- if media_alt_text != blank -%}
                       <div class="media-modal-alt__title" data-alt="{{ media_alt_text | escape }}">
                         {{ media_alt_text | escape }}
@@ -323,6 +326,7 @@
         <!-- Emily -->
         <script>
           document.addEventListener('DOMContentLoaded', function () {
+            {% comment %} var seeMoreButton = document.getElementById('see-more-button'); {% endcomment %}
             var modal = document.getElementById('media-modal');
             if (modal && modal.parentNode != document.body) {
               document.body.appendChild(modal);
