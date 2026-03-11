@@ -27,12 +27,19 @@
   endif
 
   assign is_hardware = false
+  assign is_swatches = false
   assign hardware_type_id = "474667417918"
+  assign swatches_type_id = "499489243454"
 
   for c in product.collections
     assign current_collection_id = c.id | append: ''
     if current_collection_id == hardware_type_id
       assign is_hardware = true
+    endif
+    if current_collection_id == swatches_type_id
+      assign is_swatches = true
+    endif
+    if is_hardware or is_swatches
       break
     endif
   endfor
@@ -130,7 +137,7 @@
               {%- endfor -%}
             </div>
           </div>
-          {% if is_hardware %}
+          {% if is_hardware or is_swatches %}
           {%- if product.media.size > 1 -%}
             <div class="slider-nav slider-nav--floating desktop-only js-only">
               <button
@@ -217,7 +224,7 @@
       </div>
 
       {% if product.media.size > 1 %}
-        {% unless is_hardware %}
+        {% unless is_hardware or is_swatches %}
           <script class="alt-data-variant-media" type="application/json">
             {
               "media": {{- product.media | json -}},
