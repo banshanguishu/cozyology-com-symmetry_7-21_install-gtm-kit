@@ -28,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     else el.classList.remove("cal2-filled");
   };
 
+  const markSelectAsFilled = (el) => {
+    if (!el || el.dataset.hasBeenChanged === "true") return;
+    el.dataset.hasBeenChanged = "true";
+    setFilledClass(el, true);
+  };
+
   const setCursorToEnd = (input) => {
     if (!input) return;
     try {
@@ -37,13 +43,19 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if (select_a) {
-    select_a.addEventListener("change", () => setFilledClass(select_a, true));
+    select_a.addEventListener("change", () => markSelectAsFilled(select_a));
+    select_a.addEventListener("pointerdown", () => markSelectAsFilled(select_a));
+    select_a.addEventListener("keydown", () => markSelectAsFilled(select_a));
   }
   if (select_d) {
-    select_d.addEventListener("change", () => setFilledClass(select_d, true));
+    select_d.addEventListener("change", () => markSelectAsFilled(select_d));
+    select_d.addEventListener("pointerdown", () => markSelectAsFilled(select_d));
+    select_d.addEventListener("keydown", () => markSelectAsFilled(select_d));
   }
   if (select_e) {
-    select_e.addEventListener("change", () => setFilledClass(select_e, true));
+    select_e.addEventListener("change", () => markSelectAsFilled(select_e));
+    select_e.addEventListener("pointerdown", () => markSelectAsFilled(select_e));
+    select_e.addEventListener("keydown", () => markSelectAsFilled(select_e));
   }
 
   if (input_b) {

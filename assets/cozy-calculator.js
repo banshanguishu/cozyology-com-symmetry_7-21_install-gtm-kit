@@ -117,6 +117,12 @@ function updateSelectFilledState(el) {
   el.classList.toggle("is-filled", nextIsFilled);
 }
 
+function markSelectAsFilled(el) {
+  if (!el || el.dataset.hasBeenChanged === "true") return;
+  el.dataset.hasBeenChanged = "true";
+  updateSelectFilledState(el);
+}
+
 function resetCalculatorView() {
   const el1 = document.querySelector(".item-stacked-width input");
   const el2 = document.querySelector(".item-rod-length input");
@@ -353,12 +359,25 @@ function main() {
     updateInputFilledState(el2);
   });
   el3.addEventListener("change", () => {
-    el3.dataset.hasBeenChanged = "true";
-    updateSelectFilledState(el3);
+    markSelectAsFilled(el3);
   });
   el4.addEventListener("change", () => {
-    el4.dataset.hasBeenChanged = "true";
-    updateSelectFilledState(el4);
+    markSelectAsFilled(el4);
+  });
+
+  // Selecting the default option again does not reliably fire `change`,
+  // so we mark the select as filled as soon as the user starts interacting.
+  el3.addEventListener("pointerdown", () => {
+    markSelectAsFilled(el3);
+  });
+  el4.addEventListener("pointerdown", () => {
+    markSelectAsFilled(el4);
+  });
+  el3.addEventListener("keydown", () => {
+    markSelectAsFilled(el3);
+  });
+  el4.addEventListener("keydown", () => {
+    markSelectAsFilled(el4);
   });
 
   // 添加点击计算按钮事件
