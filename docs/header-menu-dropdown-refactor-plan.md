@@ -178,7 +178,7 @@ UI 输入方式包括：
 
 - 阶段 0：已确认
 - 阶段 1：已完成
-- 阶段 2：未开始
+- 阶段 2：代码已实现，待 Shopify 后台验收
 - 阶段 3：未开始
 - 阶段 4：未开始
 - 阶段 5：未开始
@@ -263,6 +263,19 @@ UI 输入方式包括：
 - 明确 `Drapery` 是否沿用现有 promotion block，还是增加新配置
 - 明确 `Drapery` 是否需要新的 schema / block 配置
 
+当前状态：
+
+- 已完成
+
+完成记录：
+
+- 用户已提供 `Drapery` 设计截图和说明文档
+- 已确认 `Drapery` 采用桌面端左右分栏 dropdown
+- 已确认左侧主内容来自现有二级、三级菜单结构
+- 已确认右侧图片和链接需要独立配置
+- 已确认左侧底部还需要一块附加图文内容
+- 已确认当前需求足够进入 2.2 代码编写
+
 任务 2.2：代码编写
 
 - 编写 `nav-dropdown-drapery.liquid`
@@ -271,6 +284,18 @@ UI 输入方式包括：
 - 校验 hover / open / close 行为
 - 校验二级、三级链接输出是否正确
 - 完成 Shopify 后台视觉验收
+
+当前状态：
+
+- 代码已实现，待验收
+
+完成记录：
+
+- 已编写 `nav-dropdown-drapery.liquid`
+- 已为 `Header` 增加 `Drapery menu promotion` block 配置
+- 已接入右侧图片、右侧链接、左侧底部图文的独立配置
+- 已增加 `Drapery` 桌面端专用 dropdown 样式
+- 当前仍需用户在 Shopify 后台完成视觉与交互验收
 
 输出物：
 
@@ -501,3 +526,75 @@ UI 输入方式包括：
 2. 如有调整，先改文档
 3. 文档定稿后，再按阶段逐步实现
 4. 每次只处理一个明确任务，不跨阶段混写
+
+## 9. 当前已改动文件清单
+
+本节用于记录截至当前阶段，菜单下拉重构实际改动过的文件，方便后续正式迁移到 Shopify 后台时核对。
+
+### 已更新文件
+
+- [snippets/main-nav-links.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/main-nav-links.liquid)
+  说明：已接入 dropdown router，保留一级菜单循环和默认结构入口。
+
+- [snippets/nav-dropdown-router.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-router.liquid)
+  说明：已建立一级菜单到特殊 dropdown 模板的路由分发逻辑。
+
+- [snippets/nav-dropdown-default.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-default.liquid)
+  说明：已抽出当前默认下拉渲染逻辑。
+
+- [snippets/nav-dropdown-drapery.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-drapery.liquid)
+  说明：已改为 `Drapery` 专用桌面端 dropdown 模板。
+
+- [snippets/nav-dropdown-shades.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-shades.liquid)
+  说明：当前为 `Shades` 占位模板，仍临时复用默认模板。
+
+- [snippets/nav-dropdown-hardware.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-hardware.liquid)
+  说明：当前为 `Hardware` 占位模板，仍临时复用默认模板。
+
+- [snippets/nav-dropdown-free-swatches.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-free-swatches.liquid)
+  说明：当前为 `Free Swatches` 占位模板，仍临时复用默认模板。
+
+- [snippets/nav-dropdown-sale.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/snippets/nav-dropdown-sale.liquid)
+  说明：当前为 `Sale` 占位模板，仍临时复用默认模板。
+
+- [sections/header.liquid](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/sections/header.liquid)
+  说明：已新增 `Drapery menu promotion` block 配置，并去掉其中冗余的 `Link name` 配置项。
+
+- [assets/main.css](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/assets/main.css)
+  说明：已移除 `Drapery` dropdown 的专用样式，保留主题原有通用导航样式。
+
+- [assets/header-menu-dropdowns.css](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/assets/header-menu-dropdowns.css)
+  说明：已新增特殊菜单下拉的独立样式文件，当前承载 `Drapery` 的桌面端专用样式。
+
+- [docs/header-menu-rendering-analysis.md](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/docs/header-menu-rendering-analysis.md)
+  说明：已补充当前 header 菜单、二级三级菜单和菜单图片渲染逻辑分析。
+
+- [docs/header-menu-dropdown-refactor-plan.md](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/docs/header-menu-dropdown-refactor-plan.md)
+  说明：重构总任务文档，持续维护阶段进度和执行清单。
+
+- [docs/drapery-menu-refactor/drapery-design.md](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/docs/drapery-menu-refactor/drapery-design.md)
+  说明：`Drapery` 设计说明与需求梳理文档。
+
+### 已新增文件
+
+- [docs/header-menu-dropdown-refactor-notes.md](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/docs/header-menu-dropdown-refactor-notes.md)
+  说明：记录后续开发其它特殊菜单时可复用的注意事项。
+
+- [docs/drapery-menu-refactor/screenshots/.gitkeep](/mnt/d/dbc%20projects/cozyology-com-symmetry_7-21_install-gtm-kit/docs/drapery-menu-refactor/screenshots/.gitkeep)
+  说明：用于保留 `Drapery` 设计截图目录。
+
+### 迁移提示
+
+如果后续要往 Shopify 后台正式迁移，当前至少需要重点核对这些主题文件：
+
+- `snippets/main-nav-links.liquid`
+- `snippets/nav-dropdown-router.liquid`
+- `snippets/nav-dropdown-default.liquid`
+- `snippets/nav-dropdown-drapery.liquid`
+- `snippets/nav-dropdown-shades.liquid`
+- `snippets/nav-dropdown-hardware.liquid`
+- `snippets/nav-dropdown-free-swatches.liquid`
+- `snippets/nav-dropdown-sale.liquid`
+- `sections/header.liquid`
+- `assets/main.css`
+- `assets/header-menu-dropdowns.css`

@@ -1,0 +1,107 @@
+@media (min-width: 768px) {
+  .navigation .navigation__tier-2-container--drapery .container {
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
+  .navigation .navigation__drapery-menu {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 64px;
+    align-items: start;
+  }
+  .navigation .navigation__drapery-main {
+    min-width: 0;
+  }
+  .navigation .navigation__drapery-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 24px 40px;
+  }
+  .navigation .navigation__drapery-column {
+    min-width: 0;
+  }
+  .navigation .navigation__drapery-heading {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: var(--headings-col);
+    font-size: 0.85em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .navigation .navigation__drapery-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .navigation .navigation__drapery-link-item {
+    margin: 0;
+  }
+  .navigation .navigation__drapery-links .navigation__link {
+    padding: 5px 0;
+    color: inherit;
+    opacity: 0.9;
+  }
+  .navigation .navigation__drapery-footer {
+    margin-top: 24px;
+  }
+  .navigation .navigation__drapery-footer-link,
+  .navigation .navigation__drapery-footer {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .navigation .navigation__drapery-footer-image {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 18px;
+    max-width: 18px;
+  }
+  .navigation .navigation__drapery-footer-image img {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+  .navigation .navigation__drapery-footer-text {
+    color: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .navigation .navigation__drapery-aside {
+    width: 100%;
+  }
+  .navigation .navigation__drapery-aside-image {
+    overflow: hidden;
+  }
+  .navigation .navigation__drapery-aside-image img {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .navigation .navigation__drapery-aside-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    color: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .navigation .navigation__drapery-aside-link-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+  .navigation .navigation__drapery-aside-link-icon .feather {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .navigation .navigation__drapery-menu {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 72px;
+  }
+}

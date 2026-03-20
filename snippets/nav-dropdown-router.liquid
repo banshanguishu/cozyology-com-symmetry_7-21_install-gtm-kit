@@ -1,18 +1,19 @@
 {%- assign dropdown_variant = 'default' -%}
 
 {%- if mobile == false -%}
-  {%- case link.title | handleize -%}
-    {%- when 'drapery' -%}
-      {%- assign dropdown_variant = 'drapery' -%}
-    {%- when 'shades' -%}
-      {%- assign dropdown_variant = 'shades' -%}
-    {%- when 'hardware' -%}
-      {%- assign dropdown_variant = 'hardware' -%}
-    {%- when 'free-swatches' -%}
-      {%- assign dropdown_variant = 'free-swatches' -%}
-    {%- when 'sale' -%}
-      {%- assign dropdown_variant = 'sale' -%}
-  {%- endcase -%}
+  {%- assign link_title_router_key = link_title_sanitised | downcase | strip -%}
+
+  {%- if link_title_router_key == 'drapery' -%}
+    {%- assign dropdown_variant = 'drapery' -%}
+  {%- elsif link_title_router_key == 'shades' -%}
+    {%- assign dropdown_variant = 'shades' -%}
+  {%- elsif link_title_router_key == 'hardware' -%}
+    {%- assign dropdown_variant = 'hardware' -%}
+  {%- elsif link_title_router_key == 'free swatches' -%}
+    {%- assign dropdown_variant = 'free-swatches' -%}
+  {%- elsif link_title_router_key == 'sale' -%}
+    {%- assign dropdown_variant = 'sale' -%}
+  {%- endif -%}
 {%- endif -%}
 
 {%- case dropdown_variant -%}

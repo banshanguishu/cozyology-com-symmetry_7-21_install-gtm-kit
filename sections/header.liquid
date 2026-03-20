@@ -1,3 +1,5 @@
+{{ 'header-menu-dropdowns.css' | asset_url | stylesheet_tag }}
+
 {% style %}
   .logo img {
     width: {{ section.settings.logo_img_width_int }}px;
@@ -979,6 +981,56 @@
           "id": "show_timer_labels",
           "label": "Show labels",
           "default": true
+        }
+      ]
+    },
+    {
+      "type": "menu-promotion-drapery",
+      "name": "Drapery menu promotion",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Used for the custom Drapery dropdown layout."
+        },
+        {
+          "type": "header",
+          "content": "Right promo"
+        },
+        {
+          "type": "image_picker",
+          "id": "right_image",
+          "label": "Right image"
+        },
+        {
+          "type": "text",
+          "id": "right_link_text",
+          "label": "Right link text",
+          "default": "Best Sellers"
+        },
+        {
+          "type": "url",
+          "id": "right_link_url",
+          "label": "Right link URL"
+        },
+        {
+          "type": "header",
+          "content": "Bottom content"
+        },
+        {
+          "type": "image_picker",
+          "id": "bottom_image",
+          "label": "Bottom image"
+        },
+        {
+          "type": "text",
+          "id": "bottom_text",
+          "label": "Bottom text",
+          "default": "Free Swatches"
+        },
+        {
+          "type": "url",
+          "id": "bottom_link_url",
+          "label": "Bottom link URL"
         }
       ]
     }

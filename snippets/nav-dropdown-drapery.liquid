@@ -1,10 +1,96 @@
-{% render 'nav-dropdown-default',
-  nav_id: nav_id,
-  link: link,
-  mobile: mobile,
-  featured_links: featured_links,
-  use_columns: use_columns,
-  small_promo_count: small_promo_count,
-  column_count: column_count,
-  link_title_sanitised: link_title_sanitised
-%}
+{%- liquid
+  assign drapery_block = blank
+  assign has_drapery_footer = false
+  assign has_drapery_aside = false
+
+  for block in section.blocks
+    if block.type == 'menu-promotion-drapery'
+      assign drapery_block = block
+      break
+    endif
+  endfor
+
+  if drapery_block != blank
+    if drapery_block.settings.bottom_image != blank or drapery_block.settings.bottom_text != blank
+      assign has_drapery_footer = true
+    endif
+
+    if drapery_block.settings.right_image != blank or drapery_block.settings.right_link_text != blank
+      assign has_drapery_aside = true
+    endif
+  endif
+-%}
+
+<div id="{{ nav_id }}" class="navigation__tier-2-container navigation__child-tier navigation__tier-2-container--drapery">
+  <div class="container">
+    <div class="navigation__drapery-menu"{% if drapery_block != blank %} {{ drapery_block.shopify_attributes }}{% endif %}>
+      <div class="navigation__drapery-main">
+        {% if link.links != blank %}
+          <div class="navigation__drapery-columns">
+            {% for child_link in link.links %}
+              <div class="navigation__drapery-column">
+                <a href="{{ child_link.url }}" class="navigation__drapery-heading">{{ child_link.title | escape }}</a>
+
+                {% if child_link.links != blank %}
+                  <ul class="navigation__drapery-links" role="list">
+                    {% for child_child_link in child_link.links %}
+                      <li class="navigation__drapery-link-item">
+                        <a class="navigation__link" href="{{ child_child_link.url }}">{{ child_child_link.title | escape }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if drapery_block != blank and has_drapery_footer %}
+          <div class="navigation__drapery-footer">
+            {% if drapery_block.settings.bottom_link_url != blank %}
+              <a class="navigation__drapery-footer-link" href="{{ drapery_block.settings.bottom_link_url }}">
+            {% endif %}
+
+            {% if drapery_block.settings.bottom_image != blank %}
+              <span class="navigation__drapery-footer-image">
+                {%- render 'image' with drapery_block.settings.bottom_image, size_cols_desktop: 1, loading: 'manual' -%}
+              </span>
+            {% endif %}
+
+            {% if drapery_block.settings.bottom_text != blank %}
+              <span class="navigation__drapery-footer-text">{{ drapery_block.settings.bottom_text | escape }}</span>
+            {% endif %}
+
+            {% if drapery_block.settings.bottom_link_url != blank %}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if drapery_block != blank and has_drapery_aside %}
+        <div class="navigation__drapery-aside">
+          {% if drapery_block.settings.right_image != blank %}
+            <div class="navigation__drapery-aside-image">
+              {%- render 'image' with drapery_block.settings.right_image, size_cols_desktop: 3, loading: 'manual' -%}
+            </div>
+          {% endif %}
+
+          {% if drapery_block.settings.right_link_text != blank %}
+            {% if drapery_block.settings.right_link_url != blank %}
+              <a class="navigation__drapery-aside-link has-ltr-icon" href="{{ drapery_block.settings.right_link_url }}">
+                <span>{{ drapery_block.settings.right_link_text | escape }}</span>
+                <span class="navigation__drapery-aside-link-icon">{% render 'icon-chevron-right', stroke_width: 1.3 %}</span>
+              </a>
+            {% else %}
+              <div class="navigation__drapery-aside-link">
+                <span>{{ drapery_block.settings.right_link_text | escape }}</span>
+                <span class="navigation__drapery-aside-link-icon">{% render 'icon-chevron-right', stroke_width: 1.3 %}</span>
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
