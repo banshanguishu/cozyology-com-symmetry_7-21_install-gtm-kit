@@ -1,0 +1,85 @@
+{%- assign dropdown_variant = 'default' -%}
+
+{%- if mobile == false -%}
+  {%- case link.title | handleize -%}
+    {%- when 'drapery' -%}
+      {%- assign dropdown_variant = 'drapery' -%}
+    {%- when 'shades' -%}
+      {%- assign dropdown_variant = 'shades' -%}
+    {%- when 'hardware' -%}
+      {%- assign dropdown_variant = 'hardware' -%}
+    {%- when 'free-swatches' -%}
+      {%- assign dropdown_variant = 'free-swatches' -%}
+    {%- when 'sale' -%}
+      {%- assign dropdown_variant = 'sale' -%}
+  {%- endcase -%}
+{%- endif -%}
+
+{%- case dropdown_variant -%}
+  {%- when 'drapery' -%}
+    {% render 'nav-dropdown-drapery',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+  {%- when 'shades' -%}
+    {% render 'nav-dropdown-shades',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+  {%- when 'hardware' -%}
+    {% render 'nav-dropdown-hardware',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+  {%- when 'free-swatches' -%}
+    {% render 'nav-dropdown-free-swatches',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+  {%- when 'sale' -%}
+    {% render 'nav-dropdown-sale',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+  {%- else -%}
+    {% render 'nav-dropdown-default',
+      nav_id: nav_id,
+      link: link,
+      mobile: mobile,
+      featured_links: featured_links,
+      use_columns: use_columns,
+      small_promo_count: small_promo_count,
+      column_count: column_count,
+      link_title_sanitised: link_title_sanitised
+    %}
+{%- endcase -%}
