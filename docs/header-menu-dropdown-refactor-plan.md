@@ -182,6 +182,9 @@ UI 输入方式包括：
 - 阶段 3：未开始
 - 阶段 4：未开始
 - 阶段 5：未开始
+- 阶段 6：未开始
+- 阶段 7：未开始
+- 阶段 8：未开始
 
 ### 阶段 0：重构前确认
 
@@ -248,9 +251,166 @@ UI 输入方式包括：
 - 用户已将代码同步到 Shopify 后台并完成视觉验证
 - 验证结果：当前菜单视觉和交互基本没有变动
 
-### 阶段 2：抽离公共辅助逻辑
+### 阶段 2：`Drapery` 菜单重构
 
-任务目标：避免后续 5 个特殊模板复制大量相同代码。
+任务目标：完成 `Drapery` 专用桌面端 dropdown 重构。
+
+任务 2.1：需求确认
+
+- 用户提供 `Drapery` 对应设计图或修改说明
+- 明确 `Drapery` 的二级/三级展示方式
+- 明确 `Drapery` 是否需要图片区、文案区、按钮区
+- 明确 `Drapery` 是否沿用现有 promotion block，还是增加新配置
+- 明确 `Drapery` 是否需要新的 schema / block 配置
+
+任务 2.2：代码编写
+
+- 编写 `nav-dropdown-drapery.liquid`
+- 接入 `Drapery` 所需的 block / image / text 数据
+- 完成桌面端 dropdown UI
+- 校验 hover / open / close 行为
+- 校验二级、三级链接输出是否正确
+- 完成 Shopify 后台视觉验收
+
+输出物：
+
+- `Drapery` 专用 dropdown snippet
+- `Drapery` 所需配置项和渲染逻辑
+
+验收标准：
+
+- `Drapery` 下拉单独验收通过
+- 不影响其他 8 个一级菜单
+
+### 阶段 3：`Shades` 菜单重构
+
+任务目标：完成 `Shades` 专用桌面端 dropdown 重构。
+
+任务 3.1：需求确认
+
+- 用户提供 `Shades` 对应设计图或修改说明
+- 明确 `Shades` 的二级/三级展示方式
+- 明确 `Shades` 是否需要图片区、文案区、按钮区
+- 明确 `Shades` 是否沿用现有 promotion block，还是增加新配置
+- 明确 `Shades` 是否需要新的 schema / block 配置
+
+任务 3.2：代码编写
+
+- 编写 `nav-dropdown-shades.liquid`
+- 接入 `Shades` 所需的 block / image / text 数据
+- 完成桌面端 dropdown UI
+- 校验 hover / open / close 行为
+- 校验二级、三级链接输出是否正确
+- 完成 Shopify 后台视觉验收
+
+输出物：
+
+- `Shades` 专用 dropdown snippet
+- `Shades` 所需配置项和渲染逻辑
+
+验收标准：
+
+- `Shades` 下拉单独验收通过
+- 不影响其他 8 个一级菜单
+
+### 阶段 4：`Hardware` 菜单重构
+
+任务目标：完成 `Hardware` 专用桌面端 dropdown 重构。
+
+任务 4.1：需求确认
+
+- 用户提供 `Hardware` 对应设计图或修改说明
+- 明确 `Hardware` 的二级/三级展示方式
+- 明确 `Hardware` 是否需要图片区、文案区、按钮区
+- 明确 `Hardware` 是否沿用现有 promotion block，还是增加新配置
+- 明确 `Hardware` 是否需要新的 schema / block 配置
+
+任务 4.2：代码编写
+
+- 编写 `nav-dropdown-hardware.liquid`
+- 接入 `Hardware` 所需的 block / image / text 数据
+- 完成桌面端 dropdown UI
+- 校验 hover / open / close 行为
+- 校验二级、三级链接输出是否正确
+- 完成 Shopify 后台视觉验收
+
+输出物：
+
+- `Hardware` 专用 dropdown snippet
+- `Hardware` 所需配置项和渲染逻辑
+
+验收标准：
+
+- `Hardware` 下拉单独验收通过
+- 不影响其他 8 个一级菜单
+
+### 阶段 5：`Free Swatches` 菜单重构
+
+任务目标：完成 `Free Swatches` 专用桌面端 dropdown 重构。
+
+任务 5.1：需求确认
+
+- 用户提供 `Free Swatches` 对应设计图或修改说明
+- 明确 `Free Swatches` 的二级/三级展示方式
+- 明确 `Free Swatches` 是否需要图片区、文案区、按钮区
+- 明确 `Free Swatches` 是否沿用现有 promotion block，还是增加新配置
+- 明确 `Free Swatches` 是否需要新的 schema / block 配置
+
+任务 5.2：代码编写
+
+- 编写 `nav-dropdown-free-swatches.liquid`
+- 接入 `Free Swatches` 所需的 block / image / text 数据
+- 完成桌面端 dropdown UI
+- 校验 hover / open / close 行为
+- 校验二级、三级链接输出是否正确
+- 完成 Shopify 后台视觉验收
+
+输出物：
+
+- `Free Swatches` 专用 dropdown snippet
+- `Free Swatches` 所需配置项和渲染逻辑
+
+验收标准：
+
+- `Free Swatches` 下拉单独验收通过
+- 不影响其他 8 个一级菜单
+
+### 阶段 6：`Sale` 菜单重构
+
+任务目标：完成 `Sale` 专用桌面端 dropdown 重构。
+
+任务 6.1：需求确认
+
+- 用户提供 `Sale` 对应设计图或修改说明
+- 明确 `Sale` 的二级/三级展示方式
+- 明确 `Sale` 是否需要图片区、文案区、按钮区
+- 明确 `Sale` 是否沿用现有 promotion block，还是增加新配置
+- 明确 `Sale` 是否需要新的 schema / block 配置
+
+任务 6.2：代码编写
+
+- 编写 `nav-dropdown-sale.liquid`
+- 接入 `Sale` 所需的 block / image / text 数据
+- 完成桌面端 dropdown UI
+- 校验 hover / open / close 行为
+- 校验二级、三级链接输出是否正确
+- 完成 Shopify 后台视觉验收
+
+输出物：
+
+- `Sale` 专用 dropdown snippet
+- `Sale` 所需配置项和渲染逻辑
+
+验收标准：
+
+- `Sale` 下拉单独验收通过
+- 不影响其他 8 个一级菜单
+
+### 阶段 7：按重复度决定是否抽离公共辅助逻辑
+
+任务目标：在完成若干特殊菜单后，再判断是否需要补做公共逻辑抽离。
+
+这一阶段不是强制前置阶段，而是按实际开发重复度决定是否执行。
 
 需要考虑抽离的公共逻辑：
 
@@ -259,93 +419,32 @@ UI 输入方式包括：
 - `small_promo_count` 统计
 - large promotion block 匹配逻辑
 - small promotion block 匹配逻辑
-- 二级/三级链接的循环辅助片段
+- 二级/三级链接循环辅助片段
+- 通用图片区或 promotion 区块
 
-任务：
+任务 7.1：重复度评估
 
-- 盘点哪些逻辑必须复用
-- 盘点哪些逻辑应保留在默认模板内部
-- 将重复的 block 匹配逻辑抽成辅助 snippet 或统一约定的变量输入
+- 盘点当前已完成特殊菜单中的重复结构
+- 判断是否已经出现较多重复代码
+- 判断是否值得抽离成公共 snippet
+
+任务 7.2：必要时进行抽离
+
+- 抽离重复 block 匹配逻辑
+- 抽离重复 link list 渲染片段
+- 抽离重复图片区或 promotion 片段
+- 收敛公共变量输入约定
 
 输出物：
 
-- 公共变量约定
 - 公共逻辑复用方案
+- 必要的公共 snippet
 
 验收标准：
 
-- 特殊模板开发时不需要反复复制默认模板整段代码
+- 后续继续扩展特殊菜单时，不需要复制大量重复代码
 
-### 阶段 3：定义 5 个特殊菜单的 UI 需求清单
-
-任务目标：在写代码前，把 5 个特殊菜单各自的结构需求单独列清。
-
-需要分别产出这 5 个菜单的 UI 说明：
-
-- `Drapery`
-- `Shades`
-- `Hardware`
-- `Free Swatches`
-- `Sale`
-
-每个菜单都需要明确：
-
-- 是否显示二级菜单
-- 是否显示三级菜单
-- 二级和三级是平铺、分栏还是卡片化
-- 是否有主视觉图片
-- 图片来自哪里
-- 是否有额外文案、按钮、标签
-- 移动端是否复用桌面结构
-- 是否需要保留当前 promotion block 机制
-
-输出物：
-
-- 5 份菜单 UI 需求说明
-
-输入来源：
-
-- 用户提供对应设计图
-- 或用户直接描述需要如何改
-
-验收标准：
-
-- 每个特殊菜单的结构边界清晰
-- 开发时不需要再边写边猜
-
-### 阶段 4：逐个实现 5 个特殊模板
-
-任务目标：一个菜单一个菜单地落地。
-
-建议顺序：
-
-1. `Drapery`
-2. `Shades`
-3. `Hardware`
-4. `Free Swatches`
-5. `Sale`
-
-每个菜单都按同样的步骤执行：
-
-1. 创建对应 snippet
-2. 接入 router
-3. 实现该菜单桌面端 dropdown UI
-4. 接入所需的 block / image / text 数据
-5. 校验二级、三级链接输出是否正确
-6. 校验 hover / open / close 行为
-7. 本轮不处理移动端
-
-输出物：
-
-- 对应菜单专用 snippet
-- 对应菜单所需的 schema / block 扩展
-
-验收标准：
-
-- 该菜单单独验收通过
-- 不影响其他 8 个一级菜单
-
-### 阶段 5：统一样式和交互收尾
+### 阶段 8：统一样式和交互收尾
 
 任务目标：在 5 个特殊菜单都落地后，再统一收口 CSS 和交互细节。
 
@@ -362,66 +461,7 @@ UI 输入方式包括：
 - 收敛后的样式结构
 - 清理后的类名规范
 
-## 6. 五个特殊菜单的开发任务拆分
-
-这里先不写具体 UI 代码，只拆任务。
-
-### 任务 A：`Drapery` 专用 dropdown snippet
-
-任务内容：
-
-- 创建 `nav-dropdown-drapery.liquid`
-- 明确 `Drapery` 的二级/三级排版结构
-- 明确是否需要独立图片区
-- 明确所需 block 配置
-- 由用户提供 `Drapery` 对应设计图或修改说明
-- 完成后单独联调
-
-### 任务 B：`Shades` 专用 dropdown snippet
-
-任务内容：
-
-- 创建 `nav-dropdown-shades.liquid`
-- 明确 `Shades` 的二级/三级排版结构
-- 明确是否需要独立图片区
-- 明确所需 block 配置
-- 由用户提供 `Shades` 对应设计图或修改说明
-- 完成后单独联调
-
-### 任务 C：`Hardware` 专用 dropdown snippet
-
-任务内容：
-
-- 创建 `nav-dropdown-hardware.liquid`
-- 明确 `Hardware` 的二级/三级排版结构
-- 明确是否需要独立图片区
-- 明确所需 block 配置
-- 由用户提供 `Hardware` 对应设计图或修改说明
-- 完成后单独联调
-
-### 任务 D：`Free Swatches` 专用 dropdown snippet
-
-任务内容：
-
-- 创建 `nav-dropdown-free-swatches.liquid`
-- 明确 `Free Swatches` 的二级/三级排版结构
-- 明确是否需要独立图片区
-- 明确所需 block 配置
-- 由用户提供 `Free Swatches` 对应设计图或修改说明
-- 完成后单独联调
-
-### 任务 E：`Sale` 专用 dropdown snippet
-
-任务内容：
-
-- 创建 `nav-dropdown-sale.liquid`
-- 明确 `Sale` 的二级/三级排版结构
-- 明确是否需要独立图片区
-- 明确所需 block 配置
-- 由用户提供 `Sale` 对应设计图或修改说明
-- 完成后单独联调
-
-## 7. 第一轮不建议做的事
+## 6. 第一轮不建议做的事
 
 为了保证这次重构可控，第一轮不建议做下面这些事情：
 
@@ -432,28 +472,28 @@ UI 输入方式包括：
 - 不把所有菜单相关 CSS 一口气推翻重写
 - 不先优化“好看”，而是先把“可路由、可扩展、可逐步替换”做好
 
-## 8. 推荐的首个执行任务
+## 7. 推荐的首个执行任务
 
-如果按最稳妥的节奏推进，建议下一步只做下面这件事：
+如果按当前新的阶段顺序推进，建议下一步只做下面这件事：
 
 ### 下一步任务
 
-先完成“阶段 1：建立渲染路由层”。
+进入“阶段 2：`Drapery` 菜单重构”的任务 2.1 需求确认。
 
 具体来说，只做：
 
-1. 从 `main-nav-links.liquid` 中抽出默认 dropdown 渲染逻辑
-2. 新增 router snippet
-3. 建立 5 个特殊菜单 snippet 占位文件
-4. 先让 5 个特殊菜单继续临时复用默认逻辑
+1. 提供 `Drapery` 的设计图或修改说明
+2. 明确 `Drapery` 的二级、三级展示结构
+3. 明确 `Drapery` 是否需要图片区、文案区、按钮区
+4. 明确 `Drapery` 是否需要新增 block / schema 配置
 
 这样做的价值是：
 
-- 代码结构先站稳
-- 站点 UI 基本不变
-- 后续可以一项一项替换 5 个特殊菜单
+- 只处理一个菜单，范围清晰
+- 需求和代码不会混在一起推进
+- `Drapery` 确认完后可以直接进入 2.2 编码
 
-## 9. 本文档的用途
+## 8. 本文档的用途
 
 后续开发建议严格按本文档推进：
 
