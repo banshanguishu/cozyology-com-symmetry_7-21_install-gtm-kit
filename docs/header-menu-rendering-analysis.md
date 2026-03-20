@@ -176,86 +176,289 @@ header 左侧会渲染一个 `#proxy-nav`：
 - `header.liquid` 负责把菜单句柄和特殊链接参数传进去
 - `main-nav-links.liquid` 负责把完整桌面菜单树渲染出来
 
-## 5. `main-nav-links.liquid` 中的完整菜单展开规则
+## 5. 一级菜单、下拉展开、二级菜单和图片渲染逻辑
 
-虽然用户当前要求聚焦 `header.liquid`，但它的菜单实际渲染依赖该 snippet，因此这里记录它与 header 直接相关的主逻辑。
+虽然菜单入口在 `header.liquid`，但完整的下拉内容是由 `main-nav-links.liquid` 负责输出的。因此要看清一级菜单、二级菜单和右侧图片的关系，必须把这两个文件连起来看。
 
-### 5.1 一级菜单处理
+### 5.1 一级菜单是如何渲染的
 
-snippet 中循环：
+`main-nav-links.liquid` 中的一级菜单循环如下：
 
 ```liquid
 {% for link in linklists[link_list].links %}
 ```
 
-它和 `header.liquid` 一样，会先为每个一级菜单计算：
+也就是说，一级菜单直接来自 Shopify 后台导航菜单：
 
-- `has_dropdown`
-- `use_columns`
-- `small_promo_count`
+```liquid
+linklists[link_list].links
+```
 
-判断逻辑与 header 中的 inline 版本基本一致，但多了对 small promotion 的统计。
+在桌面端调用时，`link_list` 实际就是：
 
-### 5.2 什么时候是普通下拉，什么时候是 mega menu
+```liquid
+section.settings.menu_linklist
+```
 
-判定大致如下：
+所以一级菜单的数据来源就是 Shopify 后台选中的 Header 菜单。
 
-1. `link.links != blank` 时，菜单天然有下拉。
-2. `link.levels >= 2` 时，使用 column 布局。
-3. 如果某个 promotion block 的 `dropdown_link_title` 命中一级菜单标题，也会强制启用 `use_columns` 和下拉结构。
+每个一级菜单在渲染前，代码会先计算：
 
-因此一个一级菜单是否成为 mega menu，不只取决于 Shopify 导航层级，也取决于 section blocks 中是否挂了促销内容。
+- `has_dropdown`：是否需要下拉
+- `use_columns`：是否按 mega menu / columns 布局
+- `small_promo_count`：是否存在与该一级菜单绑定的 small promotion
 
-### 5.3 大促销 block 注入
+### 5.2 一级菜单何时会被判定为“有下拉”
 
-当 block 类型为 `menu-promotion-large` 且 `dropdown_link_title` 匹配当前一级菜单标题时，会在二级菜单容器顶部插入宽幅促销内容：
+一级菜单出现下拉，不只有一种来源。
 
-- 桌面端优先显示 `desktop_image`
-- 移动端优先显示 `mobile_image`
-- 可带标题、文案、按钮
-- 可带 countdown
+判定规则如下：
 
-所以 large promotion 是“附着在指定一级菜单下拉中的内容块”。
+1. 如果 `link.links != blank`，说明后台菜单本身就有子菜单，此时 `has_dropdown = true`。
+2. 如果 `link.levels >= 2`，说明菜单存在更深层级，`use_columns = true`。
+3. 如果某个 block 的 `dropdown_link_title` 与当前一级菜单标题一致，即使这个一级菜单本身没有二级菜单，也会被强制设为：
+   - `has_dropdown = true`
+   - `use_columns = true`
 
-### 5.4 二级与三级菜单
+因此，一个一级菜单的下拉内容可能来自两类数据：
 
-如果该菜单存在子链接或 small promotion，则继续输出二级菜单容器。
+- Shopify 后台导航树本身的子菜单
+- Header section 中绑定到该一级菜单的 promotion blocks
 
-有两种主要模式：
+### 5.3 一级菜单鼠标悬浮后为何会展开下拉
 
-#### 模式 A：`use_columns == true` 且 `link.levels == 1`
+Liquid 模板本身只输出结构和状态属性，例如：
 
-这时一级菜单只有一层子链接，没有更深层级，但因为 promotion 或布局逻辑被强制按列展示。
+- 一级菜单 link 上的 `aria-haspopup="true"`
+- 一级菜单 link 上的 `aria-expanded="false"`
+- 下拉容器 `navigation__tier-2-container`
 
-行为：
+真正的“鼠标悬浮展开”由主题 JS 和 CSS 共同完成。
 
-- 所有二级链接直接平铺在单独一列中
-- 不再为每个二级项单独展开三级结构
+#### JS 逻辑
 
-#### 模式 B：其他情况
+`assets/main.js` 中的 `MainNavigation` 组件会给所有一级可下拉菜单绑定：
 
-对每个 `child_link` 输出一个二级项：
+- `mouseenter`
+- `mouseleave`
 
-- 如果 `child_link.links != blank`，则它本身是一个可展开列标题
-- 然后继续输出三级链接 `child_child_link`
+鼠标移入时：
 
-三级链接旁还会读取对象 metafield：
+- 给当前一级菜单 `<li>` 添加 `navigation__item--show-children`
+- 给 header 添加 `section-header--nav-open`
+- 同时把一级 link 的 `aria-expanded` 改成 `true`
 
-- `nitro_lookbook.lookbook_page`
-- `nitro_lookbook.lookbook_collection`
-- `nitro_lookbook.lookbook_product`
+鼠标移出时：
 
-如果有值，会渲染一个 `.menu-tag`。
+- 移除 `navigation__item--show-children`
+- 把 `aria-expanded` 改回 `false`
 
-### 5.5 小促销 block 注入
+#### CSS 逻辑
 
-如果 `menu-promotion-small` 的 `dropdown_link_title` 匹配当前一级菜单：
+CSS 默认把：
 
-- 桌面端：每个 small promo 作为单独一列插入 mega menu
-- 移动端：small promo 合并到 promotion 区域
-- 且移动端在满足条件时可启用 carousel 样式：
-  - `section.settings.enable_mobile_promo_carousel == true`
-  - 并且当前菜单本身还有普通链接
+```css
+.navigation__tier-2-container
+```
+
+设为隐藏状态：
+
+- `visibility: hidden`
+- `opacity: 0`
+- `pointer-events: none`
+
+当一级菜单带有：
+
+```css
+.navigation__item--show-children
+```
+
+时，才把对应二级下拉容器显示出来。
+
+因此“一级菜单悬浮展开二级菜单”的主链路是：
+
+1. 一级菜单被识别为 `navigation__item--with-children`
+2. 鼠标移入触发 JS
+3. JS 给一级菜单加 `navigation__item--show-children`
+4. CSS 根据这个 class 显示对应的 `navigation__tier-2-container`
+
+### 5.4 二级菜单的数据来源和渲染方式
+
+二级菜单的数据主来源是当前一级菜单的子链接：
+
+```liquid
+link.links
+```
+
+如果当前一级菜单存在子菜单，代码会在下拉容器中输出：
+
+```liquid
+<ul class="navigation__tier-2 ...">
+```
+
+然后分两种模式渲染。
+
+#### 模式 A：强制列布局，但菜单只有一层
+
+当：
+
+```liquid
+use_columns == true and link.levels == 1
+```
+
+说明这个一级菜单虽然只有一层子链接，但由于 promotion block 或布局判定，被按 mega menu 方式渲染。
+
+此时行为是：
+
+- 把所有 `link.links` 直接输出为一列链接
+- 不继续渲染三级结构
+
+这种情况常见于：
+
+- 一级菜单绑定了 promotion 图片区
+- 一级菜单需要做成带图片的 mega menu，但子菜单本身并不深
+
+#### 模式 B：标准的二级列 + 三级菜单
+
+如果不满足上面的条件，则会逐个循环：
+
+```liquid
+{% for child_link in link.links %}
+```
+
+每个 `child_link` 就是一个二级菜单项。
+
+渲染规则：
+
+- `child_link.title` 作为二级标题或二级链接文字
+- `child_link.url` 作为二级链接地址
+- 如果 `child_link.links != blank`，则它下面还会渲染三级菜单 `child_child_link`
+
+因此：
+
+- 一级菜单来源：`linklists[link_list].links`
+- 二级菜单来源：`link.links`
+- 三级菜单来源：`child_link.links`
+
+### 5.5 下拉框右边大图片是如何出现的
+
+你提到的“下拉框中右边有图片”，当前代码里主要对应的是：
+
+- `menu-promotion-large`
+
+这不是 Shopify 导航菜单对象自带的图片，而是 Header section 的 block 内容。
+
+#### 图片数据来源
+
+`menu-promotion-large` 的 schema 中定义了这些字段：
+
+- `dropdown_link_title`
+- `desktop_image`
+- `mobile_image`
+- `image_position`
+- `enable_fade`
+
+也就是说，图片不是从 `link`、`child_link` 或 collection/product 自动读取出来的，而是后台在 Header section 的 block 里手动配置的。
+
+#### 图片和一级菜单的绑定方式
+
+绑定逻辑不是靠菜单 handle，也不是靠链接 URL，而是靠标题文本匹配：
+
+```liquid
+block.settings.dropdown_link_title == 当前一级菜单标题
+```
+
+代码里会先把两边都做 `downcase | strip` 后再比较。
+
+只有匹配成功的 `menu-promotion-large` block，才会被插入到该一级菜单的下拉中。
+
+#### 图片渲染位置
+
+当命中 `menu-promotion-large` 后，代码会先在二级菜单容器顶部插入：
+
+```liquid
+<div class="navigation__wide-promotion ...">
+```
+
+桌面端：
+
+- 如果 `desktop_image != blank` 且 `mobile == false`
+- 就渲染 `desktop_image`
+
+移动端：
+
+- 如果 `mobile_image != blank` 且 `mobile == true`
+- 就渲染 `mobile_image`
+
+图片实际通过下面这句输出：
+
+```liquid
+{% render 'image' with block.settings.desktop_image %}
+```
+
+或：
+
+```liquid
+{% render 'image' with block.settings.mobile_image %}
+```
+
+#### 为什么图片会显示在右边
+
+图片左右位置由 `image_position` 控制。
+
+当：
+
+```liquid
+block.settings.image_position == 'right'
+```
+
+图片所在列会额外带上：
+
+```liquid
+column--order-push-desktop
+```
+
+CSS 会根据这个 class，把图片放到右边；默认 schema 值本身也是 `right`。
+
+所以你在桌面下拉里看到“右边有一张大图”，本质上是：
+
+1. 当前一级菜单命中了一个 `menu-promotion-large` block
+2. 该 block 配了 `desktop_image`
+3. 该 block 的 `image_position` 为 `right`
+4. 模板把图片列和文字列一起输出到下拉容器顶部
+
+### 5.6 下拉中的小图片列是如何渲染的
+
+除了“右边大图”外，下拉里还有另一种图片来源：
+
+- `menu-promotion-small`
+
+这种不是整块宽幅图片区，而是作为 mega menu 中的一个 promotion 列插入。
+
+它的数据来源字段是：
+
+- `dropdown_link_title`
+- `image`
+- `title`
+- `link_url`
+
+逻辑同样是先用 `dropdown_link_title` 绑定某个一级菜单标题。
+
+桌面端命中后，代码会把它作为：
+
+```liquid
+<li class="navigation__column navigation__column--promotion">
+```
+
+插入到二级菜单列中。
+
+它的图片通过：
+
+```liquid
+{% render 'image' with block.settings.image %}
+```
+
+输出，因此 small promotion 的图片来源也是 Header section 的 block 图片字段，不来自菜单对象本身。
 
 ## 6. 移动端菜单渲染逻辑
 

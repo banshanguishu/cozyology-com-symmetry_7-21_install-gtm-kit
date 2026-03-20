@@ -2414,6 +2414,7 @@ const MediaGallery = class extends HTMLElement {
     image.src = anchor.href;
   }
   onVariantChange(evt) {
+    console.log("产品套图获取到的 evt========", evt);
     if (this.mediaGroupingEnabled) {
       this.setActiveMediaGroup(this.getMediaGroupFromOptionSelectors(evt));
     }
@@ -2464,6 +2465,8 @@ const MediaGallery = class extends HTMLElement {
         ? payload.media
         : [];
 
+    console.log("产品套图获取到的 mediaList========", mediaList);
+
     this.initFeatureId =
       payload && !Array.isArray(payload) && payload.initFeatureId != null
         ? payload.initFeatureId
@@ -2487,6 +2490,8 @@ const MediaGallery = class extends HTMLElement {
     }
 
     this.initByAltMedias = map;
+    console.log("产品套图获取到的 initByAltMedias========", this.initByAltMedias);
+    console.log("产品套图获取到的 initFeatureId========", this.initFeatureId);
     this.renderMediaAlts(this.initFeatureId);
   }
   renderMediaAlts(featureMediaid) {
@@ -2516,6 +2521,7 @@ const MediaGallery = class extends HTMLElement {
     if (filtered.length === 0) return;
 
     const itemsToRender = filtered.slice(0, 6);
+    console.log("产品套图获取到的 itemsToRender========", itemsToRender);
     for (const media of itemsToRender) {
       const src =
         media &&
