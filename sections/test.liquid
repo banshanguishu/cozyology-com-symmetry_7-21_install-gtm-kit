@@ -282,13 +282,7 @@
     </div>
 
     <!-- 把产品按照类型分组-->
-    {% assign product_types = '' %}
-    {% for product in collection.products %}
-      {% unless product_types contains product.type %}
-        {% assign product_types = product_types | append: product.type | append: ',' %}
-      {% endunless %}
-    {% endfor %}
-    {% assign product_types = product_types | split: ',' | uniq %}
+    {%- assign product_types = collection.products | map: 'type' | uniq -%}
   
     <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
       {% if section.settings.show_sort or show_filters %}
@@ -305,6 +299,7 @@
             {% assign group_idx = 0 %}
            {% for type in product_types %}
               {% assign group_idx = group_idx | plus: 1 %}
+              {%- assign type_products = collection.products | where: 'type', type -%}
               {% comment %} ===== 首组顶部配置图 ===== {% endcomment %}
               {% comment %}在第 6 次迭代后插入图片 {% endcomment %}
               {%- if group_idx == 7 and section.settings.show_first_group_image -%}
@@ -330,15 +325,12 @@
                   
                 {% endcomment %}
                 {% assign type_intro = '' %}
-                {% assign intro_found = false %}
-                {% for product in collection.products %}            
-                  {% if product.type == type and intro_found == false %}
-                    {% if product.metafields.custom.product_attributes != blank %}
-                      {% assign type_intro = product.metafields.custom.product_attributes %}
-                      {% assign intro_found = true %}
-                    {% endif %}
+                {% for p in type_products %}
+                  {% if p.metafields.custom.product_attributes != blank %}
+                    {% assign type_intro = p.metafields.custom.product_attributes %}
+                    {% break %}
                   {% endif %}
-                {% endfor %} 
+                {% endfor %}
           
                 <!-- 显示元字段内容 -->
                 {% if type_intro != blank %}
@@ -350,36 +342,27 @@
                 {% endif %}              
               </div>
                <!-- 计算当前类型的产品总数 -->
-              {% assign type_product_count = 0 %}
-              {% for product in collection.products %}
-                  {% if product.type == type %}
-                      {% assign type_product_count = type_product_count | plus: 1 %}
-                  {% endif %}
-              {% endfor %}
-              
+              {% assign type_product_count = type_products.size %}
+
               <!-- 生成唯一的ID用于JavaScript -->
               {% assign type_id = type | handleize %}
-              
+
               <div class="product-grid product-grid--per-row-{{ section.settings.grid }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }}" id="product-grid-{{ type_id }}">
-                {% assign product_index = 0 %}
-                {% for product in collection.products %}
-                    {% if product.type == type %}
-                        {% assign product_index = product_index | plus: 1 %}
-                        {% assign prioritised_loading = false %}
-                        {% if product_index <= section.settings.grid %}
-                            {% assign prioritised_loading = true %}
-                        {% endif %}
-                        
-                        <!-- 前12个产品默认显示，其余隐藏 -->
-                        {% if product_index <= 12 %}
-                            <div class="product-item" data-type="{{ type_id }}">
-                                {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
-                            </div>
-                        {% else %}
-                            <div class="product-item" data-type="{{ type_id }}" style="display: none;">
-                                {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
-                            </div>
-                        {% endif %}
+                {% for product in type_products %}
+                    {% assign prioritised_loading = false %}
+                    {% if forloop.index <= section.settings.grid %}
+                        {% assign prioritised_loading = true %}
+                    {% endif %}
+
+                    <!-- 前12个产品默认显示，其余隐藏 -->
+                    {% if forloop.index <= 12 %}
+                        <div class="product-item" data-type="{{ type_id }}">
+                            {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                        </div>
+                    {% else %}
+                        <div class="product-item" data-type="{{ type_id }}" style="display: none;">
+                            {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                        </div>
                     {% endif %}
                 {% endfor %}
               </div>
