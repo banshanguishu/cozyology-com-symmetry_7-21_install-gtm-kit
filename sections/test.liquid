@@ -355,15 +355,9 @@
                     {% endif %}
 
                     <!-- 前12个产品默认显示，其余隐藏 -->
-                    {% if forloop.index <= 12 %}
-                        <div class="product-item" data-type="{{ type_id }}">
-                            {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
-                        </div>
-                    {% else %}
-                        <div class="product-item" data-type="{{ type_id }}" style="display: none;">
-                            {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
-                        </div>
-                    {% endif %}
+                    <div class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}" data-type="{{ type_id }}">
+                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                    </div>
                 {% endfor %}
               </div>
               
@@ -546,21 +540,18 @@
   //加载更多功能
   function loadMoreProducts(typeId, totalCount) {
       // 获取当前类型的所有隐藏产品
-      const hiddenProducts = document.querySelectorAll(`[data-type="${typeId}"][style*="display: none"]`);
+      const hiddenProducts = document.querySelectorAll(`[data-type="${typeId}"].product-item--hidden`);
       const loadMoreBtn = document.getElementById(`load-more-${typeId}`);
-      
+
       // 每次显示12个产品
       const showCount = Math.min(12, hiddenProducts.length);
-      
+
       for (let i = 0; i < showCount; i++) {
-          hiddenProducts[i].style.display = 'block';
+          hiddenProducts[i].classList.remove('product-item--hidden');
       }
-      
-      // 检查是否还有隐藏的产品
-      const remainingHidden = document.querySelectorAll(`[data-type="${typeId}"][style*="display: none"]`);
-      
+
       // 如果没有更多隐藏的产品，隐藏加载更多按钮
-      if (remainingHidden.length === 0) {
+      if (hiddenProducts.length - showCount === 0) {
           loadMoreBtn.style.display = 'none';
       }
   }
@@ -1052,6 +1043,8 @@
 {% endschema %}
 
 <style>
+.product-item--hidden { display: none; }
+
 @media screen and (max-width: 767px) {
   .utility-bar {
     position: sticky;
