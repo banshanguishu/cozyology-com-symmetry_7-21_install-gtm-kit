@@ -426,116 +426,48 @@
 });
 
 
-    // 通过 Shopify Ajax API 将产品添加到购物车
-    function addToCart(productId, button) {      
-      const data = {
-        items: [
-          {
-            id: productId,   // 产品ID
-            quantity: 1       // 默认添加数量为1
-          }
-        ]
-      };
-    
-      // 发起 AJAX 请求
-      fetch('/cart/add.js', {
+  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到购物车抽屉的最新 HTML
+  async function addToCart(variantId, button) {
+    const cartDrawer = document.querySelector('cart-drawer');
+    if (!cartDrawer) {
+      console.error('cart-drawer 元素未找到');
+      btnLoading(button);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('items[][id]', variantId);
+    formData.append('items[][quantity]', 1);
+    formData.append('sections_url', window.location.pathname);
+    formData.append('sections', cartDrawer.dataset.sectionId);
+
+    try {
+      const res = await fetch(theme.routes.cartAdd, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          Accept: 'application/javascript',
+          'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Product added to cart:', data);
-        // window.location.href = '/cart';
-        // window.location.reload()
-        updateCartCount(button)
-        
-      })
-      .catch(error => {
-        btnLoading(button)
-        console.error('Error adding product to cart:', error);
+        body: formData
       });
-    }
-   // 更新购物车数量
-  function updateCartCount(button) {
-    fetch('/cart.js')
-      .then(response => response.json())
-      .then(cart => {
-        const cartCount = cart.item_count; // 获取购物车中的总商品数量
-        refreshCartDrawer(cartCount,button)
-      })
-      .catch(error => {
-        btnLoading(button)
-        console.error('Error updating cart count:', error);
-      });
-  }
-  // 更新购物车弹窗的内容
-  function refreshCartDrawer(cartCount,button) {
-      fetch('/cart', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'text/html',
-        },
-      })
-        .then(response => response.text())
-        .then(html => {
-           const tempDiv = document.createElement('div');
-           tempDiv.innerHTML = html;
-           reloadCartFooter()
-          
-            if( cartCount <= 1 ){//当购物车是空的时候 特殊处理，先隐藏空样式，再把购物车内容取消隐藏
-                 const elements = document.querySelectorAll(
-                    '.cart-drawer__content--hidden, .cart-drawer__footer--hidden, .cart-drawer__empty-content--hidden'
-                  );
-                elements.forEach(element => {
-                   element.classList.remove('cart-drawer__content--hidden');
-                    element.classList.remove('cart-drawer__footer--hidden');
-                    element.classList.remove('cart-drawer__empty-content--hidden');
-                });
-                 const emptyContent = document.querySelector('.cart-drawer__empty-content'); 
-                emptyContent.classList.add('cart-drawer__empty-content--hidden');
-            }
-            
-           // 找到购物车的内容容器（根据主题结构调整选择器）
-            const newCartContent = tempDiv.querySelector('.cart-item-list'); // `.cart-item-list` 是购物车内容的容器
-            let cartContentContainer = document.querySelector('.cart-item-list');
-            cartContentContainer.innerHTML = newCartContent.innerHTML; // 更新购物车内容
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.description || data.message || 'Add to cart failed');
+      }
 
-            const cartIcon = document.querySelector('.cart-drawer__title'); // 找到购物车数字的 DOM 元素
-            const cartCountIncon = document.querySelector('.cart-link__count'); // 找到购物车数字的 DOM 元素
-          
-            if (cartIcon) {
-              cartIcon.innerHTML = ` Your cart <span class="cart-drawer__title-count">(${cartCount})</span>`  ;
-            }
-            if (cartCountIncon) {
-              cartCountIncon.textContent = cartCount  ;
-            }
-          
-            btnLoading(button)
-          // 打开购物车弹窗
-            document.querySelector('.js-cart-drawer').open();
-          
-        })
-       .catch(error => {
-           btnLoading(button)
-        });
-  }
-  // 更新footer
-  function reloadCartFooter() {
-    fetch('/?section_id=sections--22811779662142__cart-drawer')
-      .then(response => response.text())
-      .then(html => {
-           const tempDiv = document.createElement('div');
-           tempDiv.innerHTML = html;
-           const newCartContent = tempDiv.querySelector('.cart-drawer__footer'); // `.cart-item-list` 是购物车内容的容器
-           const cartContentContainer = document.querySelector('.cart-drawer__footer');
-           cartContentContainer.innerHTML = newCartContent.innerHTML; // 更新购物车内容
-      })
-      .catch(error => {
-        console.error('Error loading cart footer:', error);
-      });
+      // 用主题原生 API 替换抽屉内容；不调 .open()，抽屉保持关闭
+      cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+
+      // 派发主题事件，让 header 计数等其它组件自动同步
+      document.dispatchEvent(new CustomEvent('on:cart:change', {
+        bubbles: true,
+        cancelable: false
+      }));
+    } catch (err) {
+      console.error('Error adding product to cart:', err);
+    } finally {
+      btnLoading(button);
+    }
   }
   //加载更多功能
   function loadMoreProducts(typeId, totalCount) {
