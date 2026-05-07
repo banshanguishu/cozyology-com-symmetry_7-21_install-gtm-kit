@@ -458,8 +458,6 @@
       return;
     }
 
-    setButtonInCart(button, true);  // 乐观 UI：立刻翻成 REMOVE
-
     const formData = new FormData();
     formData.append('items[][id]', variantId);
     formData.append('items[][quantity]', 1);
@@ -482,6 +480,7 @@
 
       // 用主题原生 API 替换抽屉内容；不调 .open()，抽屉保持关闭
       cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+      setButtonInCart(button, true);
 
       // 派发主题事件，让 header 计数等其它组件自动同步
       document.dispatchEvent(new CustomEvent('on:cart:change', {
@@ -489,7 +488,6 @@
         cancelable: false
       }));
     } catch (err) {
-      setButtonInCart(button, false);  // 失败回滚
       console.error('Error adding product to cart:', err);
     } finally {
       btnLoading(button);
@@ -504,8 +502,6 @@
       btnLoading(button);
       return;
     }
-
-    setButtonInCart(button, false);  // 乐观 UI：立刻翻成 ADD TO CART
 
     const formData = new FormData();
     formData.append('id', variantId);
@@ -528,13 +524,13 @@
       }
 
       cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+      setButtonInCart(button, false);
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
         cancelable: false
       }));
     } catch (err) {
-      setButtonInCart(button, true);  // 失败回滚
       console.error('Error removing product from cart:', err);
     } finally {
       btnLoading(button);

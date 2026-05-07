@@ -26,9 +26,21 @@
   font-size: 1.2em;
   margin: 10px 0;
 } */
-.add-to-cart-test{
-  border:1px solid #ccc;
-  padding:5px 10px;
+.add-to-cart-test {
+  display: block;
+  width: fit-content !important;
+  margin: 4px auto 0;
+  padding: 4px 16px;
+  background-color: #F3EDE9;
+  color: #171717;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 24px;
+  border: 1px solid transparent;
+}
+.add-to-cart-test--in-cart {
+  background-color: #FFFFFF;
+  border-color: #DDDDDD;
 }
 .image-custom-emily{
   margin-bottom:30px;
@@ -41,15 +53,6 @@
     -webkit-box-shadow: 10px 8px 17px 0px rgba(0, 0, 0, 0.33);
     -moz-box-shadow: 10px 8px 17px 0px rgba(0, 0, 0, 0.33);
     z-index: 1;
-}
-.add-to-cart-test{
-  transition: background .2s ease 0s;
-  background-color: #A89A8F;
-  color:#fff
-}
-.add-to-cart-test:hover{
-      background:#745239;
-    transition-delay: .25s;
 }
 
 .product-block__detail-emily .product-block__title{
