@@ -196,7 +196,7 @@ Parameters:
                 {% endif %}
               </div>
             
-              <button style="width:100%" class="add-to-cart-button add-to-cart-test" data-product-id="{{ product.variants.first.id }}">ADD TO CART</button>
+              <button style="width:100%" class="add-to-cart-button add-to-cart-test{% if in_cart %} add-to-cart-test--in-cart{% endif %}" data-product-id="{{ product.variants.first.id }}">{% if in_cart %}REMOVE{% else %}ADD TO CART{% endif %}</button>
               {%- if settings.prod_thumb_show_subtitle and product.metafields.descriptors.subtitle != blank -%}
                 <div class="product-block__subtitle">{{ product.metafields.descriptors.subtitle }}</div>
               {%- endif -%}

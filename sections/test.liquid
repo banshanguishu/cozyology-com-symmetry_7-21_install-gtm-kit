@@ -283,6 +283,7 @@
 
     <!-- 把产品按照类型分组-->
     {%- assign product_types = collection.products | map: 'type' | uniq -%}
+    {%- assign cart_variant_ids = cart.items | map: 'variant_id' -%}
   
     <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
       {% if section.settings.show_sort or show_filters %}
@@ -354,9 +355,14 @@
                         {% assign prioritised_loading = true %}
                     {% endif %}
 
+                    {%- assign in_cart = false -%}
+                    {%- if cart_variant_ids contains product.variants.first.id -%}
+                        {%- assign in_cart = true -%}
+                    {%- endif -%}
+
                     <!-- 前12个产品默认显示，其余隐藏 -->
                     <div class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}" data-type="{{ type_id }}">
-                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading %}
+                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading, in_cart: in_cart %}
                     </div>
                 {% endfor %}
               </div>
@@ -408,25 +414,42 @@
       button.disabled = false; // 恢复按钮状态
   }
   
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('.collection-listing-emily').addEventListener('click', function (event) {
-        if (event.target.classList.contains('add-to-cart-test')) {
-          // 处理点击事件
-           const productId = event.target.getAttribute('data-product-id');
-            if (productId) {
-                const button = event.target; // 获取点击的按钮
-                button.classList.add('loading');
-                button.disabled = true; // 禁用按钮以防止重复点击
-                addToCart(productId,button);
-            } else {
-              console.error('未找到产品 ID');
-            }
-        }
-      });
-});
+  // 切换按钮在「已加入购物车」状态下的文案 + class
+  function setButtonInCart(button, inCart) {
+    if (inCart) {
+      button.classList.add('add-to-cart-test--in-cart');
+      button.textContent = 'REMOVE';
+    } else {
+      button.classList.remove('add-to-cart-test--in-cart');
+      button.textContent = 'ADD TO CART';
+    }
+  }
 
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.collection-listing-emily').addEventListener('click', function (event) {
+      if (!event.target.classList.contains('add-to-cart-test')) return;
 
-  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到购物车抽屉的最新 HTML
+      const button = event.target;
+      const variantId = button.getAttribute('data-product-id');
+      if (!variantId) {
+        console.error('未找到产品 ID');
+        return;
+      }
+      button.classList.add('loading');
+      button.disabled = true;
+
+      if (button.classList.contains('add-to-cart-test--in-cart')) {
+        removeFromCart(variantId, button);
+      } else {
+        addToCart(variantId, button);
+      }
+    });
+
+    // 监听外部购物车变更（如用户在抽屉里手动删除商品），同步本页面所有按钮态
+    document.addEventListener('on:cart:change', syncButtonsWithCart);
+  });
+
+  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到抽屉的最新 HTML
   async function addToCart(variantId, button) {
     const cartDrawer = document.querySelector('cart-drawer');
     if (!cartDrawer) {
@@ -434,6 +457,8 @@
       btnLoading(button);
       return;
     }
+
+    setButtonInCart(button, true);  // 乐观 UI：立刻翻成 REMOVE
 
     const formData = new FormData();
     formData.append('items[][id]', variantId);
@@ -464,9 +489,70 @@
         cancelable: false
       }));
     } catch (err) {
+      setButtonInCart(button, false);  // 失败回滚
       console.error('Error adding product to cart:', err);
     } finally {
       btnLoading(button);
+    }
+  }
+
+  // 移除：用 /cart/change.js + quantity:0 把整个 line 删掉
+  async function removeFromCart(variantId, button) {
+    const cartDrawer = document.querySelector('cart-drawer');
+    if (!cartDrawer) {
+      console.error('cart-drawer 元素未找到');
+      btnLoading(button);
+      return;
+    }
+
+    setButtonInCart(button, false);  // 乐观 UI：立刻翻成 ADD TO CART
+
+    const formData = new FormData();
+    formData.append('id', variantId);
+    formData.append('quantity', 0);
+    formData.append('sections_url', window.location.pathname);
+    formData.append('sections', cartDrawer.dataset.sectionId);
+
+    try {
+      const res = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/javascript',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.description || data.message || 'Remove from cart failed');
+      }
+
+      cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+
+      document.dispatchEvent(new CustomEvent('on:cart:change', {
+        bubbles: true,
+        cancelable: false
+      }));
+    } catch (err) {
+      setButtonInCart(button, true);  // 失败回滚
+      console.error('Error removing product from cart:', err);
+    } finally {
+      btnLoading(button);
+    }
+  }
+
+  // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮态对齐
+  async function syncButtonsWithCart() {
+    try {
+      const res = await fetch('/cart.js');
+      const cart = await res.json();
+      const variantIds = new Set(cart.items.map(item => item.variant_id));
+      document.querySelectorAll('.add-to-cart-test').forEach(btn => {
+        const id = parseInt(btn.getAttribute('data-product-id'), 10);
+        setButtonInCart(btn, variantIds.has(id));
+      });
+    } catch (err) {
+      console.error('Error syncing buttons with cart:', err);
     }
   }
   //加载更多功能
