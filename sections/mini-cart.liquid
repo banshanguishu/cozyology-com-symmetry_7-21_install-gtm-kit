@@ -1,0 +1,21 @@
+{%- comment -%}
+  Mini Cart section — 不会被任何模板直接挂载。
+  存在的唯一目的是给 Section Rendering API 用：
+    fetch('?sections=mini-cart') → 返回最新的 mini-cart HTML
+  test.liquid 自身通过 {% render 'mini-cart' %} 嵌入实际 markup。
+{%- endcomment -%}
+
+{%- if collection -%}
+  {%- assign section_product_ids = collection.products | map: 'id' -%}
+{%- else -%}
+  {%- assign section_product_ids = '' | split: ',' -%}
+{%- endif -%}
+
+{%- render 'mini-cart', section_product_ids: section_product_ids -%}
+
+{% schema %}
+{
+  "name": "Mini Cart",
+  "settings": []
+}
+{% endschema %}

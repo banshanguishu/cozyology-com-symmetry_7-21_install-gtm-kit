@@ -1,4 +1,8 @@
 <div data-section-id="{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
+
+{%- comment -%} mini-cart 过滤用：本 section 涉及的产品 id 集合（取 collection 全部，跨分页） {%- endcomment -%}
+{%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
+
 {% paginate collection.products by section.settings.coll_num_per_page_int %}
   
 {%- liquid
@@ -405,6 +409,8 @@
       <div class="rte cf">{{ collection.description }}</div>
     </div>
   {% endif %}
+
+  {%- render 'mini-cart', section_product_ids: mini_cart_product_ids -%}
 </div>
 
 <script>
@@ -422,6 +428,38 @@
     } else {
       button.classList.remove('add-to-cart-test--in-cart');
       button.textContent = 'Add to Cart';
+    }
+  }
+
+  // 拼出 sections 参数：cart-drawer 的实例 id + mini-cart（按文件名）
+  function buildSectionsParam() {
+    const cartDrawer = document.querySelector('cart-drawer');
+    const ids = [];
+    if (cartDrawer && cartDrawer.dataset.sectionId) ids.push(cartDrawer.dataset.sectionId);
+    ids.push('mini-cart');
+    return ids.join(',');
+  }
+
+  // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM
+  function updateMiniCart(html) {
+    const oldEl = document.querySelector('[data-mini-cart]');
+    if (!oldEl) return;
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html.trim();
+    const newEl = tpl.content.querySelector('[data-mini-cart]');
+    if (!newEl) return;
+    oldEl.replaceWith(newEl);
+  }
+
+  // 把购物车变更接口返回的 sections 全部应用到页面
+  function applyCartChangeSections(data) {
+    if (!data || !data.sections) return;
+    const cartDrawer = document.querySelector('cart-drawer');
+    if (cartDrawer && data.sections[cartDrawer.dataset.sectionId]) {
+      cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+    }
+    if (data.sections['mini-cart']) {
+      updateMiniCart(data.sections['mini-cart']);
     }
   }
 
@@ -447,22 +485,18 @@
 
     // 监听外部购物车变更（如用户在抽屉里手动删除商品），同步本页面所有按钮态
     document.addEventListener('on:cart:change', syncButtonsWithCart);
+
+    // mini-cart 的交互（委托到 document，因为 DOM 会被 section refresh 整段替换）
+    document.addEventListener('click', handleMiniCartClick);
   });
 
-  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到抽屉的最新 HTML
+  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到抽屉 + mini-cart 的最新 HTML
   async function addToCart(variantId, button) {
-    const cartDrawer = document.querySelector('cart-drawer');
-    if (!cartDrawer) {
-      console.error('cart-drawer 元素未找到');
-      btnLoading(button);
-      return;
-    }
-
     const formData = new FormData();
     formData.append('items[][id]', variantId);
     formData.append('items[][quantity]', 1);
     formData.append('sections_url', window.location.pathname);
-    formData.append('sections', cartDrawer.dataset.sectionId);
+    formData.append('sections', buildSectionsParam());
 
     try {
       const res = await fetch(theme.routes.cartAdd, {
@@ -478,8 +512,7 @@
         throw new Error(data.description || data.message || 'Add to cart failed');
       }
 
-      // 用主题原生 API 替换抽屉内容；不调 .open()，抽屉保持关闭
-      cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+      applyCartChangeSections(data);
       setButtonInCart(button, true);
 
       // 派发主题事件，让 header 计数等其它组件自动同步
@@ -496,18 +529,11 @@
 
   // 移除：用 /cart/change.js + quantity:0 把整个 line 删掉
   async function removeFromCart(variantId, button) {
-    const cartDrawer = document.querySelector('cart-drawer');
-    if (!cartDrawer) {
-      console.error('cart-drawer 元素未找到');
-      btnLoading(button);
-      return;
-    }
-
     const formData = new FormData();
     formData.append('id', variantId);
     formData.append('quantity', 0);
     formData.append('sections_url', window.location.pathname);
-    formData.append('sections', cartDrawer.dataset.sectionId);
+    formData.append('sections', buildSectionsParam());
 
     try {
       const res = await fetch('/cart/change.js', {
@@ -523,7 +549,7 @@
         throw new Error(data.description || data.message || 'Remove from cart failed');
       }
 
-      cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
+      applyCartChangeSections(data);
       setButtonInCart(button, false);
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
@@ -535,6 +561,93 @@
     } finally {
       btnLoading(button);
     }
+  }
+
+  // mini-cart ⊖ 移除：和 removeFromCart 类似，但触发源是 mini-cart 自身的 ⊖ 按钮（会被 section 刷新替换掉），
+  // 不需要 setButtonInCart——产品列表中的 Add/Remove 按钮通过 on:cart:change → syncButtonsWithCart 同步。
+  async function removeFromMiniCart(variantId) {
+    const formData = new FormData();
+    formData.append('id', variantId);
+    formData.append('quantity', 0);
+    formData.append('sections_url', window.location.pathname);
+    formData.append('sections', buildSectionsParam());
+
+    try {
+      const res = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/javascript',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.description || data.message || 'Remove from cart failed');
+      }
+
+      applyCartChangeSections(data);
+
+      document.dispatchEvent(new CustomEvent('on:cart:change', {
+        bubbles: true,
+        cancelable: false
+      }));
+    } catch (err) {
+      console.error('Error removing product from mini-cart:', err);
+    }
+  }
+
+  // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / Cart 打开抽屉 / </> 滚动）
+  // 用 document 委托，因为 mini-cart 的 DOM 会被 section 刷新整段替换
+  function handleMiniCartClick(event) {
+    const target = event.target;
+
+    if (target.closest('[data-mini-cart-collapse]')) {
+      toggleMiniCart(true);
+      return;
+    }
+    if (target.closest('[data-mini-cart-expand]')) {
+      toggleMiniCart(false);
+      return;
+    }
+    if (target.closest('[data-mini-cart-open-drawer]')) {
+      document.dispatchEvent(new CustomEvent('dispatch:cart-drawer:open', {
+        bubbles: true,
+        cancelable: false
+      }));
+      return;
+    }
+    if (target.closest('[data-mini-cart-prev]')) {
+      scrollMiniCartList(-100);
+      return;
+    }
+    if (target.closest('[data-mini-cart-next]')) {
+      scrollMiniCartList(100);
+      return;
+    }
+    const removeBtn = target.closest('[data-mini-cart-remove]');
+    if (removeBtn) {
+      const item = removeBtn.closest('[data-mini-cart-item]');
+      if (!item) return;
+      const variantId = item.getAttribute('data-variant-id');
+      if (!variantId) return;
+      removeBtn.classList.add('loading');
+      removeBtn.disabled = true;
+      removeFromMiniCart(variantId);
+      return;
+    }
+  }
+
+  function toggleMiniCart(collapsed) {
+    const expanded = document.querySelector('[data-mini-cart-expanded]');
+    const collapsedEl = document.querySelector('[data-mini-cart-collapsed]');
+    if (expanded) expanded.hidden = collapsed;
+    if (collapsedEl) collapsedEl.hidden = !collapsed;
+  }
+
+  function scrollMiniCartList(delta) {
+    const list = document.querySelector('[data-mini-cart-list]');
+    if (list) list.scrollBy({ left: delta, behavior: 'smooth' });
   }
 
   // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮态对齐
