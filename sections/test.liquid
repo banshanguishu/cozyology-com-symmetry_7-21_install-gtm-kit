@@ -1,8 +1,4 @@
 <div data-section-id="{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
-
-{%- comment -%} mini-cart 过滤用：本 section 涉及的产品 id 集合（取 collection 全部，跨分页） {%- endcomment -%}
-{%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
-
 {% paginate collection.products by section.settings.coll_num_per_page_int %}
   
 {%- liquid
@@ -288,6 +284,8 @@
     <!-- 把产品按照类型分组-->
     {%- assign product_types = collection.products | map: 'type' | uniq -%}
     {%- assign cart_variant_ids = cart.items | map: 'variant_id' -%}
+    {%- comment -%} mini-cart 过滤用：必须在 paginate 内算，外面 collection.products 被 Shopify 截断到 50 条 {%- endcomment -%}
+    {%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
   
     <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
       {% if section.settings.show_sort or show_filters %}
@@ -402,6 +400,8 @@
 
   <div class="container pagination-row" data-ajax-container>{% render 'pagination-control', paginate: paginate %}</div>
 
+  {%- render 'mini-cart', section_product_ids: mini_cart_product_ids -%}
+
   {% endpaginate %}
 
   {% if collection.description != blank and section.settings.coll_desc_pos == 'below' %}
@@ -409,8 +409,6 @@
       <div class="rte cf">{{ collection.description }}</div>
     </div>
   {% endif %}
-
-  {%- render 'mini-cart', section_product_ids: mini_cart_product_ids -%}
 </div>
 
 <script>
