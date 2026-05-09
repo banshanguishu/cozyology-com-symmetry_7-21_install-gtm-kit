@@ -286,6 +286,18 @@
     {%- assign cart_variant_ids = cart.items | map: 'variant_id' -%}
     {%- comment -%} mini-cart 过滤用：必须在 paginate 内算，外面 collection.products 被 Shopify 截断到 50 条 {%- endcomment -%}
     {%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
+
+    {%- comment -%} 20 件上限：达到上限后，section 内未加购的产品禁用 Add 按钮（Remove 不受限） {%- endcomment -%}
+    {%- assign visible_items_count = 0 -%}
+    {%- for item in cart.items -%}
+      {%- if mini_cart_product_ids contains item.product_id -%}
+        {%- assign visible_items_count = visible_items_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- assign cart_full = false -%}
+    {%- if visible_items_count >= 20 -%}
+      {%- assign cart_full = true -%}
+    {%- endif -%}
   
     <filter-container class="filter-container filter-container--side{% if section.settings.collapse_tag_sidebar_by_default == false %} filter-container--show-filters-desktop{% endif %}" data-ajax-filtering="{{ settings.ajax_products }}" data-filter-section-id="{{ section.id }}">
       {% if section.settings.show_sort or show_filters %}
@@ -364,7 +376,7 @@
 
                     <!-- 前12个产品默认显示，其余隐藏 -->
                     <div class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}" data-type="{{ type_id }}">
-                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading, in_cart: in_cart %}
+                        {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading, in_cart: in_cart, cart_full: cart_full %}
                     </div>
                 {% endfor %}
               </div>
@@ -683,15 +695,41 @@
     if (list) list.scrollBy({ left: delta, behavior: 'smooth' });
   }
 
-  // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮态对齐
+  // 切换 Add 按钮的「上限禁用」态（class + disabled 属性，Remove 按钮不受影响）
+  function setAddBtnDisabled(button, disabled) {
+    if (disabled) {
+      button.classList.add('add-to-cart-test--disabled');
+      button.disabled = true;
+    } else {
+      button.classList.remove('add-to-cart-test--disabled');
+      button.disabled = false;
+    }
+  }
+
+  // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮态对齐 + 处理 20 件上限
   async function syncButtonsWithCart() {
     try {
       const res = await fetch('/cart.js');
       const cart = await res.json();
       const variantIds = new Set(cart.items.map(item => item.variant_id));
+
+      // 数本 section 在 cart 里有多少件：用页面上 .add-to-cart-test 的 variant id 反推 section 范围
+      const sectionVariantIds = new Set();
       document.querySelectorAll('.add-to-cart-test').forEach(btn => {
         const id = parseInt(btn.getAttribute('data-product-id'), 10);
-        setButtonInCart(btn, variantIds.has(id));
+        if (Number.isFinite(id)) sectionVariantIds.add(id);
+      });
+      let visibleCount = 0;
+      cart.items.forEach(item => {
+        if (sectionVariantIds.has(item.variant_id)) visibleCount += 1;
+      });
+      const cartFull = visibleCount >= 20;
+
+      document.querySelectorAll('.add-to-cart-test').forEach(btn => {
+        const id = parseInt(btn.getAttribute('data-product-id'), 10);
+        const inCart = variantIds.has(id);
+        setButtonInCart(btn, inCart);
+        setAddBtnDisabled(btn, cartFull && !inCart);
       });
     } catch (err) {
       console.error('Error syncing buttons with cart:', err);
