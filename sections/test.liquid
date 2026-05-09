@@ -440,6 +440,9 @@
     return ids.join(',');
   }
 
+  // mini-cart 折叠态（模块级状态，仅当前页面会话内保留，刷新重置回展开）
+  let miniCartCollapsed = false;
+
   // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM
   function updateMiniCart(html) {
     const oldEl = document.querySelector('[data-mini-cart]');
@@ -449,6 +452,8 @@
     const newEl = tpl.content.querySelector('[data-mini-cart]');
     if (!newEl) return;
     oldEl.replaceWith(newEl);
+    // 替换后 DOM 回到 Liquid 的默认（展开），把记住的折叠态再 apply 一次
+    applyMiniCartState();
   }
 
   // 把购物车变更接口返回的 sections 全部应用到页面
@@ -639,6 +644,13 @@
   }
 
   function toggleMiniCart(collapsed) {
+    miniCartCollapsed = collapsed;
+    applyMiniCartState();
+  }
+
+  // 把当前 miniCartCollapsed 落到 DOM 的 hidden 属性上
+  function applyMiniCartState() {
+    const collapsed = miniCartCollapsed;
     const expanded = document.querySelector('[data-mini-cart-expanded]');
     const collapsedEl = document.querySelector('[data-mini-cart-collapsed]');
     if (expanded) expanded.hidden = collapsed;
