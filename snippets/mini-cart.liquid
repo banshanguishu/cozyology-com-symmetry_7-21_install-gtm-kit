@@ -21,20 +21,29 @@
   data-mini-cart
   aria-label="Sample cart">
   <div class="mini-cart__panel" data-mini-cart-panel>
-    {%- comment -%} 展开态 {%- endcomment -%}
     <div class="mini-cart__expanded" data-mini-cart-expanded>
       <header class="mini-cart__header">
         <h3 class="mini-cart__title">
           Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
         </h3>
         <button type="button" class="mini-cart__btn mini-cart__collapse-btn" data-mini-cart-collapse aria-label="Collapse">
-          ×
+          <img
+            src="{{ 'mini-cart-close.png' | asset_url }}"
+            alt="help"
+            width="13px"
+            height="13px" />
         </button>
       </header>
 
+      <div class="mini-cart__split"></div>
+
       <div class="mini-cart__list-wrap">
         <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--prev" data-mini-cart-prev aria-label="Previous">
-          &lt;
+          <img
+            src="{{ 'mini-cart-left-arrow.png' | asset_url }}"
+            alt="help"
+            width="8px"
+            height="12px" />
         </button>
 
         <ul class="mini-cart__list" data-mini-cart-list role="list">
@@ -45,13 +54,21 @@
                   data-variant-id="{{ item.variant_id }}"
                   data-line-key="{{ item.key }}">
                 <div class="mini-cart__item-image" aria-hidden="true">
-                  {%- comment -%} 图片占位 {%- endcomment -%}
+                  <img
+                    src="{{ item.product.featured_media | image_url: width: 64 }}"
+                    alt="help"
+                    width="64px"
+                    height="64px" />
                 </div>
                 <button type="button"
                         class="mini-cart__btn mini-cart__item-remove"
                         data-mini-cart-remove
                         aria-label="Remove {{ item.product.title | escape }}">
-                  ⊖
+                  <img
+                    src="{{ 'mini-cart-remove.png' | asset_url }}"
+                    alt="help"
+                    width="20px"
+                    height="20px" />
                 </button>
               </li>
             {%- endif -%}
@@ -59,12 +76,15 @@
         </ul>
 
         <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--next" data-mini-cart-next aria-label="Next">
-          &gt;
+          <img
+            src="{{ 'mini-cart-right-arrow.png' | asset_url }}"
+            alt="help"
+            width="8px"
+            height="12px" />
         </button>
       </div>
     </div>
 
-    {%- comment -%} 收起态 {%- endcomment -%}
     <div class="mini-cart__collapsed" data-mini-cart-collapsed hidden>
       <button type="button" class="mini-cart__btn mini-cart__expand-btn" data-mini-cart-expand aria-label="Expand">
         &lt;
@@ -77,7 +97,11 @@
 
   <div class="mini-cart__cart-action" data-mini-cart-cart-action>
     <span class="mini-cart__cart-icon" aria-hidden="true">
-      {%- comment -%} 购物车 icon 占位 {%- endcomment -%}
+      <img
+        src="{{ 'mini-cart-logo.png' | asset_url }}"
+        alt="help"
+        width="32px"
+        height="32px" />
     </span>
     <button type="button" class="mini-cart__btn mini-cart__cart-btn" data-mini-cart-open-drawer>
       Cart
