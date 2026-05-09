@@ -20,79 +20,70 @@
   class="mini-cart{% if visible_items_count == 0 %} mini-cart--hidden{% endif %}"
   data-mini-cart
   aria-label="Sample cart">
-  <div class="mini-cart__panel" data-mini-cart-panel>
-    <div class="mini-cart__expanded" data-mini-cart-expanded>
-      <header class="mini-cart__header">
-        <h3 class="mini-cart__title">
-          Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
-        </h3>
-        <button type="button" class="mini-cart__btn mini-cart__collapse-btn" data-mini-cart-collapse aria-label="Collapse">
-          <img
-            src="{{ 'mini-cart-close.png' | asset_url }}"
-            alt="help"
-            width="13px"
-            height="13px" />
-        </button>
-      </header>
-
-      <div class="mini-cart__split"></div>
-
-      <div class="mini-cart__list-wrap">
-        <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--prev" data-mini-cart-prev aria-label="Previous">
+  <div class="mini-cart__expanded" data-mini-cart-expanded>
+    <header class="mini-cart__header">
+      <h3 class="mini-cart__title">
+        Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
+      </h3>
+      <button type="button" class="mini-cart__btn mini-cart__collapse-btn" data-mini-cart-collapse aria-label="Collapse">
+        <img
+          src="{{ 'mini-cart-close.png' | asset_url }}"
+          alt="help"
+          width="13px"
+          height="13px" />
+      </button>
+    </header>
+    <div class="mini-cart__split"></div>
+    <div class="mini-cart__list-wrap">
+      <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--prev" data-mini-cart-prev aria-label="Previous">
           <img
             src="{{ 'mini-cart-left-arrow.png' | asset_url }}"
             alt="help"
             width="8px"
             height="12px" />
-        </button>
-
-        <ul class="mini-cart__list" data-mini-cart-list role="list">
-          {%- for item in cart.items -%}
-            {%- if section_product_ids contains item.product_id -%}
-              <li class="mini-cart__item"
-                  data-mini-cart-item
-                  data-variant-id="{{ item.variant_id }}"
-                  data-line-key="{{ item.key }}">
-                <div class="mini-cart__item-image" aria-hidden="true">
-                  <img
-                    src="{{ item.product.featured_media | image_url: width: 64 }}"
-                    alt="help"
-                    width="64px"
-                    height="64px" />
-                </div>
-                <button type="button"
-                        class="mini-cart__btn mini-cart__item-remove"
-                        data-mini-cart-remove
-                        aria-label="Remove {{ item.product.title | escape }}">
-                  <img
-                    src="{{ 'mini-cart-remove.png' | asset_url }}"
-                    alt="help"
-                    width="20px"
-                    height="20px" />
-                </button>
-              </li>
-            {%- endif -%}
-          {%- endfor -%}
-        </ul>
-
-        <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--next" data-mini-cart-next aria-label="Next">
-          <img
-            src="{{ 'mini-cart-right-arrow.png' | asset_url }}"
-            alt="help"
-            width="8px"
-            height="12px" />
-        </button>
-      </div>
-    </div>
-
-    <div class="mini-cart__collapsed" data-mini-cart-collapsed hidden>
-      <button type="button" class="mini-cart__btn mini-cart__expand-btn" data-mini-cart-expand aria-label="Expand">
-        &lt;
       </button>
-      <span class="mini-cart__count-mini">
-        (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
-      </span>
+      <ul class="mini-cart__list" data-mini-cart-list role="list">
+        {%- for item in cart.items -%}
+          {%- if section_product_ids contains item.product_id -%}
+            <li class="mini-cart__item"
+                data-mini-cart-item
+                data-variant-id="{{ item.variant_id }}"
+                data-line-key="{{ item.key }}">
+              <div class="mini-cart__item-image" aria-hidden="true">
+                <img
+                  src="{{ item.product.featured_media | image_url: width: 64 }}"
+                  alt="help"
+                  width="64px"
+                  height="64px" />
+              </div>
+              <button type="button"
+                      class="mini-cart__btn mini-cart__item-remove"
+                      data-mini-cart-remove
+                      aria-label="Remove {{ item.product.title | escape }}">
+                <img
+                  src="{{ 'mini-cart-remove.png' | asset_url }}"
+                  alt="help"
+                  width="20px"
+                  height="20px" />
+              </button>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--next" data-mini-cart-next aria-label="Next">
+        <img
+          src="{{ 'mini-cart-right-arrow.png' | asset_url }}"
+          alt="help"
+          width="8px"
+          height="12px" />
+      </button>
     </div>
+  </div>
+
+  <div class="mini-cart__collapsed" data-mini-cart-collapsed hidden>
+    <button type="button" class="mini-cart__btn mini-cart__expand-btn" data-mini-cart-expand aria-label="Expand">
+      &lt;
+    </button>
   </div>
 
   <div class="mini-cart__cart-action" data-mini-cart-cart-action>
