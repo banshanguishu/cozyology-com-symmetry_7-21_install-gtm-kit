@@ -115,21 +115,13 @@
   display:none
 } */
 
-/* ===== mini-cart 骨架样式（仅结构性，颜色/字号/icon 等留待 P4） ===== */
+/* ===== mini-cart：通用基础（桌面/移动共用） ===== */
 .mini-cart {
   position: fixed;
-  bottom: 16px;
-  right: 50%;
-  transform: translateX(50%);
   z-index: 300;
-  display: flex;
-  justify-content: flex-end;
-  align-items: stretch;
-  width: 927px;
-  height: 135px;
   box-sizing: border-box;
   font-size: 14px;
-  border-radius: 10px;
+  display: flex;
 }
 
 .mini-cart--hidden {
@@ -150,172 +142,371 @@
   opacity: 0.7;
 }
 
-.mini-cart__expanded {
-  background: #fff;
-  width: 792px;
-  height: 100%;
-  border: 1px solid #ddd;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border-radius: 10px 0 0 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 0 10px #0000002e;
-}
-
-.mini-cart__header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mini-cart__split {
-  width: 100%;
-  height: 1px;
-  background: #f0f0f0;
-}
-
-.mini-cart__title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: 'Nunito Sans';
-}
-
-.mini-cart__collapse-btn {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  padding: 4px 0px;
-}
-
-.mini-cart__list-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mini-cart__list {
-  flex: 1 1 auto;
-  display: flex;
-  gap: 8px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-}
-
-.mini-cart__list::-webkit-scrollbar {
+/* 默认隐藏：仅移动端收起态会显示 */
+.mini-cart__collapsed-title {
   display: none;
 }
 
-.mini-cart__item {
-  position: relative;
-  flex: 0 0 64px;
-  height: 64px;
+/* ===== mini-cart：桌面端布局（≥ 768px） ===== */
+@media (min-width: 768px) {
+  .mini-cart {
+    bottom: 80px;
+    right: 50%;
+    transform: translateX(50%);
+    justify-content: flex-end;
+    align-items: stretch;
+    width: 927px;
+    height: 135px;
+    border-radius: 10px;
+  }
+
+  .mini-cart__expanded {
+    background: #fff;
+    width: 792px;
+    height: 100%;
+    border: 1px solid #ddd;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border-radius: 10px 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 0 10px #0000002e;
+  }
+
+  .mini-cart__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mini-cart__split {
+    width: 100%;
+    height: 1px;
+    background: #f0f0f0;
+  }
+
+  .mini-cart__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Nunito Sans';
+  }
+
+  .mini-cart__collapse-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 4px 0px;
+  }
+
+  .mini-cart__list-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mini-cart__list {
+    flex: 1 1 auto;
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .mini-cart__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mini-cart__item {
+    position: relative;
+    flex: 0 0 64px;
+    height: 64px;
+  }
+
+  .mini-cart__item-image {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .mini-cart__item-remove {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    display: inline-flex;
+  }
+
+  .mini-cart__nav {
+    flex: 0 0 auto;
+    background: transparent;
+    transform: translateY(2px);
+  }
+
+  .mini-cart__collapsed {
+    width: 28px;
+    height: 100%;
+    background: #232323;
+    border-radius: 10px 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mini-cart__expand-btn {
+    width: 28px;
+    height: 100%;
+    color: #fff;
+    border: none;
+    display: block;
+    font-weight: bold;
+  }
+
+  .mini-cart__count-mini {
+    font-size: 14px;
+  }
+
+  .mini-cart__cart-action {
+    flex: 0 0 auto;
+    height: 100%;
+    width: 135px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.18);
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .mini-cart__cart-icon {
+    display: block;
+    transform: translateX(-4px);
+  }
+
+  .mini-cart__cart-btn {
+    background: #232323;
+    border-radius: 4px;
+    width: 70px;
+    height: 45px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    border: none;
+  }
+
+  .mini-cart__cart-action-expanded,
+  .mini-cart__cart-action-collapsed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mini-cart__cart-action-collapsed {
+    gap: 8px;
+  }
+
+  .mini-cart__cart-collapsed-count {
+    font-family: 'Nunito Sans';
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .mini-cart__cart-collapsed-item {
+    width: 64px;
+    height: 64px;
+  }
 }
 
-.mini-cart__item-image {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
+/* ===== mini-cart：移动端布局（≤ 767px） ===== */
+@media (max-width: 767px) {
+  .mini-cart {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    right: auto;
+    bottom: 0;
+    transform: none;
+    height: auto;
+    background: #F3EDE9;
+    border-radius: 0;
+    flex-direction: column;
+    /* 移动端有其它底部定位元素会盖住，单独提高层级；桌面继续用基础的 300 */
+    z-index: 1005;
+  }
 
-.mini-cart__item-remove {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  display: inline-flex;
-}
+  /* === 展开态：上半区 header（米色继承自容器）+ 下半区 list-wrap（白色） === */
+  .mini-cart__expanded {
+    background: transparent;
+    width: 100%;
+    height: auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
 
-.mini-cart__nav {
-  flex: 0 0 auto;
-  background: transparent;
-  transform: translateY(2px);
-}
+  .mini-cart__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+  }
 
-.mini-cart__collapsed {
-  width: 28px;
-  height: 100%;
-  background: #232323;
-  border-radius: 10px 0 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .mini-cart__split {
+    display: none;
+  }
 
-.mini-cart__expand-btn {
-  width: 28px;
-  height: 100%;
-  color: #fff;
-  border: none;
-  display: block;
-  font-weight: bold;
-}
+  .mini-cart__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Nunito Sans';
+  }
 
-.mini-cart__count-mini {
-  font-size: 14px;
-}
+  .mini-cart__collapse-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 4px 0;
+  }
 
-.mini-cart__cart-action {
-  flex: 0 0 auto;
-  height: 100%;
-  width: 135px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: #fff;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.18);
-  border-left: none;
-  border-radius: 0 10px 10px 0;
-}
+  /* list-wrap 白色背景，右侧留 90px 给 cart-action（12 偏移 + 70 按钮 + 8 间距） */
+  .mini-cart__list-wrap {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 12px 90px 12px 12px;
+  }
 
-.mini-cart__cart-icon {
-  display: block;
-  transform: translateX(-4px);
-}
+  /* 移动端隐藏左右滚动箭头，靠手指滑动 */
+  .mini-cart__nav {
+    display: none;
+  }
 
-.mini-cart__cart-btn {
-  background: #232323;
-  border-radius: 8px;
-  width: 60px;
-  height: 30px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #fff;
-  border: none;
-}
+  .mini-cart__list {
+    flex: 1 1 auto;
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+  }
 
-.mini-cart__cart-action-expanded,
-.mini-cart__cart-action-collapsed {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
+  .mini-cart__list::-webkit-scrollbar {
+    display: none;
+  }
 
-.mini-cart__cart-action-collapsed {
-  gap: 8px;
-}
+  .mini-cart__item {
+    position: relative;
+    flex: 0 0 64px;
+    height: 64px;
+  }
 
-.mini-cart__cart-collapsed-count {
-  font-family: 'Nunito Sans';
-  font-size: 16px;
-  font-weight: 500;
-}
+  .mini-cart__item-image {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
 
-.mini-cart__cart-collapsed-item {
-  width: 64px;
-  height: 64px;
+  .mini-cart__item-remove {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    display: inline-flex;
+  }
+
+  /* === 收起态 === */
+  .mini-cart__collapsed {
+    width: 100%;
+    height: auto;
+    background: transparent;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .mini-cart__collapsed-title {
+    display: block;
+    font-family: 'Nunito Sans';
+    font-size: 16px;
+    font-weight: 500;
+    color: #171717;
+  }
+
+  .mini-cart__expand-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #171717;
+    width: auto;
+    height: auto;
+    font-weight: bold;
+  }
+
+  /* === cart-action：absolute 定位到 list-wrap 区域，垂直居中样品 ===
+     list-wrap 高度 = padding-top 12 + item 64 + padding-bottom 12 = 88px
+     Cart 按钮高度 45px，要垂直居中：bottom = (88 - 45) / 2 = 21.5px */
+  .mini-cart__cart-action {
+    position: absolute;
+    right: 12px;
+    bottom: 21.5px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    padding: 0;
+    display: flex;
+  }
+
+  /* 收起态下 cart-action 整体隐藏 */
+  .mini-cart [data-mini-cart-collapsed]:not([hidden]) ~ [data-mini-cart-cart-action] {
+    display: none;
+  }
+
+  /* 移动端 cart-action 只保留 Cart 按钮（隐藏 logo + 收起态变体） */
+  .mini-cart__cart-icon,
+  .mini-cart__cart-action-collapsed {
+    display: none;
+  }
+
+  .mini-cart__cart-btn {
+    background: #232323;
+    border-radius: 4px;
+    width: 70px;
+    height: 45px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    border: none;
+  }
 }
