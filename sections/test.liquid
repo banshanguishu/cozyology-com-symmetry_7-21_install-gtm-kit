@@ -466,6 +466,21 @@
     }
   }
 
+  // 用 Section Rendering API 单独拉 mini-cart 的最新 HTML（响应外部购物车变化，比如抽屉里删商品）
+  async function refreshMiniCartFromServer() {
+    try {
+      const url = `${window.location.pathname}?sections=mini-cart`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data['mini-cart']) {
+        updateMiniCart(data['mini-cart']);
+      }
+    } catch (err) {
+      console.error('Error refreshing mini-cart from server:', err);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.collection-listing-emily').addEventListener('click', function (event) {
       if (!event.target.classList.contains('add-to-cart-test')) return;
@@ -488,6 +503,8 @@
 
     // 监听外部购物车变更（如用户在抽屉里手动删除商品），同步本页面所有按钮态
     document.addEventListener('on:cart:change', syncButtonsWithCart);
+    // 同样的事件触发 mini-cart 也拉一次最新 HTML（自己 ADD/REMOVE 会冗余一次，可接受）
+    document.addEventListener('on:cart:change', refreshMiniCartFromServer);
 
     // mini-cart 的交互（委托到 document，因为 DOM 会被 section refresh 整段替换）
     document.addEventListener('click', handleMiniCartClick);
