@@ -10,9 +10,13 @@
 {%- assign max_items = 20 -%}
 
 {%- assign visible_items_count = 0 -%}
+{%- assign first_section_item = nil -%}
 {%- for item in cart.items -%}
   {%- if section_product_ids contains item.product_id -%}
     {%- assign visible_items_count = visible_items_count | plus: 1 -%}
+    {%- if first_section_item == nil -%}
+      {%- assign first_section_item = item -%}
+    {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
 
@@ -87,15 +91,34 @@
   </div>
 
   <div class="mini-cart__cart-action" data-mini-cart-cart-action>
-    <span class="mini-cart__cart-icon" aria-hidden="true">
-      <img
-        src="{{ 'mini-cart-logo.png' | asset_url }}"
-        alt="help"
-        width="32px"
-        height="32px" />
-    </span>
-    <button type="button" class="mini-cart__btn mini-cart__cart-btn" data-mini-cart-open-drawer>
-      Cart
-    </button>
+    {%- comment -%} 展开态：购物车 icon + Cart 按钮 {%- endcomment -%}
+    <div class="mini-cart__cart-action-expanded" data-mini-cart-cart-expanded>
+      <span class="mini-cart__cart-icon" aria-hidden="true">
+        <img
+          src="{{ 'mini-cart-logo.png' | asset_url }}"
+          alt=""
+          width="32px"
+          height="32px" />
+      </span>
+      <button type="button" class="mini-cart__btn mini-cart__cart-btn" data-mini-cart-open-drawer>
+        Cart
+      </button>
+    </div>
+
+    {%- comment -%} 收起态：(X/20) 计数 + 第一个色卡（仅展示，无 ⊖） {%- endcomment -%}
+    <div class="mini-cart__cart-action-collapsed" data-mini-cart-cart-collapsed hidden>
+      <span class="mini-cart__cart-collapsed-count">
+        (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
+      </span>
+      {%- if first_section_item -%}
+        <div class="mini-cart__cart-collapsed-item" aria-hidden="true">
+          <img
+            src="{{ first_section_item.product.featured_media | image_url: width: 64 }}"
+            alt=""
+            width="64px"
+            height="64px" />
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 </aside>

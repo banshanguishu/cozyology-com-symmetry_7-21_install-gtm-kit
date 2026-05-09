@@ -643,6 +643,12 @@
     const collapsedEl = document.querySelector('[data-mini-cart-collapsed]');
     if (expanded) expanded.hidden = collapsed;
     if (collapsedEl) collapsedEl.hidden = !collapsed;
+
+    // cart-action 也有两套内容（展开 logo+Cart / 收起 计数+首个色卡）
+    const cartExpanded = document.querySelector('[data-mini-cart-cart-expanded]');
+    const cartCollapsed = document.querySelector('[data-mini-cart-cart-collapsed]');
+    if (cartExpanded) cartExpanded.hidden = collapsed;
+    if (cartCollapsed) cartCollapsed.hidden = !collapsed;
   }
 
   function scrollMiniCartList(delta) {
