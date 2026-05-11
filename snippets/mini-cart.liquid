@@ -98,7 +98,12 @@
       Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
     </span>
     <button type="button" class="mini-cart__btn mini-cart__expand-btn" data-mini-cart-expand aria-label="Expand">
-      <span class="mini-cart__expand-icon mini-cart__expand-icon--desktop">&lt;</span>
+      <img
+        class="mini-cart__expand-icon mini-cart__expand-icon--desktop"
+        src="{{ 'mini-cart-left-arrow.png' | asset_url }}"
+        alt=""
+        width="8"
+        height="12" />
       <img
         class="mini-cart__expand-icon mini-cart__expand-icon--mobile"
         src="{{ 'mini-cart-arrow-top-mobile.png' | asset_url }}"
