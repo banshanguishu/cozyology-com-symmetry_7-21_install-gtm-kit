@@ -730,14 +730,17 @@
   let isCartFlying = false;
 
   // 统一刷新所有 .add-to-cart-test 按钮的 disable 态。
-  // 规则：(isCartFlying || cartFull) && !inCart。loading 中的按钮自己管自己，跳过。
+  // 规则：isCartFlying || (cartFull && !inCart)
+  //   - 飞行中：所有按钮（Add + Remove）都锁，避免并发触发 Shopify 429
+  //   - 不飞行但 cartFull：只锁 Add，Remove 仍可点（保留解 20 件死锁的通道）
+  // loading 中的按钮自己管自己，跳过。
   // cartFull 直接从 DOM 数（有 --in-cart class 的按钮 >= 20），不再单独维护变量。
   function refreshAddBtnDisabled() {
     const cartFull = document.querySelectorAll('.add-to-cart-test--in-cart').length >= 20;
     document.querySelectorAll('.add-to-cart-test').forEach(btn => {
       if (btn.classList.contains('loading')) return;
       const inCart = btn.classList.contains('add-to-cart-test--in-cart');
-      setAddBtnDisabled(btn, (isCartFlying || cartFull) && !inCart);
+      setAddBtnDisabled(btn, isCartFlying || (cartFull && !inCart));
     });
   }
 
