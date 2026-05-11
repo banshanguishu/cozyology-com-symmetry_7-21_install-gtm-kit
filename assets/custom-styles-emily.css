@@ -270,6 +270,11 @@
     font-weight: bold;
   }
 
+  /* 展开按钮：桌面用 < 文本，隐藏移动端图标 */
+  .mini-cart__expand-icon--mobile {
+    display: none;
+  }
+
   .mini-cart__count-mini {
     font-size: 14px;
   }
@@ -469,6 +474,11 @@
     width: auto;
     height: auto;
     font-weight: bold;
+  }
+
+  /* 展开按钮：移动端用专用上箭头图标，隐藏桌面 < 文本 */
+  .mini-cart__expand-icon--desktop {
+    display: none;
   }
 
   /* === cart-action：absolute 定位到 list-wrap 区域，垂直居中样品 ===

@@ -20,6 +20,15 @@
   {%- endif -%}
 {%- endfor -%}
 
+{%- comment -%} 列表两端箭头：>10 件时（即开始溢出滚动）用深色（active）版本，否则用默认浅色版本 {%- endcomment -%}
+{%- if visible_items_count > 10 -%}
+  {%- assign nav_prev_src = 'mini-cart-left-arrow-active.png' -%}
+  {%- assign nav_next_src = 'mini-cart-right-arrow-active.png' -%}
+{%- else -%}
+  {%- assign nav_prev_src = 'mini-cart-left-arrow.png' -%}
+  {%- assign nav_next_src = 'mini-cart-right-arrow.png' -%}
+{%- endif -%}
+
 <aside
   class="mini-cart{% if visible_items_count == 0 %} mini-cart--hidden{% endif %}"
   data-mini-cart
@@ -41,7 +50,7 @@
     <div class="mini-cart__list-wrap">
       <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--prev" data-mini-cart-prev aria-label="Previous">
           <img
-            src="{{ 'mini-cart-left-arrow.png' | asset_url }}"
+            src="{{ nav_prev_src | asset_url }}"
             alt=""
             width="8px"
             height="12px" />
@@ -76,7 +85,7 @@
       </ul>
       <button type="button" class="mini-cart__btn mini-cart__nav mini-cart__nav--next" data-mini-cart-next aria-label="Next">
         <img
-          src="{{ 'mini-cart-right-arrow.png' | asset_url }}"
+          src="{{ nav_next_src | asset_url }}"
           alt=""
           width="8px"
           height="12px" />
@@ -89,7 +98,13 @@
       Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
     </span>
     <button type="button" class="mini-cart__btn mini-cart__expand-btn" data-mini-cart-expand aria-label="Expand">
-      &lt;
+      <span class="mini-cart__expand-icon mini-cart__expand-icon--desktop">&lt;</span>
+      <img
+        class="mini-cart__expand-icon mini-cart__expand-icon--mobile"
+        src="{{ 'mini-cart-arrow-top-mobile.png' | asset_url }}"
+        alt=""
+        width="12"
+        height="8" />
     </button>
   </div>
 
