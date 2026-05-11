@@ -742,6 +742,11 @@
       const inCart = btn.classList.contains('add-to-cart-test--in-cart');
       setAddBtnDisabled(btn, isCartFlying || (cartFull && !inCart));
     });
+    // 同步切换 mini-cart 的飞行态 class，由 CSS 处理 ⊖ 按钮的视觉禁用
+    const miniCart = document.querySelector('[data-mini-cart]');
+    if (miniCart) {
+      miniCart.classList.toggle('mini-cart--cart-flying', isCartFlying);
+    }
   }
 
   // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮 in-cart 态对齐

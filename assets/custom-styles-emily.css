@@ -142,6 +142,15 @@
   opacity: 0.7;
 }
 
+/* 飞行中（cart 写请求在飞）禁用 mini-cart 的 ⊖ 按钮：
+   配合 JS 的 .mini-cart--cart-flying class 切换，与产品列表 Add/Remove 的禁用态保持一致。
+   Cart 按钮、展开/收起、滚动按钮不写 cart，保持可点。 */
+.mini-cart--cart-flying [data-mini-cart-remove] {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* 默认隐藏：仅移动端收起态会显示 */
 .mini-cart__collapsed-title {
   display: none;
