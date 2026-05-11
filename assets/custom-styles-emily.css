@@ -347,7 +347,7 @@
     transform: none;
     height: auto;
     background: #F3EDE9;
-    border-radius: 0;
+    border-radius: 10px 10px 0 0;
     flex-direction: column;
     /* 移动端有其它底部定位元素会盖住，单独提高层级；桌面继续用基础的 300 */
     z-index: 1005;
