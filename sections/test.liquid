@@ -500,6 +500,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.collection-listing-emily').addEventListener('click', function (event) {
       if (!event.target.classList.contains('add-to-cart-test')) return;
+      if (isCartFlying) return; // 防御：上一个 cart 写请求还在飞，不接受新点击
 
       const button = event.target;
       const variantId = button.getAttribute('data-product-id');
@@ -507,8 +508,10 @@
         console.error('未找到产品 ID');
         return;
       }
+      isCartFlying = true;
       button.classList.add('loading');
       button.disabled = true;
+      refreshAddBtnDisabled(); // 立刻锁住其它未加购的 Add 按钮
 
       if (button.classList.contains('add-to-cart-test--in-cart')) {
         removeFromCart(variantId, button);
@@ -561,6 +564,8 @@
       console.error('Error adding product to cart:', err);
     } finally {
       btnLoading(button);
+      isCartFlying = false;
+      refreshAddBtnDisabled();
     }
   }
 
@@ -598,6 +603,8 @@
       console.error('Error removing product from cart:', err);
     } finally {
       btnLoading(button);
+      isCartFlying = false;
+      refreshAddBtnDisabled();
     }
   }
 
@@ -633,6 +640,9 @@
       }));
     } catch (err) {
       console.error('Error removing product from mini-cart:', err);
+    } finally {
+      isCartFlying = false;
+      refreshAddBtnDisabled();
     }
   }
 
@@ -666,12 +676,15 @@
     }
     const removeBtn = target.closest('[data-mini-cart-remove]');
     if (removeBtn) {
+      if (isCartFlying) return;
       const item = removeBtn.closest('[data-mini-cart-item]');
       if (!item) return;
       const variantId = item.getAttribute('data-variant-id');
       if (!variantId) return;
+      isCartFlying = true;
       removeBtn.classList.add('loading');
       removeBtn.disabled = true;
+      refreshAddBtnDisabled();
       removeFromMiniCart(variantId);
       return;
     }
@@ -713,31 +726,34 @@
     }
   }
 
-  // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮态对齐 + 处理 20 件上限
+  // in-flight 锁：同一时刻只允许 1 个 cart 写请求飞行（防 race + 防 Shopify 429）
+  let isCartFlying = false;
+
+  // 统一刷新所有 .add-to-cart-test 按钮的 disable 态。
+  // 规则：(isCartFlying || cartFull) && !inCart。loading 中的按钮自己管自己，跳过。
+  // cartFull 直接从 DOM 数（有 --in-cart class 的按钮 >= 20），不再单独维护变量。
+  function refreshAddBtnDisabled() {
+    const cartFull = document.querySelectorAll('.add-to-cart-test--in-cart').length >= 20;
+    document.querySelectorAll('.add-to-cart-test').forEach(btn => {
+      if (btn.classList.contains('loading')) return;
+      const inCart = btn.classList.contains('add-to-cart-test--in-cart');
+      setAddBtnDisabled(btn, (isCartFlying || cartFull) && !inCart);
+    });
+  }
+
+  // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮 in-cart 态对齐
+  // disable 态由 refreshAddBtnDisabled 统一管理（flying + cartFull 两个维度）
   async function syncButtonsWithCart() {
     try {
       const res = await fetch('/cart.js');
       const cart = await res.json();
       const variantIds = new Set(cart.items.map(item => item.variant_id));
 
-      // 数本 section 在 cart 里有多少件：用页面上 .add-to-cart-test 的 variant id 反推 section 范围
-      const sectionVariantIds = new Set();
       document.querySelectorAll('.add-to-cart-test').forEach(btn => {
         const id = parseInt(btn.getAttribute('data-product-id'), 10);
-        if (Number.isFinite(id)) sectionVariantIds.add(id);
+        setButtonInCart(btn, variantIds.has(id));
       });
-      let visibleCount = 0;
-      cart.items.forEach(item => {
-        if (sectionVariantIds.has(item.variant_id)) visibleCount += 1;
-      });
-      const cartFull = visibleCount >= 20;
-
-      document.querySelectorAll('.add-to-cart-test').forEach(btn => {
-        const id = parseInt(btn.getAttribute('data-product-id'), 10);
-        const inCart = variantIds.has(id);
-        setButtonInCart(btn, inCart);
-        setAddBtnDisabled(btn, cartFull && !inCart);
-      });
+      refreshAddBtnDisabled();
     } catch (err) {
       console.error('Error syncing buttons with cart:', err);
     }
