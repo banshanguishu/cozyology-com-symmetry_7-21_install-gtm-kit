@@ -479,7 +479,11 @@
   }
 
   // 用 Section Rendering API 单独拉 mini-cart 的最新 HTML（响应外部购物车变化，比如抽屉里删商品）
-  async function refreshMiniCartFromServer() {
+  // 我们自己派发的 on:cart:change 带 source 标记，会被跳过 —— applyCartChangeSections 已经从 POST 响应里同步更新过 mini-cart 了
+  async function refreshMiniCartFromServer(event) {
+    if (event && event.detail && event.detail.source === 'mini-cart-internal') {
+      return;
+    }
     try {
       const url = `${window.location.pathname}?sections=mini-cart`;
       const res = await fetch(url);
@@ -550,7 +554,8 @@
       // 派发主题事件，让 header 计数等其它组件自动同步
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
-        cancelable: false
+        cancelable: false,
+        detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
       console.error('Error adding product to cart:', err);
@@ -586,7 +591,8 @@
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
-        cancelable: false
+        cancelable: false,
+        detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
       console.error('Error removing product from cart:', err);
@@ -622,7 +628,8 @@
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
-        cancelable: false
+        cancelable: false,
+        detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
       console.error('Error removing product from mini-cart:', err);
