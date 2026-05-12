@@ -43,6 +43,23 @@
 {%- endcapture -%}
 
 <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+
+{%- comment -%} Free Swatches 区块样式：cart-drawer 内样品商品横向列表 {%- endcomment -%}
+<style>
+  .free-swatches__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .free-swatches__title { margin: 0; font-size: 14px; font-weight: 600; }
+  .free-swatches__nav { display: flex; gap: 12px; }
+  .free-swatches__nav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; line-height: 0; }
+  .free-swatches__list { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; align-items: flex-start; }
+  .free-swatches__list::-webkit-scrollbar { display: none; }
+  .free-swatches__item { flex: 0 0 80px; display: flex; flex-direction: column; gap: 4px; }
+  .free-swatches__item-image { width: 80px; height: 80px; }
+  .free-swatches__item-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .free-swatches__item-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; }
+  .free-swatches__item-title { flex: 1 1 auto; font-size: 12px; line-height: 1.3; word-break: break-word; }
+  .free-swatches__item-remove { flex: 0 0 auto; font-size: 14px; color: inherit; text-decoration: none; line-height: 1; }
+</style>
+
 {%- if section.settings.show_order_note -%}
   <script src="{{ 'cart-note.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
