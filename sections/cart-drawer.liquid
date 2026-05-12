@@ -47,7 +47,7 @@
 {%- comment -%} Free Swatches 区块样式：cart-drawer 内样品商品横向列表 {%- endcomment -%}
 <style>
   .free-swatches__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .free-swatches__title { margin: 0; font-size: 14px; font-weight: 600; }
+  .free-swatches__title { margin: 0; font-family: 'Nunito Sans'; font-size: 14px; font-weight: 600; }
   .free-swatches__nav { display: flex; gap: 12px; }
   .free-swatches__nav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; line-height: 0; }
   .free-swatches__list { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; align-items: flex-start; }
@@ -152,7 +152,7 @@
                       <div class="free-swatches__item-title">{{ item.product.title }}</div>
                       <a class="free-swatches__item-remove"
                          href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0"
-                         aria-label="Remove {{ item.product.title | escape }}">×</a>
+                         aria-label="Remove {{ item.product.title | escape }}"><img src="{{ 'cart-drawer-free-swatches-draft.png' | asset_url }}" width="14" height="14" alt=""></a>
                     </div>
                   </li>
                 {%- endif -%}

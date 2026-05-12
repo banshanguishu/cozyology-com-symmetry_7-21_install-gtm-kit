@@ -63,4 +63,24 @@ document.addEventListener('click', function (e) {
   list.scrollBy({ left: prev ? -step : step, behavior: 'smooth' });
 });
 
+// Free Swatches 删除按钮：拦截 <a href> 默认跳转，改走 AJAX cart/change.js + on:cart:change
+// 不能复用 Symmetry 的 .cart-item__remove 拦截，因为它需要 .cart-item__quantity-input 结构，我们没有
+document.addEventListener('click', function (e) {
+  const link = e.target.closest('.free-swatches__item-remove');
+  if (!link) return;
+  e.preventDefault();
+  const url = new URL(link.href, location.origin);
+  const id = url.searchParams.get('id');
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: id, quantity: 0 })
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+    .then(function () {
+      document.dispatchEvent(new CustomEvent('on:cart:change', { bubbles: true, cancelable: false }));
+    })
+    .catch(function (err) { console.error('Free Swatches remove failed:', err); });
+});
+
 window.customElements.define('cart-drawer', CartDrawer);
