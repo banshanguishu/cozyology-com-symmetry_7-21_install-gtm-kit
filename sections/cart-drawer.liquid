@@ -58,6 +58,10 @@
   .free-swatches__item-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; }
   .free-swatches__item-title { flex: 1 1 auto; font-size: 12px; line-height: 1.3; word-break: break-word; }
   .free-swatches__item-remove { flex: 0 0 auto; font-size: 14px; color: inherit; text-decoration: none; line-height: 1; }
+  /* 移动端隐藏左右滚动箭头，靠手指滑动 */
+  @media (max-width: 767px) {
+    .free-swatches__nav { display: none; }
+  }
 
   /* —— cart-drawer 内 cart-item 紧凑布局 —— */
   /* .cart-item 变 grid 容器；image 横跨 row 1-3 用自然高度撑住前 3 行，
