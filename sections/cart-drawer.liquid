@@ -97,13 +97,16 @@
         <div class="cart-item-list cart-drawer__content-item">
           <div class="cart-item-list__body" data-merge-list="cart-items">
             {% for item in cart.items %}
-              <div data-merge-list-item="item-key:{{ item.key }}|{{ item.final_price }}{% for discount_allocation in item.line_level_discount_allocations %}|{{ discount_allocation.discount_application.title | escape }}{% endfor %}"
-                  {% comment %} Discount items are difficult to predict - BOGOFs appear as a separate item with the same key as an existing item - simpler to always refresh {% endcomment %}
-                  {%- if item.line_level_discount_allocations == empty -%}
-                  data-merge-cache="{{ item.key }}|{{ item.quantity }}|{{ item.final_line_price }}|{% if item.selling_plan_allocation %}{{ item.selling_plan_allocation.selling_plan.id }}{% endif %}"
-                  {%- endif -%}>
-                {%- render 'cart-item', item: item, forloop: forloop, drawer: true -%}
-              </div>
+              {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+              {%- unless item_collection_handles contains 'free-swatches' -%}
+                <div data-merge-list-item="item-key:{{ item.key }}|{{ item.final_price }}{% for discount_allocation in item.line_level_discount_allocations %}|{{ discount_allocation.discount_application.title | escape }}{% endfor %}"
+                    {% comment %} Discount items are difficult to predict - BOGOFs appear as a separate item with the same key as an existing item - simpler to always refresh {% endcomment %}
+                    {%- if item.line_level_discount_allocations == empty -%}
+                    data-merge-cache="{{ item.key }}|{{ item.quantity }}|{{ item.final_line_price }}|{% if item.selling_plan_allocation %}{{ item.selling_plan_allocation.selling_plan.id }}{% endif %}"
+                    {%- endif -%}>
+                  {%- render 'cart-item', item: item, forloop: forloop, drawer: true -%}
+                </div>
+              {%- endunless -%}
             {% endfor %}
           </div>
         </div>
@@ -111,6 +114,50 @@
         {%- if section.settings.announcement_position == 'below-items' -%}
           <div class="cart-drawer__content-item">
             <div class="cart-info-block cart-info-block--lmtb">{{- announcement -}}</div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Free Swatches：cart-drawer 内样品商品的紧凑横向列表 {%- endcomment -%}
+      {%- assign sample_count = 0 -%}
+      {%- for item in cart.items -%}
+        {%- assign h = item.product.collections | map: 'handle' -%}
+        {%- if h contains 'free-swatches' -%}
+          {%- assign sample_count = sample_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <div data-merge="free-swatches">
+        {%- if sample_count > 0 -%}
+          <div class="cart-drawer__content-item free-swatches" data-free-swatches>
+            <header class="free-swatches__header">
+              <h3 class="free-swatches__title">Free Swatches ({{ sample_count }}/20)</h3>
+              <div class="free-swatches__nav">
+                <button type="button" class="free-swatches__nav-btn" data-free-swatches-prev aria-label="Previous">
+                  <img src="{{ 'mini-cart-left-arrow-active.png' | asset_url }}" width="8" height="12" alt="">
+                </button>
+                <button type="button" class="free-swatches__nav-btn" data-free-swatches-next aria-label="Next">
+                  <img src="{{ 'mini-cart-right-arrow-active.png' | asset_url }}" width="8" height="12" alt="">
+                </button>
+              </div>
+            </header>
+            <ul class="free-swatches__list" data-free-swatches-list role="list">
+              {%- for item in cart.items -%}
+                {%- assign h = item.product.collections | map: 'handle' -%}
+                {%- if h contains 'free-swatches' -%}
+                  <li class="free-swatches__item">
+                    <div class="free-swatches__item-image">
+                      <img src="{{ item.product.featured_media | image_url: width: 160 }}" alt="" width="80" height="80">
+                    </div>
+                    <div class="free-swatches__item-meta">
+                      <div class="free-swatches__item-title">{{ item.product.title }}</div>
+                      <a class="free-swatches__item-remove"
+                         href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0"
+                         aria-label="Remove {{ item.product.title | escape }}">×</a>
+                    </div>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
           </div>
         {%- endif -%}
       </div>
