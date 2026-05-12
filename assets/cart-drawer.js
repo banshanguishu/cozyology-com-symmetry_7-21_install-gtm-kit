@@ -51,4 +51,16 @@ class CartDrawer extends SideDrawer {
   }
 }
 
+// Free Swatches 横向列表：左右滚动按钮，事件委托
+document.addEventListener('click', function (e) {
+  const prev = e.target.closest('[data-free-swatches-prev]');
+  const next = e.target.closest('[data-free-swatches-next]');
+  if (!prev && !next) return;
+  const block = (prev || next).closest('[data-free-swatches]');
+  const list  = block && block.querySelector('[data-free-swatches-list]');
+  if (!list) return;
+  const step = list.clientWidth * 0.8;
+  list.scrollBy({ left: prev ? -step : step, behavior: 'smooth' });
+});
+
 window.customElements.define('cart-drawer', CartDrawer);
