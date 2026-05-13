@@ -20,8 +20,8 @@
   {%- endif -%}
 {%- endfor -%}
 
-{%- comment -%} 列表两端箭头：>10 件时（即开始溢出滚动）用深色（active）版本，否则用默认浅色版本 {%- endcomment -%}
-{%- if visible_items_count > 10 -%}
+{%- comment -%} 列表两端箭头：>8 件时（即开始溢出滚动）用深色（active）版本，否则用默认浅色版本 {%- endcomment -%}
+{%- if visible_items_count > 8 -%}
   {%- assign nav_prev_src = 'mini-cart-left-arrow-active.png' -%}
   {%- assign nav_next_src = 'mini-cart-right-arrow-active.png' -%}
 {%- else -%}
