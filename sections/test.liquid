@@ -531,20 +531,23 @@
 
   // 加购：用主题原生路径 + Section Rendering API，一次请求拿到抽屉 + mini-cart 的最新 HTML
   async function addToCart(variantId, button) {
-    const formData = new FormData();
-    formData.append('items[][id]', variantId);
-    formData.append('items[][quantity]', 1);
-    formData.append('sections_url', window.location.pathname);
-    formData.append('sections', buildSectionsParam());
+    // 用 /cart/update.js 替代 /cart/add.js：updates[variantId]=1 = 设为 1 件（"加入" 的语义）。
+    // 同 endpoint 也用于 remove（设为 0），跟同行实践一致，实测 Shopify 该接口响应更快。
+    const body = JSON.stringify({
+      updates: { [variantId]: 1 },
+      sections_url: window.location.pathname,
+      sections: buildSectionsParam()
+    });
 
     try {
-      const res = await fetch(theme.routes.cartAdd, {
+      const res = await fetch('/cart/update.js', {
         method: 'POST',
         headers: {
-          Accept: 'application/javascript',
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: formData
+        body: body
       });
       const data = await res.json();
       if (!res.ok) {
@@ -569,22 +572,23 @@
     }
   }
 
-  // 移除：用 /cart/change.js + quantity:0 把整个 line 删掉
+  // 移除：用 /cart/update.js + updates[variantId]=0 把该 line 删掉。和 addToCart 走同一个 endpoint。
   async function removeFromCart(variantId, button) {
-    const formData = new FormData();
-    formData.append('id', variantId);
-    formData.append('quantity', 0);
-    formData.append('sections_url', window.location.pathname);
-    formData.append('sections', buildSectionsParam());
+    const body = JSON.stringify({
+      updates: { [variantId]: 0 },
+      sections_url: window.location.pathname,
+      sections: buildSectionsParam()
+    });
 
     try {
-      const res = await fetch('/cart/change.js', {
+      const res = await fetch('/cart/update.js', {
         method: 'POST',
         headers: {
-          Accept: 'application/javascript',
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: formData
+        body: body
       });
       const data = await res.json();
       if (!res.ok) {
@@ -608,23 +612,24 @@
     }
   }
 
-  // mini-cart ⊖ 移除：和 removeFromCart 类似，但触发源是 mini-cart 自身的 ⊖ 按钮（会被 section 刷新替换掉），
-  // 不需要 setButtonInCart——产品列表中的 Add/Remove 按钮通过 on:cart:change → syncButtonsWithCart 同步。
+  // mini-cart ⊖ 移除：和 removeFromCart 类似，但触发源是 mini-cart 自身的 ⊖ 按钮（会被 section 刷新替换掉）。
+  // 直接按 variantId 查到产品列表对应按钮 setButtonInCart(false)，避免 syncButtonsWithCart 再额外 GET /cart.js。
   async function removeFromMiniCart(variantId) {
-    const formData = new FormData();
-    formData.append('id', variantId);
-    formData.append('quantity', 0);
-    formData.append('sections_url', window.location.pathname);
-    formData.append('sections', buildSectionsParam());
+    const body = JSON.stringify({
+      updates: { [variantId]: 0 },
+      sections_url: window.location.pathname,
+      sections: buildSectionsParam()
+    });
 
     try {
-      const res = await fetch('/cart/change.js', {
+      const res = await fetch('/cart/update.js', {
         method: 'POST',
         headers: {
-          Accept: 'application/javascript',
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: formData
+        body: body
       });
       const data = await res.json();
       if (!res.ok) {
@@ -632,6 +637,12 @@
       }
 
       applyCartChangeSections(data);
+
+      // 同步对应产品卡片的 Add 按钮态（如果存在）
+      const cardBtn = document.querySelector('.add-to-cart-test[data-product-id="' + variantId + '"]');
+      if (cardBtn) {
+        setButtonInCart(cardBtn, false);
+      }
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
@@ -751,7 +762,11 @@
 
   // 拉一次最新购物车 JSON，把页面上所有 .add-to-cart-test 按钮 in-cart 态对齐
   // disable 态由 refreshAddBtnDisabled 统一管理（flying + cartFull 两个维度）
-  async function syncButtonsWithCart() {
+  // 自家 add/remove 派发的 on:cart:change 带 source 标记会被跳过——按钮态已在 add/remove 函数内同步过
+  async function syncButtonsWithCart(event) {
+    if (event && event.detail && event.detail.source === 'mini-cart-internal') {
+      return;
+    }
     try {
       const res = await fetch('/cart.js');
       const cart = await res.json();
