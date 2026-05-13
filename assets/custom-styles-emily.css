@@ -159,13 +159,13 @@
 /* ===== mini-cart：桌面端布局（≥ 768px） ===== */
 @media (min-width: 768px) {
   .mini-cart {
-    bottom: 80px;
+    bottom: 20px;
     right: 50%;
     transform: translateX(50%);
     justify-content: flex-end;
     align-items: stretch;
-    width: 783px;
-    height: 135px;
+    width: 748px;
+    height: 119px;
     border-radius: 10px;
   }
 
@@ -174,12 +174,12 @@
     width: 648px;
     height: 100%;
     border: 1px solid #ddd;
-    padding: 12px 20px;
+    padding: 8px 20px;
     box-sizing: border-box;
     border-radius: 10px 0 0 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     box-shadow: 0 0 10px #0000002e;
   }
 
@@ -291,7 +291,7 @@
   .mini-cart__cart-action {
     flex: 0 0 auto;
     height: 100%;
-    width: 135px;
+    width: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -313,8 +313,8 @@
   .mini-cart__cart-btn {
     background: #232323;
     border-radius: 4px;
-    width: 70px;
-    height: 45px;
+    width: 62px;
+    height: 32px;
     font-size: 14px;
     font-weight: 400;
     color: #fff;
