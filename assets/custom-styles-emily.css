@@ -154,7 +154,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: #bbbbbb4d;
+  background: #dddddd1e;
   z-index: 2;
   pointer-events: none;
 }
@@ -187,7 +187,7 @@
     transform: translateX(50%);
     justify-content: flex-end;
     align-items: stretch;
-    width: 652px;
+    width: 642px;
     height: 107px;
     border-radius: 10px;
   }
@@ -199,11 +199,11 @@
     border: 1px solid #ddd;
     padding: 8px 20px;
     box-sizing: border-box;
-    border-radius: 10px 0 0 10px;
+    border-radius: 6px 0 0 6px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: 0 0 10px #0000002e;
+    box-shadow: 0 0 10px #0000001e;
   }
 
   .mini-cart__header {
@@ -221,7 +221,7 @@
 
   .mini-cart__title {
     margin: 0;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     font-family: 'Nunito Sans';
   }
@@ -288,7 +288,7 @@
     width: 20px;
     height: 100%;
     background: #232323;
-    border-radius: 10px 0 0 10px;
+    border-radius: 6px 0 0 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -299,7 +299,7 @@
     height: 100%;
     color: #fff;
     border: none;
-    display: block;
+    display: flex;
     font-weight: bold;
     align-items: center;
     justify-content: center;
@@ -317,7 +317,7 @@
   .mini-cart__cart-action {
     flex: 0 0 auto;
     height: 100%;
-    width: 100px;
+    width: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -326,9 +326,9 @@
     background: #fff;
     border: 1px solid #ddd;
     box-sizing: border-box;
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.18);
+    box-shadow: -4px 0 10px #0000001e;
     border-left: none;
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 6px 6px 0;
   }
 
   .mini-cart__cart-icon {
@@ -361,8 +361,8 @@
 
   .mini-cart__cart-collapsed-count {
     font-family: 'Nunito Sans';
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   .mini-cart__cart-collapsed-item {
@@ -415,7 +415,7 @@
 
   .mini-cart__title {
     margin: 0;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     font-family: 'Nunito Sans';
   }
@@ -549,7 +549,8 @@
     background: #232323;
     border-radius: 4px;
     width: 62px;
-    height: 45px;
+    height: 33px;
+    line-height: 33px;
     font-size: 14px;
     font-weight: 400;
     color: #fff;
