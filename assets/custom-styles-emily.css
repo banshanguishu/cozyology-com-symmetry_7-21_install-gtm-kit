@@ -159,7 +159,7 @@
 /* ===== mini-cart：桌面端布局（≥ 768px） ===== */
 @media (min-width: 768px) {
   .mini-cart {
-    bottom: 20px;
+    bottom: 40px;
     right: 50%;
     transform: translateX(50%);
     justify-content: flex-end;
@@ -261,7 +261,7 @@
   }
 
   .mini-cart__collapsed {
-    width: 28px;
+    width: 20px;
     height: 100%;
     background: #232323;
     border-radius: 10px 0 0 10px;
@@ -335,7 +335,7 @@
 
   .mini-cart__cart-collapsed-count {
     font-family: 'Nunito Sans';
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 500;
   }
 
