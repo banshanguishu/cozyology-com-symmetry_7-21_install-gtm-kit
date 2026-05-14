@@ -654,6 +654,10 @@
     } finally {
       isCartFlying = false;
       refreshAddBtnDisabled();
+      // 成功路径下 DOM 已被 applyCartChangeSections 替换，新 DOM 不带该 class，这次 remove 是 no-op；
+      // 失败路径下显式清掉
+      const miniCartEl = document.querySelector('[data-mini-cart]');
+      if (miniCartEl) miniCartEl.classList.remove('mini-cart--removing');
     }
   }
 
@@ -678,11 +682,11 @@
       return;
     }
     if (target.closest('[data-mini-cart-prev]')) {
-      scrollMiniCartList(-72);
+      scrollMiniCartList(-60);
       return;
     }
     if (target.closest('[data-mini-cart-next]')) {
-      scrollMiniCartList(72);
+      scrollMiniCartList(60);
       return;
     }
     const removeBtn = target.closest('[data-mini-cart-remove]');
@@ -695,6 +699,9 @@
       isCartFlying = true;
       removeBtn.classList.add('loading');
       removeBtn.disabled = true;
+      // 给整个 list 区域加灰遮罩 + spinner，CSS 自动触发；applyCartChangeSections 后 DOM 替换自然消失
+      const miniCartEl = removeBtn.closest('[data-mini-cart]');
+      if (miniCartEl) miniCartEl.classList.add('mini-cart--removing');
       refreshAddBtnDisabled();
       removeFromMiniCart(variantId);
       return;

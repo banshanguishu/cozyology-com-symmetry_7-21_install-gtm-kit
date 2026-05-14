@@ -146,6 +146,34 @@
   cursor: not-allowed;
 }
 
+/* 点击 ⊖ 后整个 mini-cart 加灰半透明遮罩 + 居中 spinner，等服务器响应。
+   通过 JS 切换 .mini-cart--removing 类触发，applyCartChangeSections 替换
+   DOM 后类自然消失；error 路径在 finally 显式清掉。
+   .mini-cart 基础已是 position: fixed，自带 positioning 上下文。 */
+.mini-cart--removing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #bbbbbb4d;
+  z-index: 2;
+  pointer-events: none;
+}
+.mini-cart--removing::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid rgba(0, 0, 0, 0.18);
+  border-top-color: #171717;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
 /* 默认隐藏：仅移动端收起态会显示 */
 .mini-cart__collapsed-title {
   display: none;
@@ -159,14 +187,14 @@
     transform: translateX(50%);
     justify-content: flex-end;
     align-items: stretch;
-    width: 748px;
-    height: 119px;
+    width: 652px;
+    height: 107px;
     border-radius: 10px;
   }
 
   .mini-cart__expanded {
     background: #fff;
-    width: 648px;
+    width: 552px;
     height: 100%;
     border: 1px solid #ddd;
     padding: 8px 20px;
@@ -232,8 +260,8 @@
 
   .mini-cart__item {
     position: relative;
-    flex: 0 0 64px;
-    height: 64px;
+    flex: 0 0 52px;
+    height: 52px;
   }
 
   .mini-cart__item-image {
@@ -247,6 +275,7 @@
     right: 4px;
     bottom: 4px;
     display: inline-flex;
+    width: 16px;
   }
 
   .mini-cart__nav {
@@ -266,12 +295,14 @@
   }
 
   .mini-cart__expand-btn {
-    width: 28px;
+    width: 20px;
     height: 100%;
     color: #fff;
     border: none;
     display: block;
     font-weight: bold;
+    align-items: center;
+    justify-content: center;
   }
 
   /* 展开按钮：桌面用 < 文本，隐藏移动端图标 */
@@ -330,13 +361,13 @@
 
   .mini-cart__cart-collapsed-count {
     font-family: 'Nunito Sans';
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: bold;
   }
 
   .mini-cart__cart-collapsed-item {
-    width: 64px;
-    height: 64px;
+    width: 52px;
+    height: 52px;
   }
 }
 
@@ -430,8 +461,8 @@
 
   .mini-cart__item {
     position: relative;
-    flex: 0 0 64px;
-    height: 64px;
+    flex: 0 0 52px;
+    height: 52px;
   }
 
   .mini-cart__item-image {
@@ -445,6 +476,7 @@
     right: 4px;
     bottom: 4px;
     display: inline-flex;
+    width: 16px;
   }
 
   /* === 收起态 === */
@@ -516,7 +548,7 @@
   .mini-cart__cart-btn {
     background: #232323;
     border-radius: 4px;
-    width: 70px;
+    width: 62px;
     height: 45px;
     font-size: 14px;
     font-weight: 400;
