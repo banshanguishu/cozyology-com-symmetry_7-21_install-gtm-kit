@@ -227,6 +227,7 @@
   }
 
   .mini-cart__collapse-btn {
+    width: 10px;
     position: absolute;
     right: 0;
     top: 50%;
@@ -421,6 +422,7 @@
   }
 
   .mini-cart__collapse-btn {
+    width: 10px;
     position: absolute;
     right: 12px;
     top: 50%;
