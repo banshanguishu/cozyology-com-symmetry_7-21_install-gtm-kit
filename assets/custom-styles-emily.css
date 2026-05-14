@@ -151,6 +151,16 @@
   display: none;
 }
 
+/* 乐观 UI：点 ⊖ 移除时该 li 向下淡出；失败时透过 JS 移除 class 自动回弹 */
+.mini-cart__item {
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+.mini-cart__item--removing {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
 /* ===== mini-cart：桌面端布局（≥ 768px） ===== */
 @media (min-width: 768px) {
   .mini-cart {

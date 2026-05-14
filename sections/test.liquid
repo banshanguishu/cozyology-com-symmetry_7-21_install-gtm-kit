@@ -614,7 +614,9 @@
 
   // mini-cart ⊖ 移除：和 removeFromCart 类似，但触发源是 mini-cart 自身的 ⊖ 按钮（会被 section 刷新替换掉）。
   // 直接按 variantId 查到产品列表对应按钮 setButtonInCart(false)，避免 syncButtonsWithCart 再额外 GET /cart.js。
-  async function removeFromMiniCart(variantId) {
+  // item / oldCount / miniCartEl 由调用方（handleMiniCartClick）传入用于乐观 UI 的失败回滚。
+  async function removeFromMiniCart(variantId, item, oldCount, miniCartEl) {
+    const animStart = performance.now();
     const body = JSON.stringify({
       updates: { [variantId]: 0 },
       sections_url: window.location.pathname,
@@ -636,6 +638,12 @@
         throw new Error(data.description || data.message || 'Remove from cart failed');
       }
 
+      // 等动画跑完再做整段 DOM 替换：POST 比 250ms 慢就立即应用，快就等差值，避免闪烁
+      const remaining = Math.max(0, 250 - (performance.now() - animStart));
+      if (remaining > 0) {
+        await new Promise(function (r) { setTimeout(r, remaining); });
+      }
+
       applyCartChangeSections(data);
 
       // 同步对应产品卡片的 Add 按钮态（如果存在）
@@ -650,6 +658,14 @@
         detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
+      // 失败回滚乐观 UI：li 淡入回弹 + 计数恢复 + mini-cart 取消隐藏
+      if (item) item.classList.remove('mini-cart__item--removing');
+      if (typeof oldCount === 'number') {
+        document.querySelectorAll('[data-mini-cart-count]').forEach(function (el) {
+          el.textContent = String(oldCount);
+        });
+      }
+      if (miniCartEl) miniCartEl.classList.remove('mini-cart--hidden');
       console.error('Error removing product from mini-cart:', err);
     } finally {
       isCartFlying = false;
@@ -696,7 +712,16 @@
       removeBtn.classList.add('loading');
       removeBtn.disabled = true;
       refreshAddBtnDisabled();
-      removeFromMiniCart(variantId);
+      // 乐观 UI：立刻触发 li 淡出 + 本地 -1 计数 + 必要时隐藏 mini-cart；失败时 removeFromMiniCart 内部回滚
+      const countEls = document.querySelectorAll('[data-mini-cart-count]');
+      const oldCount = parseInt((countEls[0] && countEls[0].textContent) || '0', 10);
+      item.classList.add('mini-cart__item--removing');
+      countEls.forEach(function (el) { el.textContent = String(oldCount - 1); });
+      const miniCartEl = document.querySelector('[data-mini-cart]');
+      if (miniCartEl && oldCount - 1 === 0) {
+        miniCartEl.classList.add('mini-cart--hidden');
+      }
+      removeFromMiniCart(variantId, item, oldCount, miniCartEl);
       return;
     }
   }
