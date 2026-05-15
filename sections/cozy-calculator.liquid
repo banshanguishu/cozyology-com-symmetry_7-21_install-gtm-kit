@@ -16,7 +16,7 @@
           <div class="cal-label">
             <div class="cal-label-dot"></div>
             <div class="cal-label-content">
-              Stacked Width (inch)
+              Stacked Width (inches)
             </div>
           </div>
           <input
@@ -32,7 +32,7 @@
           <div class="cal-label">
             <div class="cal-label-dot"></div>
             <div class="cal-label-content">
-              Rod / Track Length (inch)
+              Rod / Track Length (inches)
             </div>
           </div>
           <input
@@ -48,7 +48,7 @@
           <div class="cal-label">
             <div class="cal-label-dot"></div>
             <div class="cal-label-content">
-              Number Of Panels
+              Number of Panels
             </div>
             {% if section.settings.help_link_1 != blank %}
               <a
@@ -89,8 +89,8 @@
             {% endif %}
           </div>
           <select value="Single">
-            <option data-weight="double">Double Pleats (Pinch / Tailor / French), Goblet, or Ripple Fold</option>
-            <option data-weight="triple">Triple Pleats (Pinch / Tailor / French)</option>
+            <option data-weight="double">Double Pleats (Pinch / Tailor / French), Goblet, Ripple Fold, or Pinch Pleat with Back Tab</option>
+            <option data-weight="triple">Triple Pleats (Pinch / Tailor / French), Inverted Box Pleat, Tab Top, or Tab Top with Bow </option>
           </select>
         </div>
 
@@ -101,7 +101,7 @@
         <div class="cal-result">
           <div class="cal-result-item">
             <div class="cal-result-item-title">
-              <span>Single Panel Order Width(inch)</span>
+              <span>Single Panel Order Width (inches)</span>
               {% if section.settings.help_link_2 != blank %}
                 <a
                   href="{{ section.settings.help_link_2 }}"
@@ -121,7 +121,7 @@
           </div>
           <div class="cal-result-item">
             <div class="cal-result-item-title">
-              <span>Numers of Pleats and Rod Rings</span>
+              <span>Number of Pleats & Rings per Panel (inches)</span>
             </div>
             <div class="cal-result-item-res cal-result-rings">
               -
@@ -129,7 +129,7 @@
           </div>
           <div class="cal-result-item cal-result-stacked-width">
             <div class="cal-result-item-title">
-              <span>Stacked Width(inch)</span>
+              <span>Stacked Width per Panel (inches)</span>
               {% if section.settings.help_link_3 != blank %}
                 <a
                   href="{{ section.settings.help_link_3 }}"
