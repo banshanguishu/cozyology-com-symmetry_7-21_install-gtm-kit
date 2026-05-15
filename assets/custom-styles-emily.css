@@ -311,6 +311,11 @@
     display: none;
   }
 
+  /* 收起按钮：桌面用 close ✕，隐藏移动端下箭头 */
+  .mini-cart__collapse-icon--mobile {
+    display: none;
+  }
+
   .mini-cart__count-mini {
     font-size: 14px;
   }
@@ -514,8 +519,17 @@
     font-weight: bold;
   }
 
+  .mini-cart__expand-btn img {
+    width: 10px;
+  }
+
   /* 展开按钮：移动端用专用上箭头图标，隐藏桌面 < 文本 */
   .mini-cart__expand-icon--desktop {
+    display: none;
+  }
+
+  /* 收起按钮：移动端用下箭头图标，隐藏桌面 ✕ */
+  .mini-cart__collapse-icon--desktop {
     display: none;
   }
 

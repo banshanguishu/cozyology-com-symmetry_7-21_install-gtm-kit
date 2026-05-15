@@ -40,10 +40,17 @@
       </h3>
       <button type="button" class="mini-cart__btn mini-cart__collapse-btn" data-mini-cart-collapse aria-label="Collapse">
         <img
+          class="mini-cart__collapse-icon mini-cart__collapse-icon--desktop"
           src="{{ 'mini-cart-close.png' | asset_url }}"
           alt=""
-          width="13px"
-          height="13px" />
+          width="13"
+          height="13" />
+        <img
+          class="mini-cart__collapse-icon mini-cart__collapse-icon--mobile"
+          src="{{ 'mini-cart-arrow-bottom-mobile.png' | asset_url }}"
+          alt=""
+          width="12"
+          height="8" />
       </button>
     </header>
     <div class="mini-cart__split"></div>
