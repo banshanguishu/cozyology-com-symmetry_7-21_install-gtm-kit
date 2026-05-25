@@ -80,6 +80,7 @@
 
 .cal-item select {
   height: 42px;
+  line-height: 32px;
   padding-left: 10px;
   font-size: 16px;
   border-color: #bcb3ac;
@@ -283,5 +284,38 @@
 
   .cal-right-image {
     /* height: 200px; */
+  }
+}
+
+/* ===== Chrome 135+ Customizable Select 试用 ===== */
+@supports (appearance: base-select) {
+  .cal-item select,
+  .cal-item select::picker(select) {
+    appearance: base-select;
+  }
+  /* 弹出层宽度锚定到 select 触发器本身，不再撑开 */
+  .cal-item select::picker(select) {
+    width: anchor-size(width);
+    box-sizing: border-box;
+    border: 1px solid #BCB3AC;
+    border-radius: 4px;
+    background: #fff;
+    padding: 4px 0;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  /* 关键：option 走标准盒模型后，white-space 才生效 */
+  .cal-item option {
+    white-space: normal;
+    word-break: break-word;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #171717;
+    cursor: pointer;
+  }
+  .cal-item option:hover,
+  .cal-item option:checked {
+    background-color: #F5F2F0;
   }
 }
