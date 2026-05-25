@@ -6,7 +6,7 @@
   assign btn_label = settings.global_countdown_button_label
   assign btn_link = settings.global_countdown_button_link
   assign bg_color = settings.global_countdown_bg_color
-  assign text_bg_color = settings.global_countdown_text_bg_color
+  assign btn_bg_color = settings.global_countdown_button_bg_color
 %}
 {% if enabled and end_time != blank %}
   <div
@@ -19,28 +19,28 @@
       <div class="global-countdown__message">{{ message }}</div>
     {% endif %}
     <div class="global-countdown__content">
-      <div class="countdown-item countdown__day"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
+      <div class="countdown-item countdown__day">
         <div class="countdown-item__value">00</div>
         <div class="countdown-item__text">
           <span class="countdown-item__text-full">Day</span>
           <span class="countdown-item__text-short">D</span>
         </div>
       </div>
-      <div class="countdown-item countdown__hour"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
+      <div class="countdown-item countdown__hour">
         <div class="countdown-item__value">00</div>
         <div class="countdown-item__text">
           <span class="countdown-item__text-full">Hour</span>
           <span class="countdown-item__text-short">H</span>
         </div>
       </div>
-      <div class="countdown-item countdown__minute"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
+      <div class="countdown-item countdown__minute">
         <div class="countdown-item__value">00</div>
         <div class="countdown-item__text">
           <span class="countdown-item__text-full">Min</span>
           <span class="countdown-item__text-short">M</span>
         </div>
       </div>
-      <div class="countdown-item countdown__second"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
+      <div class="countdown-item countdown__second">
         <div class="countdown-item__value">00</div>
         <div class="countdown-item__text">
           <span class="countdown-item__text-full">Sec</span>
@@ -53,7 +53,7 @@
         class="global-countdown__button"
         target="_blank"
         href="{{ btn_link }}"
-        {%- unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless -%}
+        {%- unless use_small %} style="{% if btn_bg_color != blank %}background-color: {{ btn_bg_color }};{% endif %}"{% endunless -%}
       >
         {{ btn_label }}
         <img
@@ -210,28 +210,6 @@
         column-gap: 5px;
       }
 
-      .countdown-item {
-        background-color: #5B4A40;
-        display: block;
-      }
-
-      .countdown-item.countdown__day {
-        background-color: #BCB3AC;
-        position: relative;
-        margin-right: 5px;
-      }
-
-      .countdown-item.countdown__day::after {
-        content: "";
-        width: 8px;
-        height: 8px;
-        background-color: inherit;
-        transform: rotate(45deg) translateY(-50%);
-        position: absolute;
-        top: 50%;
-        right: 0;
-      }
-
       .countdown-item__value {
         width: auto;
         padding: 0 5px;
@@ -262,16 +240,10 @@
       }
 
       .global-countdown-container--small .countdown-item {
-        background-color: transparent;
-        margin-right: 0;
         display: flex;
         flex-direction: row;
         align-items: baseline;
         column-gap: 2px;
-      }
-
-      .global-countdown-container--small .countdown-item.countdown__day::after {
-        display: none;
       }
 
       .global-countdown-container--small .countdown-item__value {

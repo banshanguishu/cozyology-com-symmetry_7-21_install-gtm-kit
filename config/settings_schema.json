@@ -54,8 +54,8 @@
       },
       {
         "type": "color",
-        "id": "global_countdown_text_bg_color",
-        "label": "文字背景色",
+        "id": "global_countdown_button_bg_color",
+        "label": "按钮背景色",
         "default": "#5B493F"
       }
     ]
