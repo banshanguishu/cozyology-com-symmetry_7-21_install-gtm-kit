@@ -8,8 +8,10 @@ class GlobalCountdown {
     this.endTime = null;
     this.timer = null;
     this.isMobile = false;
+    this.isSmall = false;
 
     if (this.container) {
+      this.isSmall = this.container.classList.contains("global-countdown-container--small");
       this.init();
       this.isMobile = this.checkIsMobile();
     }
@@ -201,7 +203,7 @@ class GlobalCountdown {
     if (element) {
       // 确保显示两位数
       const padded = value.toString().padStart(2, "0");
-      element.textContent = this.isMobile && unit === "day"
+      element.textContent = this.isMobile && unit === "day" && !this.isSmall
         ? `${value}DAYS`
         : padded;
     }

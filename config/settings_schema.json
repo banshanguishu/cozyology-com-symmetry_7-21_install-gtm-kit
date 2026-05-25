@@ -17,6 +17,12 @@
         "default": false
       },
       {
+        "type": "checkbox",
+        "id": "enable_global_countdown_small",
+        "label": "使用 small 版本（更紧凑样式）",
+        "default": false
+      },
+      {
         "type": "text",
         "id": "global_countdown_end_time",
         "label": "结束时间",
@@ -45,18 +51,6 @@
         "id": "global_countdown_bg_color",
         "label": "背景色",
         "default": "#BBB3AB"
-      },
-      {
-        "type": "color",
-        "id": "global_countdown_title_color",
-        "label": "标题颜色",
-        "default": "#171717"
-      },
-      {
-        "type": "color",
-        "id": "global_countdown_text_color",
-        "label": "文字颜色",
-        "default": "#ffffff"
       },
       {
         "type": "color",

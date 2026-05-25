@@ -1,50 +1,68 @@
 {% liquid
   assign enabled = settings.enable_global_countdown
+  assign use_small = settings.enable_global_countdown_small
   assign end_time = settings.global_countdown_end_time
   assign message = settings.global_countdown_message
   assign btn_label = settings.global_countdown_button_label
   assign btn_link = settings.global_countdown_button_link
   assign bg_color = settings.global_countdown_bg_color
-  assign title_color = settings.global_countdown_title_color
-  assign text_color = settings.global_countdown_text_color
   assign text_bg_color = settings.global_countdown_text_bg_color
 %}
 {% if enabled and end_time != blank %}
-  <div id="GlobalCountdown" class="global-countdown-container" data-end-time="{{ end_time }}" style="{% if bg_color != blank %}background-color: {{ bg_color }};{% endif %}">
+  <div
+    id="GlobalCountdown"
+    class="global-countdown-container{% if use_small %} global-countdown-container--small{% endif %}"
+    data-end-time="{{ end_time }}"
+    style="{% if bg_color != blank %}background-color: {{ bg_color }};{% endif %}"
+  >
     {% if message != blank %}
-      <div class="global-countdown__message" style="{% if title_color != blank %}color: {{ title_color }};{% endif %}">{{ message }}</div>
+      <div class="global-countdown__message">{{ message }}</div>
     {% endif %}
-    <div class="global-countdown__content" style="{% if text_color != blank %}color: {{ text_color }} !important;{% endif %}">
-      <div class="countdown-item countdown__day" style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}">
+    <div class="global-countdown__content">
+      <div class="countdown-item countdown__day"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
         <div class="countdown-item__value">00</div>
-        <div class="countdown-item__text">Day</div>
+        <div class="countdown-item__text">
+          <span class="countdown-item__text-full">Day</span>
+          <span class="countdown-item__text-short">D</span>
+        </div>
       </div>
-      <div class="countdown-item__colon">:</div>
-      <div class="countdown-item countdown__hour" style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}">
+      <div class="countdown-item countdown__hour"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
         <div class="countdown-item__value">00</div>
-        <div class="countdown-item__text">Hour</div>
+        <div class="countdown-item__text">
+          <span class="countdown-item__text-full">Hour</span>
+          <span class="countdown-item__text-short">H</span>
+        </div>
       </div>
-      <div class="countdown-item__colon">:</div>
-      <div class="countdown-item countdown__minute" style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}">
+      <div class="countdown-item countdown__minute"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
         <div class="countdown-item__value">00</div>
-        <div class="countdown-item__text">Min</div>
+        <div class="countdown-item__text">
+          <span class="countdown-item__text-full">Min</span>
+          <span class="countdown-item__text-short">M</span>
+        </div>
       </div>
-      <div class="countdown-item__colon">:</div>
-      <div class="countdown-item countdown__second" style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}">
+      <div class="countdown-item countdown__second"{% unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless %}>
         <div class="countdown-item__value">00</div>
-        <div class="countdown-item__text">Sec</div>
+        <div class="countdown-item__text">
+          <span class="countdown-item__text-full">Sec</span>
+          <span class="countdown-item__text-short">S</span>
+        </div>
       </div>
     </div>
     {% if btn_label != blank and btn_link != blank %}
-      <a class="global-countdown__button" target="_blank" href="{{ btn_link }}" style="{% if text_color != blank %}color: {{ text_color }} !important;{% endif %} {% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}">
+      <a
+        class="global-countdown__button"
+        target="_blank"
+        href="{{ btn_link }}"
+        {%- unless use_small %} style="{% if text_bg_color != blank %}background-color: {{ text_bg_color }};{% endif %}"{% endunless -%}
+      >
+        {{ btn_label }}
         <img
           class="global-countdown__arrow"
-          src="{{ 'arrow-right.svg' |  asset_url  }}"
+          src="{{ 'arrow-right.svg' | asset_url }}"
           alt="arrow-right"
           width="10px"
-          height="10px" 
+          height="10px"
         />
-        {{ btn_label }}
       </a>
     {% endif %}
   </div>
@@ -62,12 +80,12 @@
       column-gap: 24px;
       justify-content: center;
       align-items: center;
+      color: #fff;
     }
 
     .global-countdown__message {
       font-weight: bold;
       font-size: 18px;
-      color: #171717;
     }
 
     .global-countdown__content {
@@ -81,7 +99,7 @@
       display: flex;
       flex-direction: column;
     }
-    
+
     .countdown-item__value {
       width: 42px;
       height: 24px;
@@ -99,19 +117,79 @@
       font-size: 12px;
     }
 
+    .countdown-item__text-short {
+      display: none;
+    }
+
     .global-countdown__button {
       height: 28px;
       line-height: 28px;
       padding: 0 12px;
       font-size: 16px;
+      color: #fff;
     }
 
     .global-countdown__arrow {
       display: none;
     }
 
-    .countdown-item__colon {
-      font-weight: bold;
+    /* ===== Small variant (desktop) ===== */
+    .global-countdown-container--small {
+      padding: 6px 0;
+      column-gap: 32px;
+    }
+
+    .global-countdown-container--small .global-countdown__message {
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .global-countdown-container--small .global-countdown__content {
+      column-gap: 16px;
+    }
+
+    .global-countdown-container--small .countdown-item {
+      flex-direction: row;
+      align-items: baseline;
+      column-gap: 3px;
+    }
+
+    .global-countdown-container--small .countdown-item__value {
+      width: auto;
+      height: auto;
+      line-height: 1;
+      font-size: 16px;
+    }
+
+    .global-countdown-container--small .countdown-item__text {
+      width: auto;
+      height: auto;
+      line-height: 1;
+      font-size: 10px;
+      font-weight: normal;
+    }
+
+    .global-countdown-container--small .countdown-item__text-full {
+      display: none;
+    }
+
+    .global-countdown-container--small .countdown-item__text-short {
+      display: inline;
+    }
+
+    .global-countdown-container--small .global-countdown__button {
+      height: auto;
+      line-height: 1.2;
+      padding: 0;
+      font-size: 14px;
+      text-decoration: underline;
+      font-weight: 700;
+    }
+
+    .global-countdown-container--small .global-countdown__arrow {
+      display: inline-block;
+      margin-left: 4px;
+      vertical-align: middle;
     }
 
     @media (max-width: 768px) {
@@ -132,13 +210,9 @@
         column-gap: 5px;
       }
 
-      .global-countdown__content > :nth-child(2) {
-        display: none;
-      }
-
       .countdown-item {
         background-color: #5B4A40;
-        display: block
+        display: block;
       }
 
       .countdown-item.countdown__day {
@@ -165,10 +239,6 @@
         border-bottom: none;
       }
 
-      {% comment %} .countdown__day .countdown-item__value {
-        color: #171717;
-      } {% endcomment %}
-
       .countdown-item__text {
         display: none;
       }
@@ -176,21 +246,52 @@
       .global-countdown__button {
         padding: 0 8px;
         font-size: 16px;
-        color: #5B4A40;
         background-color: unset;
         text-decoration: underline;
         font-weight: 700;
       }
 
       .global-countdown__arrow {
-        {% comment %} display: inline-block; {% endcomment %}
         display: none;
+      }
+
+      /* ===== Small variant (mobile) ===== */
+      .global-countdown-container--small {
+        height: auto;
+        padding: 6px 12px;
+      }
+
+      .global-countdown-container--small .countdown-item {
+        background-color: transparent;
+        margin-right: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        column-gap: 2px;
+      }
+
+      .global-countdown-container--small .countdown-item.countdown__day::after {
+        display: none;
+      }
+
+      .global-countdown-container--small .countdown-item__value {
+        padding: 0;
+        font-size: 14px;
+      }
+
+      .global-countdown-container--small .countdown-item__text {
+        display: inline;
+        width: auto;
+        height: auto;
+        font-size: 10px;
+      }
+
+      .global-countdown-container--small .global-countdown__button {
+        padding: 0;
+        font-size: 14px;
       }
     }
   </style>
 
   <script src="{{ 'global-countdown.js' | asset_url }}" defer></script>
-  <script>
-    
-  </script>
 {% endif %}
