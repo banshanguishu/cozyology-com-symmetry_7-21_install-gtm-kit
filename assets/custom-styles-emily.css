@@ -182,7 +182,7 @@
 /* ===== mini-cart：桌面端布局（≥ 768px） ===== */
 @media (min-width: 768px) {
   .mini-cart {
-    bottom: 40px;
+    bottom: 20px;
     right: 50%;
     transform: translateX(50%);
     justify-content: flex-end;
