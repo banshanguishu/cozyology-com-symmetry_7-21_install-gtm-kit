@@ -269,6 +269,18 @@
         font-size: 14px;
       }
     }
+
+    {%- if use_small -%}
+    /* small 版倒计时只遮住 announcement-bar 上半部，把它的底色刷成与下方 nav 一致的白色，消除层级割裂感。
+       announcement-bar 有两层背景：本体的 --bg-color 给第 1 条公告用，3 个 .announcement-bg 浮层给第 2~N 条公告用（靠 opacity 淡入淡出切换），两层都要覆盖否则轮播回到第 1 条时会漏出原色 */
+    .section-announcement-bar .announcement-bar {
+      background-color: #fff !important;
+      background-image: none !important;
+    }
+    .section-announcement-bar .announcement-bg {
+      background: #fff !important;
+    }
+    {%- endif -%}
   </style>
 
   <script src="{{ 'global-countdown.js' | asset_url }}" defer></script>
