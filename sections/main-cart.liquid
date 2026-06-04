@@ -35,7 +35,7 @@
             {%- if trustpilot_link != blank -%}
               <a href="{{ trustpilot_link }}" class="cart-drawer-trustpilot-link" aria-label="查看 Trustpilot 评价" target="_blank" rel="noopener">
             {%- endif -%}
-            <img width="308px" height="31px" src="{{ 'cart-score.webp' |  asset_url }}" alt="cart score png" />
+            {% comment %} <img width="308px" height="31px" src="{{ 'cart-score.webp' |  asset_url }}" alt="cart score png" /> {% endcomment %}
             {%- if trustpilot_link != blank -%}
               </a>
             {%- endif -%}
@@ -170,9 +170,9 @@
               {% comment %} <div style="color: #BA6352">Gift cards can be entered on the next page.</div> {% endcomment %}
               <div>
   {% comment %} <span style="color: #BA6352;">Gift cards</span> can be entered at checkout.<br> {% endcomment %}
-  <strong>Spring & Bright Sale</strong><br>
-  $100 OFF $500+ — Code: <span style="color:#BA6352;font-weight:600;">SPR100</span><br>
-  $220 OFF $1000+ — Code: <span style="color:#BA6352;font-weight:600;">SPR220</span><br>
+  <strong></strong><br>
+  18% OFF Sitewide — Code: <span style="color:#BA6352;font-weight:600;">MID18</span><br>
+  20% OFF Orders $800+ — Code: <span style="color:#BA6352;font-weight:600;">MID20</span><br>
   <br>
   <span style="color:#BA6352; font-weight:600;">You can apply the GIFT CARD at checkout next page.</span><br>
 </div>
