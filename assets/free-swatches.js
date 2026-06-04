@@ -22,6 +22,13 @@ document.addEventListener('click', function (e) {
   const link = e.target.closest('.free-swatches__item-remove');
   if (!link) return;
   e.preventDefault();
+  const strip = link.closest('[data-free-swatches]');
+  // 防重复：上一个移除请求还在飞，忽略后续点击
+  if (strip && strip.classList.contains('free-swatches--removing')) return;
+  // loading：灰遮罩 + 居中 spinner（同 mini-cart--removing 模式）。
+  // 成功路径不手动清类——on:cart:change 触发 cart-form 刷新后 data-merge 整块替换 DOM，
+  // 类随旧节点一起消失，spinner 恰好显示到更新落地；失败路径在 catch 里显式清掉。
+  if (strip) strip.classList.add('free-swatches--removing');
   const url = new URL(link.href, location.origin);
   const id = url.searchParams.get('id');
   fetch('/cart/change.js', {
@@ -33,5 +40,8 @@ document.addEventListener('click', function (e) {
     .then(function () {
       document.dispatchEvent(new CustomEvent('on:cart:change', { bubbles: true, cancelable: false }));
     })
-    .catch(function (err) { console.error('Free Swatches remove failed:', err); });
+    .catch(function (err) {
+      console.error('Free Swatches remove failed:', err);
+      if (strip) strip.classList.remove('free-swatches--removing');
+    });
 });

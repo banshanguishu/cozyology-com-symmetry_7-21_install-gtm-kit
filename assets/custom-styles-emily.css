@@ -131,6 +131,40 @@
   border-top: 1px solid rgb(var(--text-color) / var(--divider-opacity));
 }
 
+/* 移除中：整条收纳条加灰遮罩 + 居中 spinner（同 mini-cart--removing 模式，复用上方 @keyframes spin）。
+   成功路径 DOM 被 data-merge 整块替换，类自然消失；失败路径 JS 在 catch 里清掉。 */
+.free-swatches {
+  position: relative; /* 遮罩/spinner 的定位上下文 */
+}
+.free-swatches--removing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #dddddd1e;
+  z-index: 2;
+  pointer-events: none;
+}
+.free-swatches--removing::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid rgba(0, 0, 0, 0.18);
+  border-top-color: #171717;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+/* 飞行中视觉禁用所有 ⊖（双保险：JS 侧也有 --removing 防重复点击守卫） */
+.free-swatches--removing .free-swatches__item-remove {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 /* ===== mini-cart：通用基础（桌面/移动共用） ===== */
 .mini-cart {
   position: fixed;
