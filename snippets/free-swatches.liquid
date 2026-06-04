@@ -1,0 +1,60 @@
+{%- comment -%}
+  Free Swatches 收纳条 — cart-drawer 与 main-cart 共用。
+  小样判定：商品所属 collections 包含 'free-swatches' handle。
+
+  同步机制：外层 data-merge="free-swatches" 由 cart-form 的 mergeNodes 接管 ——
+  任意 on:cart:change 后 cart-form 重新拉取所在 section 的 HTML 并替换本块内容，
+  两处（抽屉/主购物车）零额外同步代码。
+
+  交互（箭头滚动 / ⊖ 移除 AJAX）在 assets/free-swatches.js，由引用本 snippet 的 section 加载。
+  样式在 assets/custom-styles-emily.css（全局加载）。列表宽度跟随父容器，超出横向滚动。
+
+  Inputs:
+    wrapper_class: 可选。附加在 .free-swatches 容器上的 class。
+                   抽屉传 'cart-drawer__content-item'，主购物车传 'free-swatches--page'。
+{%- endcomment -%}
+
+{%- assign max_items = 20 -%}
+{%- assign sample_count = 0 -%}
+{%- for item in cart.items -%}
+  {%- assign h = item.product.collections | map: 'handle' -%}
+  {%- if h contains 'free-swatches' -%}
+    {%- assign sample_count = sample_count | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div data-merge="free-swatches">
+  {%- if sample_count > 0 -%}
+    <div class="free-swatches{% if wrapper_class != blank %} {{ wrapper_class }}{% endif %}" data-free-swatches>
+      <header class="free-swatches__header">
+        <h3 class="free-swatches__title">Free Swatches ({{ sample_count }}/{{ max_items }})</h3>
+        <div class="free-swatches__nav">
+          <button type="button" class="free-swatches__nav-btn" data-free-swatches-prev aria-label="Previous">
+            <img src="{{ 'mini-cart-left-arrow-active.png' | asset_url }}" width="8" height="12" alt="">
+          </button>
+          <button type="button" class="free-swatches__nav-btn" data-free-swatches-next aria-label="Next">
+            <img src="{{ 'mini-cart-right-arrow-active.png' | asset_url }}" width="8" height="12" alt="">
+          </button>
+        </div>
+      </header>
+      <ul class="free-swatches__list" data-free-swatches-list role="list">
+        {%- for item in cart.items -%}
+          {%- assign h = item.product.collections | map: 'handle' -%}
+          {%- if h contains 'free-swatches' -%}
+            <li class="free-swatches__item">
+              <div class="free-swatches__item-image">
+                <img src="{{ item.product.featured_media | image_url: width: 160 }}" alt="" width="80" height="80">
+              </div>
+              <div class="free-swatches__item-meta">
+                <div class="free-swatches__item-title">{{ item.product.title }}</div>
+                <a class="free-swatches__item-remove"
+                   href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0"
+                   aria-label="Remove {{ item.product.title | escape }}"><img src="{{ 'cart-drawer-free-swatches-draft.png' | asset_url }}" width="14" height="14" alt=""></a>
+              </div>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</div>

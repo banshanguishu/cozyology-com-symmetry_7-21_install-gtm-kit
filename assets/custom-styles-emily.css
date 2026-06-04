@@ -110,6 +110,27 @@
   display:none
 } */
 
+/* ===== Free Swatches 收纳条（cart-drawer 与 main-cart 共用，markup 见 snippets/free-swatches.liquid） =====
+   宽度不写死：列表 flex + overflow-x 跟随父容器宽度，超出横向滚动 */
+.free-swatches__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.free-swatches__title { margin: 0; font-family: 'Nunito Sans'; font-size: 16px; font-weight: 600; }
+.free-swatches__nav { display: flex; gap: 12px; }
+.free-swatches__nav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; line-height: 0; }
+.free-swatches__list { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; align-items: flex-start; }
+.free-swatches__list::-webkit-scrollbar { display: none; }
+.free-swatches__item { flex: 0 0 80px; display: flex; flex-direction: column; gap: 4px; }
+.free-swatches__item-image { width: 80px; height: 80px; }
+.free-swatches__item-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.free-swatches__item-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; }
+.free-swatches__item-title { flex: 1 1 auto; font-size: 12px; line-height: 1.3; word-break: break-word; }
+.free-swatches__item-remove { flex: 0 0 auto; font-size: 14px; color: inherit; text-decoration: none; line-height: 1; }
+
+/* 主购物车页面专用：顶部分隔线（主题标准 divider 写法）+ 上下内边距 */
+.free-swatches--page {
+  padding: 40px 0;
+  border-top: 1px solid rgb(var(--text-color) / var(--divider-opacity));
+}
+
 /* ===== mini-cart：通用基础（桌面/移动共用） ===== */
 .mini-cart {
   position: fixed;

@@ -24,6 +24,9 @@
   <script src="{{ 'cart-note.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 
+{%- comment -%} Free Swatches 收纳条交互（箭头滚动 / 移除 AJAX），与 cart-drawer 共用 {%- endcomment -%}
+<script src="{{ 'free-swatches.js' | asset_url }}" defer></script>
+
 <div class="container fully-spaced-row" data-ajax-update="true" style="--page-container-width: {{ settings.max_page_width | at_most: 1200 }}px;">
   <cart-form data-section-id="{{ section.id }}" data-ajax-update="true">
     {% if section.settings.show_page_title %}
@@ -93,16 +96,23 @@
           {% endif %}
 
           {% for item in cart.items %}
-            <div data-merge-list-item="item-key:{{ item.key }}|{{ item.final_price }}{% for discount_allocation in item.line_level_discount_allocations %}|{{ discount_allocation.discount_application.title | escape }}{% endfor %}"
-                {% comment %} Discount items are difficult to predict - BOGOFs appear as a separate item with the same key as an existing item - simpler to always refresh {% endcomment %}
-                {%- if item.line_level_discount_allocations == empty -%}
-                data-merge-cache="{{ item.key }}|{{ item.quantity }}|{{ item.final_line_price }}|{% if item.selling_plan_allocation %}{{ item.selling_plan_allocation.selling_plan.id }}{% endif %}"
-                {%- endif -%}>
-              {%- render 'cart-item', item: item, forloop: forloop, animate: true -%}
-            </div>
+            {%- comment -%} 小样（free-swatches collection）不走主列表，统一收纳进下方 Free Swatches 条 {%- endcomment -%}
+            {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+            {%- unless item_collection_handles contains 'free-swatches' -%}
+              <div data-merge-list-item="item-key:{{ item.key }}|{{ item.final_price }}{% for discount_allocation in item.line_level_discount_allocations %}|{{ discount_allocation.discount_application.title | escape }}{% endfor %}"
+                  {% comment %} Discount items are difficult to predict - BOGOFs appear as a separate item with the same key as an existing item - simpler to always refresh {% endcomment %}
+                  {%- if item.line_level_discount_allocations == empty -%}
+                  data-merge-cache="{{ item.key }}|{{ item.quantity }}|{{ item.final_line_price }}|{% if item.selling_plan_allocation %}{{ item.selling_plan_allocation.selling_plan.id }}{% endif %}"
+                  {%- endif -%}>
+                {%- render 'cart-item', item: item, forloop: forloop, animate: true -%}
+              </div>
+            {%- endunless -%}
           {% endfor %}
         </div>
       </div>
+
+      {%- comment -%} Free Swatches：小样收纳条（snippet 与 cart-drawer 共用），随 cart-form 的 data-merge 机制自动刷新 {%- endcomment -%}
+      {%- render 'free-swatches', wrapper_class: 'free-swatches--page' -%}
 
       <div {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
         <div class="checkout-subtotal-container spaced-row{% if cart.items == empty %} hidden{% endif %}" data-merge-attributes="subtotal-container">
