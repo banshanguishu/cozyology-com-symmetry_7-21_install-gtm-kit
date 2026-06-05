@@ -224,7 +224,7 @@
       {%- if trustpilot_link != blank -%}
         <a href="{{ trustpilot_link }}" class="cart-drawer-trustpilot-link" aria-label="查看 Trustpilot 评价" target="_blank" rel="noopener">
       {%- endif -%}
-      <img style="width: 228px; height: 24px" src="{{ 'cart-drawer-score.webp' |  asset_url }}" alt="cart drawer score png" />
+      {% comment %} <img style="width: 228px; height: 24px" src="{{ 'cart-drawer-score.webp' |  asset_url }}" alt="cart drawer score png" /> {% endcomment %}
       {%- if trustpilot_link != blank -%}
         </a>
       {%- endif -%}
@@ -291,8 +291,8 @@
             {% comment %} <div style="color: #BA6352">Best discount already applied.</div>
             <div>Other codes or <span style="color: #BA6352">gift cards</span> can be entered at checkout.</div> {% endcomment %}
             <div>
-  <b>20% OFF Sitewide</b> — Code: <span style="color:#BA6352;font-weight:600;">MEM20</span><br>
-  <b>$150 OFF $700+</b> — Code: <span style="color:#BA6352;font-weight:600;">MOM700</span>
+  <b>18% OFF Sitewide</b> — Code: <span style="color:#BA6352;font-weight:600;">MID18</span><br>
+  <b>20% OFF Orders $800+</b> — Code: <span style="color:#BA6352;font-weight:600;">MID20</span><br>
 </div>
           </div>
         {% endif %}
@@ -305,7 +305,28 @@
         </terms-agreement>
       {% endif %}
 
-      <div class="checkout-buttons{% if cart.items == empty %} hidden{% endif %}" data-merge-attributes="checkout-buttons">
+      <style>
+        .my-new-btn {
+          border-color: #bcb3ac;
+          color: #171717;
+          background: #bcb3ac;
+          height: 48px;
+          line-height: 48px;
+          padding: 0 25px;
+          border-radius: var(--btn-border-radius);
+        }
+        .checkout-buttons > *:not(.my-new-btn) {
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+        @media (max-width: 767px) {
+          .my-new-btn {
+            padding: 0 8px
+          }
+        }
+      </style>
+      <div class="checkout-buttons{% if cart.items == empty %} hidden{% endif %}" data-merge-attributes="checkout-buttons" style="display: flex; gap: 8px; align-items: center;">
+        <a href="{{ routes.cart_url }}" class="btn--large my-new-btn">VIEW CART</a>
         {% if section.settings.enable_direct_cart %}
           <a href="{{ routes.root_url | append: '/checkout' | replace: '//', '/' }}" class="btn btn--large btn--wide">{{ 'cart.summary.checkout' | t }}</a>
         {% else %}
