@@ -29,6 +29,24 @@
 
 <div class="container fully-spaced-row" data-ajax-update="true" style="--page-container-width: {{ settings.max_page_width | at_most: 1200 }}px;">
   <cart-form data-section-id="{{ section.id }}" data-ajax-update="true">
+    {%- comment -%}
+      统计非小样商品数量总和（排除 free-swatches collection）。若为 0（购物车仅剩小样），
+      隐藏第三方 app 注入的 ShareCart 按钮 .mmc-share-cart__wrap。
+      包在 data-merge 容器里，随 cart-form 的局部刷新（移除商品等）自动重算可见性。
+    {%- endcomment -%}
+    {%- assign non_swatch_qty = 0 -%}
+    {%- for item in cart.items -%}
+      {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+      {%- unless item_collection_handles contains 'free-swatches' -%}
+        {%- assign non_swatch_qty = non_swatch_qty | plus: item.quantity -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    <div data-merge="share-cart-visibility">
+      {%- if non_swatch_qty == 0 -%}
+        <style>.mmc-share-cart__wrap { display: none !important; }</style>
+      {%- endif -%}
+    </div>
+
     {% if section.settings.show_page_title %}
       <div data-merge="page-heading" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
         {%- if cart.items != empty -%}

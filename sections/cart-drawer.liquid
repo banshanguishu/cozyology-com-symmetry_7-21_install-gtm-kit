@@ -91,6 +91,24 @@
 
 <cart-drawer class="drawer fixed top-0 right-0 flex flex-col w-full has-motion js-cart-drawer" role="dialog" tabindex="-1" aria-labelledby="CartDrawerModal-Title" aria-modal="true" aria-hidden="true" data-name="cart-drawer" data-section-id="{{ section.id }}">
   <cart-form data-section-id="{{ section.id }}" class="cart-drawer" data-ajax-update="true">
+    {%- comment -%}
+      统计非小样商品数量总和（排除 free-swatches collection）。若为 0（购物车仅剩小样），
+      隐藏第三方 app 注入的 ShareCart 按钮 .mmc-share-cart__wrap。
+      包在 data-merge 容器里，随 cart-form 的局部刷新（移除商品等）自动重算可见性。
+    {%- endcomment -%}
+    {%- assign non_swatch_qty = 0 -%}
+    {%- for item in cart.items -%}
+      {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+      {%- unless item_collection_handles contains 'free-swatches' -%}
+        {%- assign non_swatch_qty = non_swatch_qty | plus: item.quantity -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    <div data-merge="share-cart-visibility">
+      {%- if non_swatch_qty == 0 -%}
+        <style>.mmc-share-cart__wrap { display: none !important; }</style>
+      {%- endif -%}
+    </div>
+
     <div class="cart-drawer__content{% if cart.items == empty %} cart-drawer__content--hidden{% endif %}" data-merge-attributes="content-container">
       <div class="cart-drawer__content-upper">
         <header class="cart-drawer__header cart-drawer__content-item">

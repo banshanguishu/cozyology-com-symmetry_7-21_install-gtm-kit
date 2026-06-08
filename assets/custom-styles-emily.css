@@ -127,6 +127,7 @@
 
 /* 主购物车页面专用：顶部分隔线（主题标准 divider 写法）+ 上下内边距 */
 .free-swatches--page {
+  margin-top: 40px;
   padding: 40px 0;
   border-top: 1px solid rgb(var(--text-color) / var(--divider-opacity));
 }
