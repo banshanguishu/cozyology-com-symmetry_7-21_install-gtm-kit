@@ -661,7 +661,8 @@
     }
   }
 
-  // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / Cart 打开抽屉 / </> 滚动）
+  // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / </> 滚动）
+  // Checkout 按钮已改为 <a href> 原生跳转主购物车页，不再走这里
   // 用 document 委托，因为 mini-cart 的 DOM 会被 section 刷新整段替换
   function handleMiniCartClick(event) {
     const target = event.target;
@@ -672,13 +673,6 @@
     }
     if (target.closest('[data-mini-cart-expand]')) {
       toggleMiniCart(false);
-      return;
-    }
-    if (target.closest('[data-mini-cart-open-drawer]')) {
-      document.dispatchEvent(new CustomEvent('dispatch:cart-drawer:open', {
-        bubbles: true,
-        cancelable: false
-      }));
       return;
     }
     if (target.closest('[data-mini-cart-prev]')) {

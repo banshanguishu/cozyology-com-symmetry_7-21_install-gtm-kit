@@ -130,9 +130,9 @@
           width="32px"
           height="32px" />
       </span>
-      <button type="button" class="mini-cart__btn mini-cart__cart-btn" data-mini-cart-open-drawer>
-        Cart
-      </button>
+      <a class="mini-cart__btn mini-cart__cart-btn" href="{{ routes.cart_url }}">
+        Checkout
+      </a>
     </div>
 
     {%- comment -%} 收起态：(X/20) 计数 + 第一个色卡（仅展示，无 ⊖） {%- endcomment -%}
