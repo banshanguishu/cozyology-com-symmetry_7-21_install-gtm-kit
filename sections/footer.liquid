@@ -143,7 +143,7 @@
             {%- if trustpilot_link != blank -%}
               <a href="{{ trustpilot_link }}" class="footer-trustpilot-link" aria-label="查看 Trustpilot 评价" target="_blank" rel="noopener">
             {%- endif -%}
-            <img style="margin-top: 15px" src="{{ 'footer-trustpilot.webp' |  asset_url }}" alt="footer trustpilot png" />
+            {% comment %} <img style="margin-top: 15px" src="{{ 'footer-trustpilot.webp' |  asset_url }}" alt="footer trustpilot png" /> {% endcomment %}
             {%- if trustpilot_link != blank -%}
               </a>
             {%- endif -%}
