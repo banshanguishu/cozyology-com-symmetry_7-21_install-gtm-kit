@@ -1,0 +1,629 @@
+{%- comment -%}
+  Footer 2 — 自定义页脚（基于 Symmetry footer 重构）
+
+  桌面端：5 列网格
+    第 1–3 列：所有 menu block，按「列优先」顺序填充
+               per_col = ⌈menu总数 / 3⌉，第1列放前 per_col 个、第2列次 per_col 个、第3列剩余
+    第 4 列：custom-liquid（limit 1）
+    第 5 列：newsletter（limit 1）
+  移动端：单列从上到下 = newsletter → custom-liquid → links(手风琴) → 支付图标 → 版权/lower_menu
+
+  样式全部内置在本文件底部 {% stylesheet %}，作用域挂在 .footer-2 下，不影响旧 footer 与 main.css。
+{%- endcomment -%}
+
+{%- liquid
+  assign menu_count = 0
+  for block in section.blocks
+    if block.type == 'menu'
+      assign menu_count = menu_count | plus: 1
+    endif
+  endfor
+
+  assign per_col = 0
+  if menu_count > 0
+    # ⌈menu_count / 3⌉ ：整数除法下 (n + 2) / 3 == ceil(n / 3)
+    assign per_col = menu_count | plus: 2 | divided_by: 3
+  endif
+-%}
+
+<div class="footer-2__top container">
+  <div class="footer-2__main">
+
+    {%- comment -%} 第 1–3 列：menu blocks，列优先填充 {%- endcomment -%}
+    {%- if menu_count > 0 -%}
+      {%- for col in (1..3) -%}
+        {%- assign col_index = col | minus: 1 -%}
+        <div class="footer-2__col footer-2__links-col">
+          {%- assign menu_i = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'menu' -%}
+              {%- assign block_col = menu_i | divided_by: per_col -%}
+              {%- if block_col == col_index -%}
+                <details class="footer-2__group" {{ block.shopify_attributes }}>
+                  <summary class="footer-2__group-summary">
+                    <span class="footer-2__group-title">{{ block.settings.title | escape }}</span>
+                    <svg class="footer-2__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </summary>
+                  {%- if block.settings.menu != blank -%}
+                    <ul class="footer-2__menu">
+                      {%- for link in linklists[block.settings.menu].links -%}
+                        <li><a href="{{ link.url }}">{{- link.title -}}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </details>
+              {%- endif -%}
+              {%- assign menu_i = menu_i | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%} 第 4 列：custom-liquid（仅渲染第一个） {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'custom-liquid' -%}
+        <div class="footer-2__col footer-2__custom-col rte" {{ block.shopify_attributes }}>
+          {%- if block.settings.title != blank -%}
+            <div class="footer-2__col-title">{{ block.settings.title | escape }}</div>
+          {%- endif -%}
+          {{ block.settings.code }}
+        </div>
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} 第 5 列：newsletter（仅渲染第一个） {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'newsletter' -%}
+        <div class="footer-2__col footer-2__newsletter-col" {{ block.shopify_attributes }}>
+          {%- if block.settings.title != blank -%}
+            <div class="footer-2__col-title">{{ block.settings.title | escape }}</div>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <div class="footer-2__newsletter-text rte">{{ block.settings.text }}</div>
+          {%- endif -%}
+
+          {%- render 'newsletter-signup-2', id: 'footer2_newsletter_signup', block: block -%}
+
+          {%- if block.settings.show_social_icons -%}
+            {%- liquid
+              assign f2_icon_height = 18
+              if block.settings.soc_icons_large
+                assign f2_icon_height = 22
+              endif
+            -%}
+            <div class="footer-2__social">
+              {%- render 'social-media', icon: settings.social_custom_icon, icon_height: f2_icon_height -%}
+            </div>
+          {%- endif -%}
+
+          {%- assign trustpilot_link = section.settings.trustpilot_link -%}
+          {%- if trustpilot_link != blank -%}
+            <a href="{{ trustpilot_link }}" class="footer-2__trustpilot" target="_blank" rel="noopener" aria-label="Trustpilot">
+              <img src="{{ 'footer-trustpilot.webp' | asset_url }}" alt="Trustpilot" loading="lazy" width="120" />
+            </a>
+          {%- else -%}
+            <span class="footer-2__trustpilot">
+              <img src="{{ 'footer-trustpilot.webp' | asset_url }}" alt="Trustpilot" loading="lazy" width="120" />
+            </span>
+          {%- endif -%}
+        </div>
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{%- comment -%} 底栏：版权 + lower_menu（左）/ 支付图标（右）；本地化保留（仅在启用时渲染） {%- endcomment -%}
+<div class="footer-2__lower">
+  <div class="footer-2__lower-inner container">
+    <div class="footer-2__lower-left">
+      {%- assign copyright_year = 'now' | date: '%Y' -%}
+      <span class="footer-2__copyright">
+        {{- 'sections.footer.copyright_html' | t: year: copyright_year, shop_url: routes.root_url, shop_name: shop.name -}}
+      </span>
+
+      {%- if section.settings.lower_menu != blank -%}
+        <ul class="footer-2__lower-menu" role="navigation" aria-label="{{ 'accessibility.secondary_navigation' | t }}">
+          {%- for link in linklists[section.settings.lower_menu].links -%}
+            <li><a href="{{ link.url }}">{{- link.title -}}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="footer-2__lower-right">
+      {%- if section.settings.show_payment_icons -%}
+        <div class="footer-2__payment">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'footer-2__payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.enable_country_selector or section.settings.enable_language_selector -%}
+        <div class="footer-2__localization">
+          {%- render 'localization-form', id: 'footer2-localization', hide_labels: true, promote_popular: true -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.footer-2 {
+  --f2-bg: #F3EFE9;
+  --f2-heading: #2A2622;
+  --f2-text: #3A3631;
+  --f2-muted: #9A948B;
+  --f2-btn-bg: #2E2B27;
+  --f2-btn-text: #FFFFFF;
+  --f2-divider: #E2DCD3;
+
+  background: var(--f2-bg);
+  color: var(--f2-text);
+}
+.footer-2 a {
+  color: var(--f2-text);
+  text-decoration: none;
+}
+.footer-2 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- 上部主区 ---------- */
+.footer-2__top {
+  padding-top: 64px;
+  padding-bottom: 48px;
+}
+.footer-2__main {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.3fr);
+  gap: 28px 36px;
+}
+
+/* 列标题（链接列 / 自定义列 / 订阅列 通用） */
+.footer-2__group-title,
+.footer-2__col-title,
+.footer-2__custom-col h6 {
+  font-family: var(--heading-font-family);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--f2-heading);
+  margin: 0 0 16px;
+}
+
+/* ---------- 链接列 / 手风琴 ---------- */
+.footer-2__group {
+  display: block;
+}
+.footer-2__group + .footer-2__group {
+  margin-top: 28px;
+}
+.footer-2__group-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+}
+.footer-2__group-summary::-webkit-details-marker {
+  display: none;
+}
+.footer-2__chevron {
+  flex: none;
+  color: var(--f2-heading);
+  transition: transform 0.2s ease;
+}
+.footer-2__group[open] .footer-2__chevron {
+  transform: rotate(180deg);
+}
+.footer-2__menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.footer-2__menu li {
+  margin: 0 0 10px;
+}
+.footer-2__menu a {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- 第 4 列 custom-liquid ---------- */
+.footer-2__custom-col h6 {
+  margin-bottom: 8px;
+}
+.footer-2__custom-col h6:not(:first-child) {
+  margin-top: 22px;
+}
+.footer-2__custom-col p {
+  margin: 0 0 4px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.footer-2__custom-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.footer-2__muted {
+  color: var(--f2-muted);
+  margin-top: 14px !important;
+}
+
+/* 联系方式图标：mailto / tel 自动；Zoom 用 .f2-ic--video 标记 */
+.footer-2__custom-col a[href^="mailto:"]::before,
+.footer-2__custom-col a[href^="tel:"]::before,
+.footer-2__custom-col a.f2-ic--video::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+}
+.footer-2__custom-col a[href^="mailto:"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20x='3'%20y='5.5'%20width='18'%20height='13'%20rx='2'/%3E%3Cpath%20d='m4%207%208%206%208-6'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20x='3'%20y='5.5'%20width='18'%20height='13'%20rx='2'/%3E%3Cpath%20d='m4%207%208%206%208-6'/%3E%3C/svg%3E");
+}
+.footer-2__custom-col a[href^="tel:"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%204h3.5l1.5%204.5-2%201.2a11%2011%200%200%200%205%205l1.2-2%204.5%201.5V18a2%202%200%200%201-2%202A15%2015%200%200%201%204%206a2%202%200%200%201%201-2z'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%204h3.5l1.5%204.5-2%201.2a11%2011%200%200%200%205%205l1.2-2%204.5%201.5V18a2%202%200%200%201-2%202A15%2015%200%200%201%204%206a2%202%200%200%201%201-2z'/%3E%3C/svg%3E");
+}
+.footer-2__custom-col a.f2-ic--video::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20x='3'%20y='6'%20width='13'%20height='12'%20rx='2'/%3E%3Cpath%20d='m16%2010%205-2.5v9L16%2014z'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='1.7'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20x='3'%20y='6'%20width='13'%20height='12'%20rx='2'/%3E%3Cpath%20d='m16%2010%205-2.5v9L16%2014z'/%3E%3C/svg%3E");
+}
+
+/* ---------- 第 5 列 newsletter ---------- */
+.footer-2__newsletter-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 22px;
+  max-width: 320px;
+}
+.footer-2__social {
+  margin-top: 24px;
+}
+.footer-2__social .social {
+  gap: 6px;
+}
+.footer-2__trustpilot {
+  display: inline-block;
+  margin-top: 22px;
+}
+.footer-2__trustpilot img {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+
+/* ---------- 订阅表单 ---------- */
+.footer2-signup {
+  max-width: 320px;
+}
+.footer2-signup__field {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--f2-divider);
+}
+.footer2-signup__email {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--f2-text);
+}
+.footer2-signup__email::placeholder {
+  color: var(--f2-muted);
+}
+.footer2-signup__email:focus {
+  outline: none;
+}
+.footer2-signup__arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding-left: 8px;
+  color: var(--f2-muted);
+}
+.footer2-signup__button {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 0;
+  background: var(--f2-btn-bg);
+  color: var(--f2-btn-text);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.footer2-signup__button:hover {
+  opacity: 0.9;
+}
+.footer2-signup__success {
+  font-size: 14px;
+  color: var(--f2-heading);
+}
+
+/* ---------- 底栏 ---------- */
+.footer-2__lower-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 40px;
+  padding-top: 24px;
+  padding-bottom: 36px;
+  border-top: 1px solid var(--f2-divider);
+}
+.footer-2__lower-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--f2-muted);
+}
+.footer-2__copyright {
+  color: var(--f2-muted);
+}
+.footer-2__lower-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.footer-2__lower-menu a {
+  color: var(--f2-muted);
+}
+.footer-2__lower-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.footer-2__payment {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.footer-2__payment-icon {
+  width: auto;
+  height: 28px;
+}
+.footer-2__localization .localization__selector {
+  margin: 0;
+}
+
+/* ---------- 桌面端（≥768）：展开手风琴、隐藏箭头 ---------- */
+@media (min-width: 768px) {
+  .footer-2__group-summary {
+    pointer-events: none;
+    cursor: default;
+  }
+  .footer-2__chevron {
+    display: none;
+  }
+  /* 强制展开 <details>：兼容两种关闭态实现 —— */
+  /* ① 旧版浏览器用 display:none 隐藏子内容 */
+  .footer-2__menu {
+    display: block !important;
+    margin-top: 0;
+  }
+  /* ② 新版 Chrome/Edge/Firefox/Safari 用 ::details-content + content-visibility 隐藏 */
+  .footer-2__group::details-content {
+    content-visibility: visible !important;
+    block-size: auto !important;
+  }
+}
+
+/* ---------- 移动端（<768）：单列堆叠 + 手风琴 ---------- */
+@media (max-width: 767.98px) {
+  .footer-2__top {
+    padding-top: 40px;
+    padding-bottom: 8px;
+  }
+  .footer-2__main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  /* 顺序：newsletter → custom-liquid → links */
+  .footer-2__newsletter-col {
+    order: 1;
+  }
+  .footer-2__custom-col {
+    order: 2;
+    margin-top: 36px;
+  }
+  .footer-2__links-col {
+    order: 3;
+  }
+
+  /* 链接列变手风琴：用 group 顶边框拼成连续分隔线 */
+  .footer-2__group {
+    border-top: 1px solid var(--f2-divider);
+  }
+  .footer-2__group + .footer-2__group {
+    margin-top: 0;
+  }
+  .footer-2__group-summary {
+    padding: 18px 0;
+  }
+  .footer-2__group-title {
+    margin-bottom: 0;
+  }
+  .footer-2__menu {
+    margin: 0;
+    padding-bottom: 18px;
+  }
+
+  /* 底栏：支付图标在上，版权/链接居中在下 */
+  .footer-2__lower-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 22px;
+  }
+  .footer-2__lower-right {
+    order: -1;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .footer-2__payment {
+    justify-content: center;
+  }
+  .footer-2__lower-left {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-2__lower-menu {
+    justify-content: center;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer 2",
+  "class": "footer-2",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "lower_menu",
+      "label": "底栏菜单（版权旁链接）",
+      "info": "如 Privacy Policy / Terms & Conditions / IP Rights。该菜单不显示下级项。"
+    },
+    {
+      "type": "header",
+      "content": "Payment methods"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "显示支付图标",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Country/Region Selector",
+      "info": "To add a country/region, go to your [payment settings.](/admin/settings/payments)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "label": "Enable country/region selector",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Language Selector",
+      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "label": "Enable language selector",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "trustpilot_link",
+      "label": "Trustpilot 跳转链接",
+      "info": "留空则图片不可点击"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Links 链接列",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "This menu won't show dropdown items",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "custom-liquid",
+      "name": "Custom Liquid（第 4 列）",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading（可留空）"
+        },
+        {
+          "type": "liquid",
+          "id": "code",
+          "label": "Liquid / HTML"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter（第 5 列）",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Newsletter"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Sign up to be the first one to know our giveaways and exclusive deals.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_social_icons",
+          "label": "Show social media links",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "soc_icons_large",
+          "label": "Use large social media icons",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

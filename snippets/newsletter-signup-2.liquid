@@ -1,0 +1,44 @@
+{%- comment -%}
+  Footer 2 专用的邮件订阅表单（新样式：下边框单线输入框 + 装饰箭头 + 整宽 SUBSCRIBE 按钮）。
+  公共的 newsletter-signup 仍被 pop-up 等处使用，故另建本 snippet，互不影响。
+
+  Parameters:
+  - id    {String} - 表单唯一 id
+  - block {Object} - newsletter block（用于读取设置）
+
+  Usage:
+  {% render 'newsletter-signup-2', id: 'footer2_newsletter_signup', block: block %}
+{%- endcomment -%}
+
+<div class="footer2-signup">
+  {%- form 'customer', id: id -%}
+    {%- if form.posted_successfully? -%}
+      <div class="footer2-signup__success heading-font h6">{{ 'newsletter.success' | t }}</div>
+    {%- else -%}
+      {%- assign form_errors_id = id | append: '-error' -%}
+      {%- render 'form-errors', form: form, id: form_errors_id -%}
+
+      <input type="hidden" name="contact[tags]" value="prospect,newsletter,footer">
+
+      <div class="footer2-signup__field">
+        <input type="email"
+          name="contact[email]"
+          class="footer2-signup__email"
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          value=""
+          aria-label="{{ 'newsletter.label' | t }}"
+          {% if form.errors %}autofocus aria-invalid="true" aria-describedby="{{ form_errors_id }}"{% endif %}
+          required>
+        <span class="footer2-signup__arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <button type="submit" class="footer2-signup__button">
+        {{- 'newsletter.button_label' | t -}}
+      </button>
+    {%- endif -%}
+  {%- endform -%}
+</div>
