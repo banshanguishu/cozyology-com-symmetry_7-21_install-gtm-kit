@@ -1,0 +1,42 @@
+{%- comment -%}
+  计算器系列通用单选卡片组件（snippet）。
+  数据由调用处传入，组件内部默认值为空。
+
+  参数：
+    name          - radio 分组 name（同组互斥），建议每个分组唯一；默认 'cozy-cal-radio-group'
+    weights       - 各项权重，半角逗号分隔，对应 input 的 data-weight，如 '2.2,2.5,3'；默认空
+    labels        - 各项文案，竖线 | 分隔，如 'A|B|C'（文案内不要出现 |）；默认空
+    checked_index - 默认选中项下标（0 起）；默认 0
+
+  说明：
+    - weights 与 labels 按下标一一对应。
+    - 消费方 JS 读取 :checked 项的 data-weight 进行计算。
+{%- endcomment -%}
+
+{{ 'cozy-cal-radio-group.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign group_name = name | default: 'cozy-cal-radio-group'
+  assign weights_raw = weights | default: ''
+  assign labels_raw = labels | default: ''
+  assign checked_idx = checked_index | default: 0
+
+  assign rg_weights = weights_raw | split: ','
+  assign rg_labels = labels_raw | split: '|'
+-%}
+
+<div class="cozy-cal-radio-group" role="radiogroup">
+  {%- for label in rg_labels -%}
+    {%- assign weight = rg_weights[forloop.index0] -%}
+    <label class="cozy-cal-radio">
+      <input
+        type="radio"
+        name="{{ group_name }}"
+        value="{{ label | escape }}"
+        data-weight="{{ weight }}"
+        {% if forloop.index0 == checked_idx %}checked{% endif %} />
+      <span class="cozy-cal-radio-control" aria-hidden="true"></span>
+      <span class="cozy-cal-radio-text">{{ label | replace: '/', '/<wbr>' }}</span>
+    </label>
+  {%- endfor -%}
+</div>

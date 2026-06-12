@@ -1,0 +1,91 @@
+/* cozy-cal-radio-group —— 计算器系列通用单选卡片组件
+   原生 select 在长 option 下不换行会撑宽容器，用卡片式 radio 替代，文本可自由换行。 */
+
+.cozy-cal-radio-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+}
+
+.cozy-cal-radio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 14px;
+    border: 1px solid #BCB3AC;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cozy-cal-radio:hover {
+    border-color: #8C847D;
+}
+
+/* 选中态：整张卡片描边加深 + 浅色背景（:has 不支持时降级，仅圆点变化） */
+.cozy-cal-radio:has(input[type="radio"]:checked) {
+    border-color: #D5D0CB;
+    background-color: #FBFAF9;
+}
+
+/* 视觉隐藏原生 radio，但保留可聚焦/可访问 */
+.cozy-cal-radio input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cozy-cal-radio-control {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #BCB3AC;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.cozy-cal-radio input[type="radio"]:checked + .cozy-cal-radio-control {
+    border-color: #171717;
+}
+
+.cozy-cal-radio input[type="radio"]:checked + .cozy-cal-radio-control::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #171717;
+    transform: translate(-50%, -50%);
+}
+
+.cozy-cal-radio input[type="radio"]:focus-visible + .cozy-cal-radio-control {
+    outline: 2px solid #171717;
+    outline-offset: 2px;
+}
+
+.cozy-cal-radio-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #171717;
+    overflow-wrap: break-word;
+}
+
+@media (max-width: 767px) {
+    .cozy-cal-radio {
+        padding: 6px 12px;
+        gap: 10px;
+    }
+
+    .cozy-cal-radio-text {
+        font-size: 15px;
+    }
+}

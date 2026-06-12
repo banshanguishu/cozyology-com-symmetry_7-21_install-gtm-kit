@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const select_a = document.querySelector(".cal2-item-a select");
+  const radioGroup_a = document.querySelector(".cal2-item-a .cozy-cal-radio-group");
+  const radios_a = radioGroup_a
+    ? Array.from(radioGroup_a.querySelectorAll('input[type="radio"]'))
+    : [];
   const input_b = document.querySelector(".cal2-item-b input");
   const input_c = document.querySelector(".cal2-item-c input");
   const select_d = document.querySelector(".cal2-item-d select");
@@ -42,11 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {}
   };
 
-  if (select_a) {
-    select_a.addEventListener("change", () => markSelectAsFilled(select_a));
-    select_a.addEventListener("pointerdown", () => markSelectAsFilled(select_a));
-    select_a.addEventListener("keydown", () => markSelectAsFilled(select_a));
-  }
+  const getHeaderWeight = () => {
+    const checked = radios_a.find((radio) => radio.checked) || radios_a[0];
+    return checked ? checked.getAttribute("data-weight") : "0";
+  };
+
   if (select_d) {
     select_d.addEventListener("change", () => markSelectAsFilled(select_d));
     select_d.addEventListener("pointerdown", () => markSelectAsFilled(select_d));
@@ -90,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btn.addEventListener("click", () => {
-    const a_value = select_a.options[select_a.selectedIndex].getAttribute("data-weight");
+    const a_value = getHeaderWeight();
     const b_value = parseFloat(input_b.value) || 0;
     const c_value = parseFloat(input_c.value) || 0;
     const d_value = select_d.options[select_d.selectedIndex].getAttribute("data-weight");

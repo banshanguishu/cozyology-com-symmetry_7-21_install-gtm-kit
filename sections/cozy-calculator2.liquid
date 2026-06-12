@@ -29,11 +29,12 @@
               </a>
             {% endif %}
           </div>
-          <select value="PinchPleat/TailorPleat/FrenchPleat/Goblet">
-            <option data-weight="2.2">Pinch Pleat/Tailor Pleat/French Pleat/Inverted Box Pleat/Goblet/Grommet/Pinch Pleat with Back Tab</option>
-            <option data-weight="2.5">Triple Pinch Pleat/Triple Tailor Pleat/Triple French Pleat</option>
-            <option data-weight="3">Soft Top(Rod Pocket/Tab Top)</option>
-          </select>
+          {% render 'cozy-cal-radio-group',
+            name: 'cal-header-style',
+            weights: '2.2,2.5,3',
+            labels: 'Pinch Pleat/Tailor Pleat/French Pleat/Inverted Box Pleat/Goblet/Grommet/Pinch Pleat with Back Tab|Triple Pinch Pleat/Triple Tailor Pleat/Triple French Pleat|Soft Top(Rod Pocket/Tab Top)',
+            checked_index: 0
+          %}
         </div>
 
         <div class="cal2-item cal2-item-b">

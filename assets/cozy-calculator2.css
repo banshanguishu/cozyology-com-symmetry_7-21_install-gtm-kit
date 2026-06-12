@@ -24,7 +24,8 @@
 }
 
 .cozy-cal2-block {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .cozy-cal2-block-left {
