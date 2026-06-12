@@ -12,7 +12,7 @@
     align-items: center;
     gap: 12px;
     padding: 6px 14px;
-    border: 1px solid #BCB3AC;
+    border: 1px solid #EAEAEA;
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.15s ease, background-color 0.15s ease;

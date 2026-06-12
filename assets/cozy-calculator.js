@@ -123,11 +123,27 @@ function markSelectAsFilled(el) {
   updateSelectFilledState(el);
 }
 
+/* radio-group：读取选中项 data-weight（无选中时回退第一项） */
+function getRadioWeight(group) {
+  if (!group) return null;
+  const checked = group.querySelector('input[type="radio"]:checked') || group.querySelector('input[type="radio"]');
+  return checked ? checked.getAttribute("data-weight") : null;
+}
+
+/* radio-group：重置为默认选中第一项 */
+function resetRadioGroup(group) {
+  if (!group) return;
+  const radios = group.querySelectorAll('input[type="radio"]');
+  radios.forEach((radio, index) => {
+    radio.checked = index === 0;
+  });
+}
+
 function resetCalculatorView() {
   const el1 = document.querySelector(".item-stacked-width input");
   const el2 = document.querySelector(".item-rod-length input");
   const el3 = document.querySelector(".number-of-panels select");
-  const el4 = document.querySelector(".pleat-style select");
+  const el4 = document.querySelector(".pleat-style .cozy-cal-radio-group");
 
   const el6 = document.querySelector(".cal-result-order");
   const el7 = document.querySelector(".cal-result-rings");
@@ -142,15 +158,13 @@ function resetCalculatorView() {
     el2.value = "";
   }
   if (el3) el3.selectedIndex = 0;
-  if (el4) el4.selectedIndex = 0;
+  resetRadioGroup(el4);
 
   if (el3) delete el3.dataset.hasBeenChanged;
-  if (el4) delete el4.dataset.hasBeenChanged;
 
   updateInputFilledState(el1);
   updateInputFilledState(el2);
   updateSelectFilledState(el3);
-  updateSelectFilledState(el4);
 
   if (el6) el6.innerHTML = "-";
   if (el7) el7.innerHTML = "-";
@@ -223,7 +237,7 @@ function processOne(el_stacked_width_input, el_pleat_style_select, el_result_ord
   };
 
   const stacked_width_value = parseFloat(el_stacked_width_input.value) || 0;
-  const pleat_style_value = el_pleat_style_select.options[el_pleat_style_select.selectedIndex].getAttribute("data-weight"); // single or split
+  const pleat_style_value = getRadioWeight(el_pleat_style_select); // double or triple
   const base_value = pleatStyleBaseValueMap[pleat_style_value];
 
   if (stacked_width_value == "") {
@@ -274,7 +288,7 @@ function processTwo(el_rod_length_input, el_number_of_panels_select, el_pleat_st
   };
   const el_rod_length = parseFloat(el_rod_length_input.value) || 0; // a float number in inch
   const el_number_of_panels = el_number_of_panels_select.options[el_number_of_panels_select.selectedIndex].getAttribute("data-weight"); // single or split
-  const pleat_style_value = el_pleat_style_select.options[el_pleat_style_select.selectedIndex].getAttribute("data-weight"); // double or triple
+  const pleat_style_value = getRadioWeight(el_pleat_style_select); // double or triple
   const base_value = pleatStyleBaseValueMap[pleat_style_value];
 
   if (el_rod_length == "" || !base_value) {
@@ -324,7 +338,7 @@ function main() {
   const el1 = document.querySelector(".item-stacked-width input");
   const el2 = document.querySelector(".item-rod-length input");
   const el3 = document.querySelector(".number-of-panels select");
-  const el4 = document.querySelector(".pleat-style select");
+  const el4 = document.querySelector(".pleat-style .cozy-cal-radio-group");
   const el5 = document.querySelector(".cal-btn-calculate"); // 计算按钮
 
   // 结果展示Doms
@@ -347,7 +361,6 @@ function main() {
   updateInputFilledState(el1);
   updateInputFilledState(el2);
   updateSelectFilledState(el3);
-  updateSelectFilledState(el4);
 
   attachDecimalOneLimiter(el1);
   attachDecimalOneLimiter(el2);
@@ -361,23 +374,14 @@ function main() {
   el3.addEventListener("change", () => {
     markSelectAsFilled(el3);
   });
-  el4.addEventListener("change", () => {
-    markSelectAsFilled(el4);
-  });
 
   // Selecting the default option again does not reliably fire `change`,
   // so we mark the select as filled as soon as the user starts interacting.
   el3.addEventListener("pointerdown", () => {
     markSelectAsFilled(el3);
   });
-  el4.addEventListener("pointerdown", () => {
-    markSelectAsFilled(el4);
-  });
   el3.addEventListener("keydown", () => {
     markSelectAsFilled(el3);
-  });
-  el4.addEventListener("keydown", () => {
-    markSelectAsFilled(el4);
   });
 
   // 添加点击计算按钮事件
