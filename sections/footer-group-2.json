@@ -170,6 +170,27 @@
             "menu": "footer-1"
           }
         },
+        "menu_M7c4cg": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links",
+            "menu": "footer"
+          }
+        },
+        "menu_iWDUwt": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links",
+            "menu": "footer"
+          }
+        },
+        "menu_KMEpwC": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links",
+            "menu": "footer"
+          }
+        },
         "custom_liquid_contact": {
           "type": "custom-liquid",
           "settings": {
@@ -182,7 +203,6 @@
           "settings": {
             "title": "NEWSLETTER",
             "text": "<p>Sign up to be the first one to know our giveaways and exclusive deals.</p>",
-            "button_style": "primary",
             "show_social_icons": true,
             "soc_icons_large": false
           }
@@ -192,6 +212,9 @@
         "1601308671932",
         "menu_GdhkDT",
         "menu_nUftyw",
+        "menu_M7c4cg",
+        "menu_iWDUwt",
+        "menu_KMEpwC",
         "custom_liquid_contact",
         "newsletter_dqmm9B"
       ],
@@ -200,7 +223,6 @@
       ],
       "settings": {
         "lower_menu": "",
-        "show_powered_by": false,
         "show_payment_icons": true,
         "enable_country_selector": false,
         "enable_language_selector": false,
