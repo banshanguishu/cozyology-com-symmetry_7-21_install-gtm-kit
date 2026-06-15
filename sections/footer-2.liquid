@@ -196,20 +196,10 @@
   gap: 28px 36px;
 }
 
-/* 列标题（自定义列 / 订阅列） */
+/* 列标题（menu / 自定义列 / 订阅列 通用） */
+.footer-2__group-title,
 .footer-2__col-title,
 .footer-2__custom-col h6 {
-  font-family: var(--f2-font);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--f2-heading);
-  margin: 0 0 16px;
-}
-
-/* menu 列标题 */
-.footer-2__group-title {
   font-family: var(--f2-font);
   font-size: 12px;
   font-weight: 700;
@@ -268,15 +258,17 @@
 }
 .footer-2__custom-col p {
   margin: 0 0 4px;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.4;
 }
 .footer-2__custom-col a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: oklch(43.9% 0 0);
 }
 .footer-2__muted {
   color: var(--f2-muted);
