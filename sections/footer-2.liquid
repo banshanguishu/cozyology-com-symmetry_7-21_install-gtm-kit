@@ -163,9 +163,18 @@
   --f2-btn-bg: #2E2B27;
   --f2-btn-text: #FFFFFF;
   --f2-divider: #E2DCD3;
+  --f2-font: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   background: var(--f2-bg);
   color: var(--f2-text);
+  font-family: var(--f2-font);
+}
+/* 表单控件默认不继承字体，强制统一为 footer 字体 */
+.footer-2 input,
+.footer-2 button,
+.footer-2 select,
+.footer-2 textarea {
+  font-family: inherit;
 }
 .footer-2 a {
   color: var(--f2-text);
@@ -187,16 +196,26 @@
   gap: 28px 36px;
 }
 
-/* 列标题（链接列 / 自定义列 / 订阅列 通用） */
-.footer-2__group-title,
+/* 列标题（自定义列 / 订阅列） */
 .footer-2__col-title,
 .footer-2__custom-col h6 {
-  font-family: var(--heading-font-family);
+  font-family: var(--f2-font);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--f2-heading);
+  margin: 0 0 16px;
+}
+
+/* menu 列标题 */
+.footer-2__group-title {
+  font-family: var(--f2-font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(20.5% 0 0);
   margin: 0 0 16px;
 }
 
@@ -231,11 +250,13 @@
   list-style: none;
 }
 .footer-2__menu li {
-  margin: 0 0 10px;
+  margin: 0;
 }
 .footer-2__menu a {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 400;
   line-height: 1.4;
+  color: oklch(43.9% 0 0);
 }
 
 /* ---------- 第 4 列 custom-liquid ---------- */
