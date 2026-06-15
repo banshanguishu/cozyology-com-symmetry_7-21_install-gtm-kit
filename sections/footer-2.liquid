@@ -196,17 +196,24 @@
   gap: 28px 36px;
 }
 
-/* 列标题（menu / 自定义列 / 订阅列 通用） */
+/* 列标题（menu / 自定义列 / 订阅列 通用）—— 统一 line-height 保证各列标题首行对齐 */
 .footer-2__group-title,
 .footer-2__col-title,
 .footer-2__custom-col h6 {
   font-family: var(--f2-font);
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #171717; /* oklch 不被支持时的兜底，等价于下行 */
   color: oklch(20.5% 0 0);
   margin: 0 0 16px;
+}
+
+/* menu 列标题：收紧与首个链接的间距 */
+.footer-2__group-title {
+  margin-bottom: 4px;
 }
 
 /* ---------- 链接列 / 手风琴 ---------- */
@@ -246,6 +253,7 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
+  color: #525252; /* oklch 不被支持时的兜底，等价于下行 */
   color: oklch(43.9% 0 0);
 }
 
@@ -268,6 +276,7 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
+  color: #525252; /* oklch 不被支持时的兜底，等价于下行 */
   color: oklch(43.9% 0 0);
 }
 .footer-2__muted {

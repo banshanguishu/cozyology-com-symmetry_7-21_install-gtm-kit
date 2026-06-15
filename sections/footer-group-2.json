@@ -196,8 +196,7 @@
         "newsletter_dqmm9B"
       ],
       "custom_css": [
-        "@media (max-width: 768px) {.no-wrap {white-space: normal; }}",
-        "h6 {font-family: \"Nunito Sans\", sans-serif;}"
+        "@media (max-width: 768px) {.no-wrap {white-space: normal; }}"
       ],
       "settings": {
         "lower_menu": "",
