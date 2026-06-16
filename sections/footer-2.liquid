@@ -160,7 +160,7 @@
   --f2-heading: #2A2622;
   --f2-text: #3A3631;
   --f2-muted: #9A948B;
-  --f2-btn-bg: #2E2B27;
+  --f2-btn-bg: #3d3d3d;
   --f2-btn-text: #FFFFFF;
   --f2-divider: #E2DCD3;
   --f2-font: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -342,20 +342,27 @@
   align-items: center;
   border-bottom: 1px solid var(--f2-divider);
 }
-.footer2-signup__email {
+/* 用 .footer-2 提升优先级，覆盖主题 input[type=email] 的边框/圆角/背景/阴影，
+   只保留 .footer2-signup__field 的底部下划线 */
+.footer-2 .footer2-signup__email,
+.footer-2 .footer2-signup__email:hover,
+.footer-2 .footer2-signup__email:focus,
+.footer-2 .footer2-signup__email:active {
   flex: 1 1 auto;
   min-width: 0;
-  border: 0;
-  background: transparent;
+  margin: 0;
   padding: 10px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
   font-size: 14px;
+  line-height: 1.4;
   color: var(--f2-text);
 }
 .footer2-signup__email::placeholder {
   color: var(--f2-muted);
-}
-.footer2-signup__email:focus {
-  outline: none;
 }
 .footer2-signup__arrow {
   flex: none;
@@ -372,8 +379,8 @@
   border: 0;
   background: var(--f2-btn-bg);
   color: var(--f2-btn-text);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
