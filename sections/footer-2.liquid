@@ -173,6 +173,8 @@
   background: var(--f2-bg);
   color: var(--f2-text);
   font-family: var(--f2-font);
+  /* 允许 block-size 0 ↔ auto 之间过渡（手风琴动画用） */
+  interpolate-size: allow-keywords;
 }
 /* 表单控件默认不继承字体，强制统一为 footer 字体 */
 .footer-2 input,
@@ -492,6 +494,10 @@
   .footer-2__links-col {
     order: 3;
   }
+  /* 手风琴整块与上方内容（custom-liquid）留出间距；只加在第一列，列间保持连续分隔线 */
+  .footer-2__links-col:first-child {
+    margin-top: 36px;
+  }
 
   /* 链接列变手风琴：用 group 顶边框拼成连续分隔线 */
   .footer-2__group {
@@ -509,6 +515,15 @@
   .footer-2__menu {
     margin: 0;
     padding-bottom: 18px;
+  }
+  /* 手风琴展开/收起过渡（不支持 ::details-content 的浏览器退化为瞬时） */
+  .footer-2__group::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 0.3s ease, content-visibility 0.3s ease allow-discrete;
+  }
+  .footer-2__group[open]::details-content {
+    block-size: auto;
   }
 
   /* 底栏：支付图标在上，版权/链接居中在下 */
