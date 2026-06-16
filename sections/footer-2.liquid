@@ -101,15 +101,7 @@
           {%- endif -%}
 
           {%- assign trustpilot_link = section.settings.trustpilot_link -%}
-          {%- if trustpilot_link != blank -%}
-            <a href="{{ trustpilot_link }}" class="footer-2__trustpilot" target="_blank" rel="noopener" aria-label="Trustpilot">
-              <img src="{{ 'footer-trustpilot.webp' | asset_url }}" alt="Trustpilot" loading="lazy" width="120" />
-            </a>
-          {%- else -%}
-            <span class="footer-2__trustpilot">
-              <img src="{{ 'footer-trustpilot.webp' | asset_url }}" alt="Trustpilot" loading="lazy" width="120" />
-            </span>
-          {%- endif -%}
+          {%- render 'trustpilot', rating: 4, trustpilot_link: trustpilot_link -%}
         </div>
         {%- break -%}
       {%- endif -%}

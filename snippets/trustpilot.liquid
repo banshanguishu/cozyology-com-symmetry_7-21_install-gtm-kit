@@ -1,0 +1,101 @@
+{%- comment -%}
+Trustpilot 评分组件
+用法:
+{% render 'trustpilot', rating: 4 %}
+{% render 'trustpilot', rating: 4, trustpilot_link: 'https://www.trustpilot.com/review/xxx' %}
+{%- endcomment -%}
+
+{%- assign rating = rating | default: 0 | at_most: 5 | at_least: 0 | round -%}
+
+<style>
+    .trustpilot {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    a.trustpilot,
+    a.trustpilot:hover,
+    a.trustpilot:focus,
+    a.trustpilot:active {
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .trustpilot-rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .trustpilot-rating__title {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .trustpilot-rating__rating {
+        display: flex;
+        gap: 2px;
+    }
+
+    .trustpilot-rating__item {
+        height: 16px;
+        width: 16px;
+        background: #00b67a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .trustpilot-rating__item--inactive {
+        background: #dcdce6;
+    }
+
+    .trustpilot .h-3 {
+        height: 12px;
+    }
+
+    .trustpilot .w-3 {
+        width: 12px;
+    }
+
+    .trustpilot-topic {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: oklch(70.8% 0 0);
+    }
+</style>
+
+{%- capture trustpilot_inner -%}
+<div class="trustpilot-rating">
+    <span class="trustpilot-rating__title">Excellent</span>
+    <div class="trustpilot-rating__rating">
+        {% for i in (1..5) %}
+        <div class="trustpilot-rating__item{% if i > rating %} trustpilot-rating__item--inactive{% endif %}">
+            <svg viewBox="0 0 24 24" fill="white" class="h-3 w-3">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="trustpilot-topic">
+    <svg viewBox="0 0 24 24" fill="#00b67a" class="h-3 w-3">
+        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </svg>
+    <span>Trustpilot</span>
+</div>
+{%- endcapture -%}
+
+{% if trustpilot_link != blank %}
+<a href="{{ trustpilot_link | escape }}" class="trustpilot" target="_blank" rel="noopener noreferrer">
+    {{ trustpilot_inner }}
+</a>
+{% else %}
+<div class="trustpilot">
+    {{ trustpilot_inner }}
+</div>
+{% endif %}
