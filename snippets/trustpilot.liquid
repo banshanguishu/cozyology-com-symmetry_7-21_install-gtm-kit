@@ -1,8 +1,13 @@
 {%- comment -%}
 Trustpilot 评分组件
+参数:
+  rating             - 评分 0-5
+  trustpilot_link    - 可选，跳转链接（留空则不可点击）
+  custom_style       - 可选，内联 CSS，作用于最外层 .trustpilot 元素（如 margin/padding）
+  shopify_attributes - 可选，block.shopify_attributes（供主题编辑器选中）
 用法:
 {% render 'trustpilot', rating: 4 %}
-{% render 'trustpilot', rating: 4, trustpilot_link: 'https://www.trustpilot.com/review/xxx' %}
+{% render 'trustpilot', rating: 4, trustpilot_link: 'https://www.trustpilot.com/review/xxx', custom_style: 'margin-top: 22px;' %}
 {%- endcomment -%}
 
 {%- assign rating = rating | default: 0 | at_most: 5 | at_least: 0 | round -%}
@@ -91,11 +96,11 @@ Trustpilot 评分组件
 {%- endcapture -%}
 
 {% if trustpilot_link != blank %}
-<a href="{{ trustpilot_link | escape }}" class="trustpilot" target="_blank" rel="noopener noreferrer">
+<a href="{{ trustpilot_link | escape }}" class="trustpilot" target="_blank" rel="noopener noreferrer"{% if custom_style != blank %} style="{{ custom_style }}"{% endif %} {{ shopify_attributes }}>
     {{ trustpilot_inner }}
 </a>
 {% else %}
-<div class="trustpilot">
+<div class="trustpilot"{% if custom_style != blank %} style="{{ custom_style }}"{% endif %} {{ shopify_attributes }}>
     {{ trustpilot_inner }}
 </div>
 {% endif %}

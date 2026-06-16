@@ -24,6 +24,14 @@
     # ⌈menu_count / 3⌉ ：整数除法下 (n + 2) / 3 == ceil(n / 3)
     assign per_col = menu_count | plus: 2 | divided_by: 3
   endif
+
+  # 取第一个 trustpilot block（footer-2 固定布局，渲染在第 5 列 newsletter 区内）
+  for block in section.blocks
+    if block.type == 'trustpilot'
+      assign tp_block = block
+      break
+    endif
+  endfor
 -%}
 
 <div class="footer-2__top container">
@@ -100,8 +108,13 @@
             </div>
           {%- endif -%}
 
-          {%- assign trustpilot_link = section.settings.trustpilot_link -%}
-          {%- render 'trustpilot', rating: 4, trustpilot_link: trustpilot_link -%}
+          {%- if tp_block and tp_block.settings.show_trustpilot -%}
+            {%- render 'trustpilot',
+              rating: tp_block.settings.rating,
+              trustpilot_link: tp_block.settings.trustpilot_link,
+              custom_style: tp_block.settings.custom_style,
+              shopify_attributes: tp_block.shopify_attributes -%}
+          {%- endif -%}
         </div>
         {%- break -%}
       {%- endif -%}
@@ -304,10 +317,11 @@
 
 /* ---------- 第 5 列 newsletter ---------- */
 .footer-2__newsletter-text {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   margin: 0 0 22px;
   max-width: 320px;
+  color: #525252;
 }
 .footer-2__social {
   margin-top: 24px;
@@ -315,14 +329,10 @@
 .footer-2__social .social {
   gap: 6px;
 }
-.footer-2__trustpilot {
-  display: inline-block;
-  margin-top: 22px;
-}
-.footer-2__trustpilot img {
-  display: block;
-  width: 120px;
-  height: auto;
+/* 覆盖主题 .social a 的 margin-inline-start:10px，改为 inline-end，让首个图标贴左 */
+.footer-2__social .social a {
+  margin-inline-start: 0;
+  margin-inline-end: 10px;
 }
 
 /* ---------- 订阅表单 ---------- */
@@ -380,9 +390,9 @@
 .footer2-signup__button:hover {
   opacity: 0.9;
 }
-.footer2-signup__success {
-  font-size: 14px;
-  color: var(--f2-heading);
+.footer-2 .footer2-signup__success {
+  font-size: 13px;
+  color: #525252;
 }
 
 /* ---------- 底栏 ---------- */
@@ -570,12 +580,6 @@
       "id": "enable_language_selector",
       "label": "Enable language selector",
       "default": false
-    },
-    {
-      "type": "url",
-      "id": "trustpilot_link",
-      "label": "Trustpilot 跳转链接",
-      "info": "留空则图片不可点击"
     }
   ],
   "blocks": [
@@ -643,6 +647,41 @@
           "id": "soc_icons_large",
           "label": "Use large social media icons",
           "default": false
+        }
+      ]
+    },
+    {
+      "type": "trustpilot",
+      "name": "Trustpilot 评分",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_trustpilot",
+          "label": "显示 Trustpilot 评分",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "trustpilot_link",
+          "label": "Trustpilot 跳转链接",
+          "info": "留空则不可点击"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "评分",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 4,
+          "unit": "★"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_style",
+          "label": "自定义样式（最外层元素）",
+          "info": "内联 CSS，作用于组件最外层元素，例如：margin: 16px 0; padding: 8px;"
         }
       ]
     }

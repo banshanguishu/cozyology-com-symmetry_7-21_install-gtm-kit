@@ -206,6 +206,15 @@
             "show_social_icons": true,
             "soc_icons_large": false
           }
+        },
+        "trustpilot_review": {
+          "type": "trustpilot",
+          "settings": {
+            "show_trustpilot": true,
+            "trustpilot_link": "https://www.trustpilot.com/review/cozyology.com",
+            "rating": 4,
+            "custom_style": "margin-top: 22px;"
+          }
         }
       },
       "block_order": [
@@ -216,7 +225,8 @@
         "menu_iWDUwt",
         "menu_KMEpwC",
         "custom_liquid_contact",
-        "newsletter_dqmm9B"
+        "newsletter_dqmm9B",
+        "trustpilot_review"
       ],
       "custom_css": [
         "@media (max-width: 768px) {.no-wrap {white-space: normal; }}"
@@ -225,8 +235,7 @@
         "lower_menu": "",
         "show_payment_icons": true,
         "enable_country_selector": false,
-        "enable_language_selector": false,
-        "trustpilot_link": "https://www.trustpilot.com/review/cozyology.com"
+        "enable_language_selector": false
       }
     }
   },
