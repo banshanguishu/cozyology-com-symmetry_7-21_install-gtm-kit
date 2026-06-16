@@ -199,7 +199,7 @@
 }
 .footer-2__main {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.3fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 28px 36px;
 }
 
@@ -452,6 +452,11 @@
 
 /* ---------- 桌面端（≥768）：展开手风琴、隐藏箭头 ---------- */
 @media (min-width: 768px) {
+  /* 比页面其它区块各窄 20px，给五列更多宽度（footer 内 main 与底栏同步对齐） */
+  .footer-2 .footer-2__top,
+  .footer-2 .footer-2__lower-inner {
+    padding-inline: calc(var(--container-pad-x) - 20px);
+  }
   .footer-2__group-summary {
     pointer-events: none;
     cursor: default;
