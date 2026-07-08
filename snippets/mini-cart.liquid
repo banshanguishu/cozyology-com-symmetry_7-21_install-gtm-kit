@@ -11,6 +11,12 @@
 
 {%- assign visible_items_count = 0 -%}
 {%- assign first_section_item = nil -%}
+{%- comment -%}
+  Checkout 跳转判定：统计非小样商品数量。
+  小样 = 所属 collection 的 handle 含 'free-swatches'（与 main-cart / free-swatches snippet 判定一致）。
+  注意 cart.items 是整个购物车（所有加购商品），不局限于本 section。
+{%- endcomment -%}
+{%- assign non_swatch_qty = 0 -%}
 {%- for item in cart.items -%}
   {%- if section_product_ids contains item.product_id -%}
     {%- assign visible_items_count = visible_items_count | plus: 1 -%}
@@ -18,7 +24,17 @@
       {%- assign first_section_item = item -%}
     {%- endif -%}
   {%- endif -%}
+  {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+  {%- unless item_collection_handles contains 'free-swatches' -%}
+    {%- assign non_swatch_qty = non_swatch_qty | plus: item.quantity -%}
+  {%- endunless -%}
 {%- endfor -%}
+
+{%- comment -%}
+  Checkout 跳转：不把 /checkout 写进 href —— 否则会被第三方 app 的 a[href*="checkout"] 选择器命中，
+  在按钮旁注入折扣码/Total 组件。改为仅在"仅小样"(non_swatch_qty == 0) 时给按钮打 data 标记，
+  由 test.liquid 的点击委托拦截并 window.location 跳 /checkout；否则 <a> 原生跳购物车页。
+{%- endcomment -%}
 
 {%- comment -%} 列表两端箭头：>8 件时（即开始溢出滚动）用深色（active）版本，否则用默认浅色版本 {%- endcomment -%}
 {%- if visible_items_count > 8 -%}
@@ -130,7 +146,9 @@
           width="32px"
           height="32px" />
       </span>
-      <a class="mini-cart__btn mini-cart__cart-btn" href="{{ routes.cart_url }}">
+      <a class="mini-cart__btn mini-cart__cart-btn"
+         href="{{ routes.cart_url }}"
+         {% if non_swatch_qty == 0 %}data-checkout-only-swatches{% endif %}>
         Checkout
       </a>
     </div>

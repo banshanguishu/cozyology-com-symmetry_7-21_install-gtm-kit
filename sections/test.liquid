@@ -661,11 +661,22 @@
     }
   }
 
-  // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / </> 滚动）
-  // Checkout 按钮已改为 <a href> 原生跳转主购物车页，不再走这里
+  // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / </> 滚动 / Checkout 跳转）
+  // Checkout 按钮：href 恒为 /cart，避免 href 含 "checkout" 被第三方 app 的 a[href*="checkout"] 选择器
+  //   命中而在按钮旁注入折扣码/Total 组件。仅当按钮带 data-checkout-only-swatches（购物车只剩小样）时，
+  //   拦截点击并跳 /checkout；否则放行原生 <a> 跳购物车页。
   // 用 document 委托，因为 mini-cart 的 DOM 会被 section 刷新整段替换
   function handleMiniCartClick(event) {
     const target = event.target;
+
+    const checkoutBtn = target.closest('.mini-cart__cart-btn');
+    if (checkoutBtn) {
+      if (checkoutBtn.hasAttribute('data-checkout-only-swatches')) {
+        event.preventDefault();
+        window.location.href = '/checkout';
+      }
+      return;
+    }
 
     if (target.closest('[data-mini-cart-collapse]')) {
       toggleMiniCart(true);
