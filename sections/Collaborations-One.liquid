@@ -1,3 +1,8 @@
+{%- assign cpone_location = section.settings.location | strip -%}
+{%- assign cpone_project_type = section.settings.project_type | strip -%}
+{%- assign cpone_square_footage = section.settings.square_footage | strip -%}
+{%- assign cpone_timeline = section.settings.timeline | strip -%}
+{%- assign cpone_main_title = section.settings.main_title -%}
 <div id="section-id-{{ section.id }}" class="cpone-one-container">
   <div class="is-web">
     <div class="cpone-project-showcase">
@@ -10,22 +15,30 @@
 
       <div class="cpone-project-info">
         <div class="cpone-project-details">
-          <div class="cpone-detail-item">
-            <div class="cpone-detail-label">Location:</div>
-            <div class="cpone-detail-value">{{ section.settings.location }}</div>
-          </div>
-          <div class="cpone-detail-item">
-            <div class="cpone-detail-label">Project Type:</div>
-            <div class="cpone-detail-value">{{ section.settings.project_type }}</div>
-          </div>
-          <div class="cpone-detail-item">
-            <div class="cpone-detail-label">Square Footage:</div>
-            <div class="cpone-detail-value">{{ section.settings.square_footage }}</div>
-          </div>
-          <div class="cpone-detail-item">
-            <div class="cpone-detail-label">Timeline:</div>
-            <div class="cpone-detail-value">{{ section.settings.timeline }}</div>
-          </div>
+          {%- if cpone_location != blank -%}
+            <div class="cpone-detail-item">
+              <div class="cpone-detail-label">Location:</div>
+              <div class="cpone-detail-value">{{ cpone_location }}</div>
+            </div>
+          {%- endif -%}
+          {%- if cpone_project_type != blank -%}
+            <div class="cpone-detail-item">
+              <div class="cpone-detail-label">Project Type:</div>
+              <div class="cpone-detail-value">{{ cpone_project_type }}</div>
+            </div>
+          {%- endif -%}
+          {%- if cpone_square_footage != blank -%}
+            <div class="cpone-detail-item">
+              <div class="cpone-detail-label">Square Footage:</div>
+              <div class="cpone-detail-value">{{ cpone_square_footage }}</div>
+            </div>
+          {%- endif -%}
+          {%- if cpone_timeline != blank -%}
+            <div class="cpone-detail-item">
+              <div class="cpone-detail-label">Timeline:</div>
+              <div class="cpone-detail-value">{{ cpone_timeline }}</div>
+            </div>
+          {%- endif -%}
         </div>
 
         <div class="cpone-challenge-section">
@@ -35,7 +48,7 @@
     </div>
 
     <div class="cpone-description-section">
-      <h1 class="cpone-main-title">Modern luxury meets timeless coziness.</h1>
+      <h1 class="cpone-main-title">{{ cpone_main_title }}</h1>
       <div>{{ section.settings.project_description }}</div>
     </div>
   </div>
@@ -48,28 +61,36 @@
       -%}
     </div>
     <div class="cpone-description-section">
-      <h1 class="cpone-main-title">Modern luxury meets timeless coziness.</h1>
+      <h1 class="cpone-main-title">{{ cpone_main_title }}</h1>
       <div>{{ section.settings.project_description }}</div>
     </div>
     <div class="cpone-mobile-slpit"></div>
     <div class="cpone-project-info">
       <div class="cpone-project-details">
-        <div class="cpone-detail-item">
-          <div class="cpone-detail-label">Location:</div>
-          <div class="cpone-detail-value">{{ section.settings.location }}</div>
-        </div>
-        <div class="cpone-detail-item">
-          <div class="cpone-detail-label">Project Type:</div>
-          <div class="cpone-detail-value">{{ section.settings.project_type }}</div>
-        </div>
-        <div class="cpone-detail-item">
-          <div class="cpone-detail-label">Square Footage:</div>
-          <div class="cpone-detail-value">{{ section.settings.square_footage }}</div>
-        </div>
-        <div class="cpone-detail-item">
-          <div class="cpone-detail-label">Timeline:</div>
-          <div class="cpone-detail-value">{{ section.settings.timeline }}</div>
-        </div>
+        {%- if cpone_location != blank -%}
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Location:</div>
+            <div class="cpone-detail-value">{{ cpone_location }}</div>
+          </div>
+        {%- endif -%}
+        {%- if cpone_project_type != blank -%}
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Project Type:</div>
+            <div class="cpone-detail-value">{{ cpone_project_type }}</div>
+          </div>
+        {%- endif -%}
+        {%- if cpone_square_footage != blank -%}
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Square Footage:</div>
+            <div class="cpone-detail-value">{{ cpone_square_footage }}</div>
+          </div>
+        {%- endif -%}
+        {%- if cpone_timeline != blank -%}
+          <div class="cpone-detail-item">
+            <div class="cpone-detail-label">Timeline:</div>
+            <div class="cpone-detail-value">{{ cpone_timeline }}</div>
+          </div>
+        {%- endif -%}
       </div>
 
       <div class="cpone-challenge-section">
@@ -229,6 +250,13 @@
         "id": "project_image",
         "label": "Project Image",
         "info": "Select the main project image"
+      },
+      {
+        "type": "text",
+        "id": "main_title",
+        "label": "Main Title",
+        "default": "Modern luxury meets timeless coziness.",
+        "info": "Main title displayed in the description section"
       },
       {
         "type": "text",
