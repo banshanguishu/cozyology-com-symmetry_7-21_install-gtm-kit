@@ -27,6 +27,55 @@
 {%- comment -%} Free Swatches 收纳条交互（箭头滚动 / 移除 AJAX），与 cart-drawer 共用 {%- endcomment -%}
 <script src="{{ 'free-swatches.js' | asset_url }}" defer></script>
 
+{%- comment -%}
+  点击 JULY20 / JULY250 时，把折扣码填入 ymq 第三方输入框并触发 Apply。
+  cart 页无 <cart-drawer> 自定义元素，委托挂在 document 上；用 window 标记防止主题编辑器重复渲染时重复绑定。
+{%- endcomment -%}
+<script>
+  (function () {
+    if (window.__ccApplyDiscountBound) return;
+    window.__ccApplyDiscountBound = true;
+
+    function applyYmqDiscount(code) {
+      if (!code) return;
+      var wrapper = document.querySelector('.ymq-option-discount-wrapper');
+      if (!wrapper) return;
+      var input = wrapper.querySelector('.ymq-option-discount-input');
+      var button = wrapper.querySelector('.ymq-option-discount-button');
+      if (!input || !button) return;
+
+      // ymq 输入框大概率受框架控制，用原生 setter + input 事件才能更新其内部状态
+      var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      input.focus();
+      nativeSetter.call(input, code);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+
+      // 给插件一个 tick 处理 input 事件后再点击 Apply
+      setTimeout(function () { button.click(); }, 50);
+    }
+
+    document.addEventListener('click', function (evt) {
+      var el = evt.target;
+      if (!el || !el.closest) return;
+      var trigger = el.closest('.js-apply-discount');
+      if (!trigger) return;
+      evt.preventDefault();
+      applyYmqDiscount(trigger.dataset.discountCode);
+    });
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key !== 'Enter' && evt.key !== ' ') return;
+      var el = evt.target;
+      if (!el || !el.closest) return;
+      var trigger = el.closest('.js-apply-discount');
+      if (!trigger) return;
+      evt.preventDefault();
+      applyYmqDiscount(trigger.dataset.discountCode);
+    });
+  })();
+</script>
+
 <div class="container fully-spaced-row" data-ajax-update="true" style="--page-container-width: {{ settings.max_page_width | at_most: 1200 }}px;">
   <cart-form data-section-id="{{ section.id }}" data-ajax-update="true">
     {%- comment -%}
@@ -199,8 +248,8 @@
               <div>
   {% comment %} <span style="color: #BA6352;">Gift cards</span> can be entered at checkout.<br> {% endcomment %}
   <strong></strong><br>
-  20% OFF Sitewide — Code: <span style="color:#BA6352;font-weight:600;">JULY20</span><br>
-  $250 OFF Orders $1200+ — Code: <span style="color:#BA6352;font-weight:600;">JULY250</span><br>
+  20% OFF Sitewide — Code: <span class="js-apply-discount" data-discount-code="JULY20" role="button" tabindex="0" title="Click to apply" style="color:#BA6352;font-weight:600;cursor:pointer;text-decoration:underline;">JULY20</span><br>
+  $250 OFF Orders $1200+ — Code: <span class="js-apply-discount" data-discount-code="JULY250" role="button" tabindex="0" title="Click to apply" style="color:#BA6352;font-weight:600;cursor:pointer;text-decoration:underline;">JULY250</span><br>
   <br>
   <span style="color:#BA6352; font-weight:600;">You can apply the GIFT CARD at checkout next page.</span><br>
 </div>
