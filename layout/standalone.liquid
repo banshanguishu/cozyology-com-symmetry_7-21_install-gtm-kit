@@ -1,0 +1,21 @@
+{% comment %}
+  极简独立布局 —— 用于「自包含」的独立页面（自带完整 HTML/CSS/JS）。
+  特点：
+    · 不加载店铺页头 / 导航 / 页脚 / main.css，避免样式互相污染
+    · 加 noindex,nofollow，页面不被搜索引擎收录（配合「不可猜的 handle + 不挂菜单」做隐蔽）
+    · 仍保留 {{ content_for_header }}（Shopify 必需，供 App / 分析 / 主题编辑器使用）
+  用法：在模板顶部加 layout 'standalone' 标签
+{% endcomment %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{{ page.title | default: shop.name }}</title>
+  {{ content_for_header }}
+</head>
+<body>
+  {{ content_for_layout }}
+</body>
+</html>
