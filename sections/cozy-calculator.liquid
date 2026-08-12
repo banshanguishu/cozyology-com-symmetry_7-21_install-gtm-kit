@@ -5,13 +5,27 @@
     <div class="cozy-cal-header">
       {{ section.settings.header_title }}
     </div>
+    <div class="tab-switcher">
+      <div class="switcher-item switcher-1" data-tab="1">Panel Width Calculator</div>
+      <div class="switcher-item switcher-2" data-tab="2">Stacked Width Calculator</div>
+      <div class="switcher-item switcher-3" data-tab="3">Curtain Panel & Hardware Size Calculator</div>
+    </div>
+    <div class="calculator-intro-wrap">
+      <p class="calculator-intro panel-intro" style="display: none">
+        Enter the stacked width you'd like — how much space the curtains will occupy when fully open — to find the right single panel width to order, along with the estimated number of pleats per panel.
+      </p>
+
+      <p class="calculator-intro stacked-intro" style="display: none">
+        Enter your rod or track length to find out how wide each curtain panel will stack when fully open. Useful for planning how much wall space you'll need on each side.
+      </p>
+
+      <p class="calculator-intro hardware-intro" style="display: none">
+        <span>Find the right panel width and hardware length so your curtains clear the window when open.</span>
+        <span>Includes the space needed for curtains to stack clear when open.</span>
+      </p>
+    </div>
     <div class="cozy-cal-main">
       <div class="cozy-cal-block cozy-cal-block-left">
-        <div class="tab-switcher">
-          <div class="switcher-item switcher-1" data-tab="1">Panel Width Calculator</div>
-          <div class="switcher-item switcher-2" data-tab="2">Stacked Width Calculator</div>
-        </div>
-
         <div class="cal-item item-stacked-width" style="display: none">
           <div class="cal-label">
             <div class="cal-label-dot"></div>
@@ -42,6 +56,23 @@
             value=""
             min="0"
             onkeypress="return event.charCode === 0 || event.charCode === 8 || (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 46" />
+        </div>
+
+        <div class="cal-item item-hardware-window" style="display: none">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Window / opening width (inches)
+            </div>
+          </div>
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="inch"
+            value=""
+            min="0"
+            onkeypress="return event.charCoe === 0 || event.charCode === 8 || (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 46" />
+          <p class="hardware-field-hint">Measure the full width of your window or door opening, edge to edge.</p>
         </div>
 
         <div class="cal-item number-of-panels" style="display: none">
@@ -94,6 +125,19 @@
             labels: 'Double Pleats (Pinch / Tailor / French), Goblet, Ripple Fold, Back Tab, or Pinch Pleat with Back Tab|Triple Pleats (Pinch / Tailor / French), Tab Top, or Tab Top with Bow',
             checked_index: 0
           %}
+        </div>
+
+        <div class="cal-item hardware-style" style="display: none">
+          <div class="cal-label">
+            <div class="cal-label-dot"></div>
+            <div class="cal-label-content">
+              Header Style
+            </div>
+          </div>
+          <select>
+            <option value="double">Double Pleats (Pinch / Tailor / French)</option>
+            <option value="triple">Triple Pleats (Pinch / Tailor / French)</option>
+          </select>
         </div>
 
         <button class="cal-btn cal-btn-calculate">
@@ -151,6 +195,10 @@
           </div>
         </div>
 
+        <div class="hardware-result-area" style="display: none">
+          <div class="hardware-empty-state">Enter a window width above to see results</div>
+        </div>
+
         <div class="cal-item cal-item-hyperlink-panel" style="display: none">
           <div style="margin-bottom: 12px">Stacked width varies slightly by fabric type —— thicker or lined drapery stacks wider, while lighter, unlined fabrics stack slimmer.</div>
           <a onclick="handleNavigate('2')" style="cursor: pointer"><strong>CALCULATE STACKED WIDTH</strong></a>
@@ -159,17 +207,69 @@
           <a onclick="handleNavigate('1')" style="cursor: pointer"><strong>CALCULATE PANEL WIDTH</strong></a>
         </div>
       </div>
-      {% if section.settings.right_block_image %}
-        <div class="cozy-cal-block cozy-cal-block-right">
+      <div class="cozy-cal-block cozy-cal-block-right">
+        {% if section.settings.panel_width_image %}
           <img
-            src="{{ section.settings.right_block_image | img_url: 'master' }}"
-            alt="{{ section.settings.right_block_image.alt | default: 'Calculator Image' }}"
-            class="cal-right-image">
-        </div>
-      {% endif %}
+            src="{{ section.settings.panel_width_image | img_url: 'master' }}"
+            alt="{{ section.settings.panel_width_image.alt | default: 'Panel width calculator image' }}"
+            class="cal-right-image cal-right-image-tab-1"
+            style="display: none">
+        {% endif %}
+        {% if section.settings.stacked_width_image %}
+          <img
+            src="{{ section.settings.stacked_width_image | img_url: 'master' }}"
+            alt="{{ section.settings.stacked_width_image.alt | default: 'Stacked width calculator image' }}"
+            class="cal-right-image cal-right-image-tab-2"
+            style="display: none">
+        {% endif %}
+        {% if section.settings.hardware_width_image %}
+          <img
+            src="{{ section.settings.hardware_width_image | img_url: 'master' }}"
+            alt="{{ section.settings.hardware_width_image.alt | default: 'Hardware width calculator image' }}"
+            class="cal-right-image cal-right-image-tab-3"
+            style="display: none">
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>
+
+<style>
+  #section-id-{{ section.id }} .cozy-cal-wrapper {
+    max-width: 1320px;
+  }
+
+  #section-id-{{ section.id }} .cozy-cal-block-left {
+    flex: 0 1 55%;
+  }
+
+  #section-id-{{ section.id }} .cozy-cal-block-right {
+    flex: 0 1 45%;
+  }
+
+  #section-id-{{ section.id }} .hardware-intro span {
+    display: block;
+  }
+
+  #section-id-{{ section.id }} .hardware-intro span:first-child {
+    color: #171717;
+  }
+
+  #section-id-{{ section.id }} .hardware-intro span:last-child {
+    color: #666666;
+  }
+
+  #section-id-{{ section.id }} .hardware-note-text {
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 767px) {
+    #section-id-{{ section.id }} .hardware-note-text {
+      white-space: normal;
+    }
+  }
+</style>
 
 <script src="{{ 'cozy-calculator.js' | asset_url }}" defer></script>
 <script>
@@ -177,6 +277,98 @@
     const { origin, pathname } = window.location;
     window.location = `${origin}${pathname}?tab=${tab}`;
   }
+
+  (function () {
+    function syncCalculatorIntro() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const activeTab = searchParams.get('tab') || '1';
+      const introMap = {
+        '1': document.querySelector('.panel-intro'),
+        '2': document.querySelector('.stacked-intro'),
+        '3': document.querySelector('.hardware-intro')
+      };
+
+      Object.keys(introMap).forEach(function (tab) {
+        if (introMap[tab]) {
+          introMap[tab].style.display = tab === activeTab ? 'block' : 'none';
+        }
+      });
+    }
+
+    function syncCalculatorImages() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const activeTab = searchParams.get('tab') || '1';
+      const rightBlock = document.querySelector('.cozy-cal-block-right');
+      const rightImages = document.querySelectorAll('.cal-right-image');
+      const activeImage = document.querySelector(`.cal-right-image-tab-${activeTab}`);
+
+      rightImages.forEach(function (image) {
+        image.style.display = image === activeImage ? 'block' : 'none';
+      });
+
+      if (rightBlock) {
+        rightBlock.style.display = activeImage ? 'block' : 'none';
+      }
+    }
+
+    function syncCalculatorState() {
+      syncCalculatorIntro();
+      syncCalculatorImages();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(syncCalculatorState, 0);
+      const tabSwitcher = document.querySelector('.tab-switcher');
+      if (tabSwitcher) {
+        tabSwitcher.addEventListener('click', function () {
+          setTimeout(syncCalculatorState, 0);
+        });
+      }
+    });
+
+    window.addEventListener('popstate', function () {
+      setTimeout(syncCalculatorState, 0);
+    });
+  })();
+
+  (function () {
+    function syncHardwareResultCopy() {
+      const resultArea = document.querySelector('#section-id-{{ section.id }} .hardware-result-area');
+      if (!resultArea) return;
+
+      const resultLabels = resultArea.querySelectorAll('.hardware-result-label');
+      if (resultLabels[0] && resultLabels[0].textContent !== 'Single Panel Order Width(inch)') {
+        resultLabels[0].textContent = 'Single Panel Order Width(inch)';
+      }
+      if (resultLabels[1] && resultLabels[1].textContent !== 'Recommend Hardware Length (inches)') {
+        resultLabels[1].textContent = 'Recommend Hardware Length (inches)';
+      }
+
+      const detailLabels = resultArea.querySelectorAll('.hardware-detail-label');
+      if (detailLabels[2] && detailLabels[2].textContent !== 'Pleats / Ripples per Panel') {
+        detailLabels[2].textContent = 'Pleats / Ripples per Panel';
+      }
+
+      const noteBox = resultArea.querySelector('.hardware-note-box');
+      if (noteBox && !noteBox.querySelector('.hardware-note-text')) {
+        noteBox.innerHTML = '<span class="hardware-note-text">' + noteBox.innerHTML + '</span>';
+      }
+    }
+
+    function syncHardwareResultCopyAfterCalculate() {
+      [0, 50, 150].forEach(function (delay) {
+        setTimeout(syncHardwareResultCopy, delay);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calculateButton = document.querySelector('#section-id-{{ section.id }} .cal-btn-calculate');
+
+      if (calculateButton) {
+        calculateButton.addEventListener('click', syncHardwareResultCopyAfterCalculate);
+      }
+    });
+  })();
 </script>
 
 {% schema %}
@@ -193,9 +385,21 @@
       },
       {
         "type": "image_picker",
-        "id": "right_block_image",
-        "label": "Right Block Image",
-        "info": "Select an image to display in the right block"
+        "id": "panel_width_image",
+        "label": "Panel Width Calculator Image",
+        "info": "Shown on the right when the Panel Width Calculator tab is active"
+      },
+      {
+        "type": "image_picker",
+        "id": "stacked_width_image",
+        "label": "Stacked Width Calculator Image",
+        "info": "Shown on the right when the Stacked Width Calculator tab is active"
+      },
+      {
+        "type": "image_picker",
+        "id": "hardware_width_image",
+        "label": "Hardware Width Calculator Image",
+        "info": "Shown on the right when the Hardware Width Calculator tab is active"
       },
       {
         "type": "url",
