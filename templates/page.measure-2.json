@@ -67,7 +67,7 @@
         "heading_GNxz7G": {
           "type": "heading",
           "settings": {
-            "title": "Drapery Measurement Tool",
+            "title": "Measurement Tool",
             "use_h1": false
           }
         },
@@ -102,27 +102,27 @@
           "settings": {
             "enable_media": true,
             "image": "shopify://shop_images/12-1.webp",
-            "title": "Functional Drapery",
-            "text": "<p>For drapery that <strong>opens and closes for everyday light control.</strong></p>",
+            "title": "Drapery",
+            "text": "<p>For pleated, ripple fold, soft top, and grommet drapery used for light control and privacy.</p>",
             "button_label": "Measure Now",
-            "link": "shopify://pages/drapery-measurement"
+            "link": "shopify://pages/drapery-measurement-tool"
           }
         },
-        "text_block_8fg3jX": {
+        "text_block_f9VX7B": {
           "type": "text_block",
           "settings": {
             "enable_media": true,
-            "image": "shopify://shop_images/stack_width_tool.webp",
-            "title": "Decorative Drapery",
-            "text": "<p>For drapery used mainly for <strong>aesthetic framing and a stationary look</strong>.</p>",
-            "button_label": "Measure now",
-            "link": "shopify://pages/pleats-quantity-stacked-width"
+            "image": "shopify://shop_images/02-1_b3bdca1c-5963-47d6-a5fb-c0579eb0e5e0.webp",
+            "title": "Shade",
+            "text": "<p>For Roman, roller, and handwoven shades used for light control and privacy.</p>",
+            "button_label": "Measure NOW",
+            "link": "shopify://pages/shades-measurement"
           }
         }
       },
       "block_order": [
         "text_block_4hnwX3",
-        "text_block_8fg3jX"
+        "text_block_f9VX7B"
       ],
       "settings": {
         "title": "",

@@ -17,7 +17,7 @@
 {% endschema %}
 <script>
   window.CozyologyConfig_Drapery = {
-        shopNowUrl: 'https://cozyology.com',
+        shopNowUrl: '{{ section.settings.shop_now_url }}',
         stepTitles: {
           'step-1': 'Choose Header Style',
           'step-2': 'Specify the Width',
@@ -47,7 +47,7 @@
                   </div>
                   <div> 
                     — we’ll reply within 24 hours </br>
-                    Email: consult@cozyology.com
+                    Email: design@cozyology.com
                   </div>
                 </div>`,
         contactDetailsMobile: `<div class="font-bold text-black">Need quick 1-on-1 help?</div>
@@ -79,8 +79,8 @@
                 title: 'PLEATED',
                 imageClass: 'image-pleated',
                 alt: 'Pleated',
-                description: 'For a luxurious full look<br />· Double pinch pleat <br />· Triple pinch pleat',
-                detailUrl: 'https://cozyologycurtains.com/pages/header#pleat',
+                description: 'For a luxurious full look<br />· Double pinch pleat <br />· Triple pinch pleat <br />· Inverted Box Pleat',
+                detailUrl: 'https://cozyology.com/pages/header#pleat',
                 additionalInfo: `Pleated: Measure from the rod to the floor. We automatically subtract 1 inches for the ring's radius.`,
                 jump: 'step-2-0-0',
               },
@@ -89,8 +89,8 @@
                 title: 'RIPPLE FOLD',
                 imageClass: 'image-ripple-fold',
                 alt: 'RIPPLE FOLD',
-                description: 'For a modern, flowing look <br />· Even, wave-like folds <br />· Belt hook system',
-                detailUrl: 'https://cozyologycurtains.com/pages/header#ripplefold',
+                description: 'For a modern, flowing look <br />· Even, wave-like folds <br />· Belt hook system <br />· Tape buckle system',
+                detailUrl: 'https://cozyology.com/pages/header#ripplefold',
                 additionalInfo: `Ripple Fold: Measure from the bottom of the rod to the floor. The tool will automatically subtract 5/8 inch for header clearance.`,
                 jump: 'step-2-2-8',
               },
@@ -99,8 +99,8 @@
                 title: 'SOFT TOP',
                 imageClass: 'image-soft-top',
                 alt: 'Soft Top',
-                description: 'For a soft natural look<br />· Rod Pocket<br />· Back tab',
-                detailUrl: 'https://cozyologycurtains.com/pages/header#softtop',
+                description: 'For a soft natural look<br />· Rod Pocket<br />· Tab Top<br />· Back Tab<br />',
+                detailUrl: 'https://cozyology.com/pages/header#softtop',
                 additionalInfo: `Soft Top: Measure from the rod to the floor. We automatically add 0.9 inches for the rod's diameter.`,
                 jump: 'step-2-0',
               },
@@ -110,7 +110,7 @@
                 imageClass: 'image-grommets',
                 alt: 'Grommet',
                 description: 'For a structured modern look <br />· Grommet',
-                detailUrl: 'https://cozyologycurtains.com/pages/header#grommet',
+                detailUrl: 'https://cozyology.com/pages/header#grommet',
                 additionalInfo: `Grommet: Measure from the rod to the floor. We automatically add 2.8 inches for the ring's radius.`,
                 jump: 'step-2-0',
               },
@@ -549,8 +549,8 @@
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-18',
             jump: 'step-3-1-3',
-            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
-<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.`,
+            {% comment %} description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
+<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.`, {% endcomment %}
             options: [
               {
                 id: 'rod-extension-above-frame-3',
@@ -566,9 +566,6 @@
             title: 'Rod Extension Above Frame?',
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-2',
-            description: `Enter the distance from ring eyelet to window frame (after rod and
-rings are installed).<br /><br /><b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
-<b>Ceiling over 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.`,
             jump: 'step-3-1-3',
             options: [
               {
@@ -613,7 +610,7 @@ rings are installed).<br /><br /><b>Ceiling under 10 ft</b>: Mount 3–5" below 
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-6',
             jump: 'step-3-1-8',
-            // description: `This measurement assumes the track is installed flush to the ceiling. For other installation scenarios, please contact <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>`,
+            // description: `This measurement assumes the track is installed flush to the ceiling. For other installation scenarios, please contact <a href="mailto:design@cozyology.com" class="text-[#ba6352] underline" target="_blank">design@cozyology.com</a>`,
             options: [
               {
                 id: 'track-ceiling-to-floor-height',
@@ -776,8 +773,7 @@ rings are installed).<br /><br /><b>Ceiling under 10 ft</b>: Mount 3–5" below 
             title: 'Hardware Extension Above Frame?',
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-15',
-            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
-<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.<br /><br />Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>, and we'll help calculate the correct placement for you.`,
+            description: `Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:design@cozyology.com" class="text-[#ba6352] underline" target="_blank">design@cozyology.com</a>, and we'll help calculate the correct placement for you.`,
             jump: 'step-3-1-9',
             options: [
               {
@@ -791,7 +787,7 @@ rings are installed).<br /><br /><b>Ceiling under 10 ft</b>: Mount 3–5" below 
           },
           'step-3-2-5': {
             type: 'input',
-            title: 'Hardware Thickness?',
+            title: 'Hardware Height?',
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-19',
             jump: 'step-3-1-3',
@@ -864,8 +860,7 @@ Cozyology Ripple Fold tracks.`,
             title: 'Hardware Extension Above Frame?',
             subTitle: 'For accuracy, please use a steel measuring tape.',
             imageClass: 'image-drapery-03-15',
-            description: `<b>Ceiling under 10 ft</b>: Mount 3–5" below the ceiling to make the space feel taller and more refined. <br />
-<b>Ceiling under 10 ft</b>: Keep the rod within 18" above the window frame to maintain balanced proportions.<br /><br />Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:consult@cozyology.com" class="text-[#ba6352] underline" target="_blank">consult@Cozyology.com</a>, and we'll help calculate the correct placement for you.`,
+            description: `Wall-mounting close to the ceiling?<br />Contact us at <a href="mailto:design@cozyology.com" class="text-[#ba6352] underline" target="_blank">design@cozyology.com</a>, and we'll help calculate the correct placement for you.`,
             jump: 'step-3-2-10',
             options: [
               {
@@ -922,25 +917,44 @@ Cozyology Ripple Fold tracks.`,
           pleated: {
             ceiling: [
               { label: 'Ronan Traverse Rod with Runners – Ceiling Mount', value: '1 1/8', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
-              { label: 'Taylor Pleated Track - Ceiling Mount', value: '7/8', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' }
+              { label: 'Taylor Pleated Track - Ceiling Mount', value: '7/8', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' },
+              { label: 'Tori Pleated Track - Ceiling Mount', value: '3/4', link: 'https://cozyology.com/products/tara-bendable-custom-size-pleated-curtain-track' },
+              { label: 'Trent Pleated Track - Ceiling Mount', value: '3/4', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Tatum Pleated Track - Ceiling Mount', value: '1 1/4', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' }
             ],
             wall: [
               { label: 'Ronan Traverse Rod with Runners – Wall Mount', value: '1', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
-              { label: 'Taylor Pleated Track - Wall Mount', value: '3/4', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' }
+              { label: 'Taylor Pleated Track - Wall Mount', value: '3/4', link: 'https://cozyology.com/products/taylor-length-adjustable-pleated-header-track' },
+              { label: 'Tristan Curtain Track - Wall Mount', value: '1 3/8', link: 'https://cozyology.com/products/tristan-premium-design-custom-size-curtain-track' },
+              { label: 'Tori Pleated Track - Wall Mount', value: '5/8', link: 'https://cozyology.com/products/tara-bendable-custom-size-pleated-curtain-track' },
+              { label: 'Trent Pleated Track - Wall Mount', value: '1/2', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Tatum Pleated Track - Wall Mount', value: '1 1/8', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' }
             ],
           },
         },
         trackSelectorSingleOptions: {
           'ripple-fold': {
             ceiling: [
-              { label: 'Ronan Traverse Rod with Runners – Ceiling Mount', value: '2', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
-              { label: 'Tyra Ripple Fold Track - Ceiling Mount', value: '5/8', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
-              { label: 'Talia Ripple Fold Track - Ceiling Mount', value: '1', link: 'https://cozyology.com/products/talia-custom-size-ripple-fold-track' }
+              { label: 'Ronan Traverse Rod with Runners for Belt Hook – Ceiling Mount', value: '2', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Ronan Traverse Rod with Runners for Tape Buckle – Ceiling Mount', value: '1 1/4', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Tyra Ripple Fold Track with Runners for Belt Hook - Ceiling Mount', value: '1 1/4', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Tyra Ripple Fold Track with Runners for Tape Buckle - Ceiling Mount', value: '3/4', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Trent Ripple Fold Track with Runners for Belt Hook - Ceiling Mount', value: '1', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Trent Ripple Fold Track with Runners for Tape Buckle - Ceiling Mount', value: '3/4', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Tatum Ripple Fold Track with Runners for Belt Hook - Ceiling Mount', value: '2', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' },
+              { label: 'Tatum Ripple Fold Track with Runners for Tape Buckle - Ceiling Mount', value: '1 3/8', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' }
             ],
             wall: [
-              { label: 'Ronan Traverse Rod with Runners – Wall Mount', value: '7/8', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
-              { label: 'Tyra Ripple Fold Track - Wall Mount', value: '1/2', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
-              { label: 'Talia Ripple Fold Track - Wall Mount', value: '5/8', link: 'https://cozyology.com/products/talia-custom-size-ripple-fold-track' }
+              { label: 'Ronan Traverse Rod with Runners for Belt Hook – Wall Mount', value: '7/8', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Ronan Traverse Rod with Runners for Tape Buckle – Wall Mount', value: '1/4', link: 'https://cozyology.com/products/ronan-custom-size-traverse-curtain-rod' },
+              { label: 'Tyra Ripple Fold Track with Runners for Belt Hook - Wall Mount', value: '1/2', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Tyra Ripple Fold Track with Runners for Tape Buckle - Wall Mount', value: '1/4', link: 'https://cozyology.com/products/tyra-length-adjustable-ripple-fold-track' },
+              { label: 'Tristan Ripple Fold Track with Runners for Belt Hook - Wall Mount', value: '1/4', link: 'https://cozyology.com/products/tristan-premium-design-custom-size-curtain-track' },
+              { label: 'Tristan Ripple Fold Track with Runners for Tape Buckle - Wall Mount', value: '7/8', link: 'https://cozyology.com/products/tristan-premium-design-custom-size-curtain-track' },
+              { label: 'Trent Ripple Fold Track with Runners for Belt Hook - Wall Mount', value: '3/8', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Trent Ripple Fold Track with Runners for Tape Buckle - Wall Mount', value: '7/8', link: 'https://cozyology.com/products/trent-slim-profile-custom-size-curtain-track' },
+              { label: 'Tatum Ripple Fold Track with Runners for Belt Hook - Wall Mount', value: '7/8', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' },
+              { label: 'Tatum Ripple Fold Track with Runners for Tape Buckle - Wall Mount', value: '1/4', link: 'https://cozyology.com/products/tatum-modular-splicing-motorized-curtain-track' }
             ],
           },
         },
