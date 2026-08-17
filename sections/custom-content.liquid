@@ -34,6 +34,42 @@
             {%- endif -%}
           </style>
 
+          {%- if block.settings.mobile_image.src contains 'zoom_consultation_mobile' -%}
+            <style>
+              #block-id-{{ block.id }} .cozy-measurement-consultation-cta {
+                display: none;
+              }
+              @media (max-width: 767px) {
+                #block-id-{{ block.id }} .cozy-measurement-consultation-cta {
+                  position: absolute;
+                  z-index: 3;
+                  top: 73.5%;
+                  left: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: clamp(126px, 34%, 280px);
+                  height: 8.5%;
+                  min-height: 42px;
+                  max-height: 52px;
+                  padding: 0 20px;
+                  box-sizing: border-box;
+                  transform: translate(-50%, -50%);
+                  border: 1px solid #3b291f;
+                  background: #3b291f;
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: 500;
+                  line-height: 1;
+                  letter-spacing: 0.02em;
+                  text-decoration: none;
+                  box-shadow: none;
+                  pointer-events: none;
+                }
+              }
+            </style>
+          {%- endif -%}
+
           {%- assign show_overlay_text = false -%}
           {%- if block.settings.title != blank or block.settings.subheading != blank or block.settings.text != blank or block.settings.button_label != blank -%}
             {%- assign show_overlay_text = true -%}
@@ -43,7 +79,7 @@
           {%- endif -%}
           <div class="height--{{ block.settings.height }} image-overlay image-overlay--bg-{{ block.settings.overlay_style }} {% if block.settings.mobile_overlay_under %}text-overlay-parent--mobile-stack{% endif %}">
             {%- unless block.settings.image_link == blank or block.settings.text contains '</a>' -%}
-              <a class="image-overlay__image-link" href="{{ block.settings.image_link }}">
+              <a class="image-overlay__image-link" href="{{ block.settings.image_link }}"{% if block.settings.mobile_image.src contains 'zoom_consultation_mobile' %} aria-label="Book a complimentary 1-on-1 Zoom consultation"{% endif %}>
             {%- endunless -%}
 
             {%- if block.settings.image == blank -%}
@@ -73,6 +109,9 @@
               <div class="height__image image-overlay__image">
                 {%- render 'image-desktop-and-mobile', desktop_image: block.settings.image, mobile_image: block.settings.mobile_image, size_cols_desktop: size_cols_desktop, block: block -%}
               </div>
+              {%- if block.settings.mobile_image.src contains 'zoom_consultation_mobile' -%}
+                <span class="cozy-measurement-consultation-cta" aria-hidden="true">Book Now</span>
+              {%- endif -%}
             {%- endif -%}
 
             {%- if show_overlay_text -%}

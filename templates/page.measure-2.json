@@ -74,7 +74,7 @@
         "text_P8cCpi": {
           "type": "text",
           "settings": {
-            "text": "<p>Quickly Measure Your Drapery & Shades in Just 3 Minutes</p>",
+            "text": "<p>Choose Drapery or Shade. Measure in just 3 minutes.</p>",
             "enlarge_text": false
           }
         }
@@ -84,7 +84,9 @@
         "text_P8cCpi"
       ],
       "custom_css": [
-        "@media only screen and (min-width: 1024px) {{margin-top: -50px; margin-bottom: -80px; }}"
+        "@media only screen and (min-width: 1024px) {{margin-top: -50px; margin-bottom: -80px; }}",
+        "@media(max-width:767px){{margin-top:0;padding-top:48px;margin-bottom:-25px}.hometitle{font-size:26px;line-height:1.2}.rte{font-size:14px;line-height:1.4}}",
+        "@media(min-width:768px) and (max-width:1024px){{margin-top:-20px;margin-bottom:-45px}.hometitle{font-size:32px;line-height:1.2}.rte{font-size:16px;line-height:1.45}}"
       ],
       "name": "Rich text",
       "settings": {
@@ -103,8 +105,8 @@
             "enable_media": true,
             "image": "shopify://shop_images/12-1.webp",
             "title": "Drapery",
-            "text": "<p>For pleated, ripple fold, soft top, and grommet drapery used for light control and privacy.</p>",
-            "button_label": "Measure Now",
+            "text": "<p>For functional drapery that opens and closes.</p>",
+            "button_label": "MEASURE NOW",
             "link": "shopify://pages/drapery-measurement-tool"
           }
         },
@@ -114,8 +116,8 @@
             "enable_media": true,
             "image": "shopify://shop_images/02-1_b3bdca1c-5963-47d6-a5fb-c0579eb0e5e0.webp",
             "title": "Shade",
-            "text": "<p>For Roman, roller, and handwoven shades used for light control and privacy.</p>",
-            "button_label": "Measure NOW",
+            "text": "<p>For Roman, roller, and woven shades.</p>",
+            "button_label": "MEASURE NOW",
             "link": "shopify://pages/shades-measurement"
           }
         }
@@ -131,7 +133,10 @@
         "text_alignment": "center",
         "button_style": "primary",
         "color_scheme": "default"
-      }
+      },
+      "custom_css": [
+        "@media(max-width:767px){.flexible-layout{display:grid!important;gap:24px;width:calc(100% + 16px);margin-left:-8px;margin-top:32px}.column{display:grid;grid-template-columns:125px 1fr;gap:8px 18px;margin:0!important;padding:22px 14px;background:#f5f5f5;text-align:left;min-height:235px;align-content:center}.text-column__image{grid-row:1/4;width:125px!important;margin:0}.text-column__button-row{margin-top:10px}.text-column__button{width:100%;padding:12px 8px;text-align:center;text-decoration:none}}"
+      ]
     },
     "custom_content_hAPVdY": {
       "type": "custom-content",
@@ -165,7 +170,10 @@
       "name": "Custom content",
       "settings": {
         "alignment": "middle"
-      }
+      },
+      "custom_css": [
+        "@media(max-width:767px){{margin-top:clamp(96px,18vh,160px)}}"
+      ]
     },
     "1722586455e5f016b7": {
       "type": "apps",
