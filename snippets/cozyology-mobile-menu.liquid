@@ -1,0 +1,299 @@
+{%- comment -%}
+  Cozyology phone-only navigation.
+  This snippet is rendered only inside the existing mobile drawer template.
+  Desktop and iPad mega-menu markup remains in main-nav-links.liquid.
+{%- endcomment -%}
+
+{%- liquid
+  assign cz_swatches_image = images['cozyologyfreeswatchesupto20.webp']
+  assign cz_mobile_feature_swatches_image = images['Free_Swatches_1dd6ecf5-4a7e-4338-b91d-e5d2a6a9691a.webp']
+  assign cz_best_sellers = collections['best-sellers']
+  assign cz_best_sellers_image = cz_best_sellers.image | default: cz_best_sellers.products.first.featured_image
+  assign cz_designer = collections['designer-series-drapery']
+  assign cz_designer_image = cz_designer.image | default: cz_designer.products.first.featured_image
+  assign cz_roman = collections['roman-shades']
+  assign cz_roman_image = cz_roman.image | default: cz_roman.products.first.featured_image
+  assign cz_handwoven = collections['handwoven-shades']
+  assign cz_handwoven_image = cz_handwoven.image | default: cz_handwoven.products.first.featured_image
+  assign cz_motor_roman = all_products['motorized-window-roman-shades']
+  assign cz_motor_track = all_products['tatum-modular-splicing-motorized-curtain-track']
+  assign cz_color_box = all_products['neutral-patterned-designer-color-box-34-colors']
+  assign cz_zoom = all_products['complimentary-1-on-1-zoom-consultation']
+  assign cz_gallery_image = images['gallery-roman-shades-living-room.jpg']
+-%}
+
+<div class="cz-mobile-menu__featured" aria-label="Featured collections">
+  <a class="cz-mobile-menu__feature-card" href="/collections/free-swatches">
+    <span class="cz-mobile-menu__feature-media">
+      {% if cz_mobile_feature_swatches_image %}
+        {{ cz_mobile_feature_swatches_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '220, 320, 440, 600', sizes: '47vw', alt: 'Free Swatches' }}
+      {% endif %}
+    </span>
+    <span class="cz-mobile-menu__feature-title">Free Swatches <span aria-hidden="true">›</span></span>
+  </a>
+  <a class="cz-mobile-menu__feature-card" href="{{ cz_best_sellers.url | default: '/collections/best-sellers' }}">
+    <span class="cz-mobile-menu__feature-media">
+      {% if cz_best_sellers_image %}
+        {{ cz_best_sellers_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '220, 320, 440, 600', sizes: '47vw', alt: 'Best Sellers' }}
+      {% endif %}
+    </span>
+    <span class="cz-mobile-menu__feature-title">Best Sellers <span aria-hidden="true">›</span></span>
+  </a>
+</div>
+
+<ul class="navigation__tier-1">
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/collections/new-arrivals" aria-haspopup="true" aria-expanded="false">New &amp; All</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show New &amp; All links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier">
+      <div class="cz-mobile-menu__panel-cards">
+        <a href="{{ cz_best_sellers.url | default: '/collections/best-sellers' }}" class="cz-mobile-menu__panel-card">
+          {% if cz_best_sellers_image %}{{ cz_best_sellers_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Best Sellers' }}{% endif %}
+          <span>Best Sellers</span>
+        </a>
+        <a href="{{ cz_designer.url | default: '/collections/designer-series-drapery' }}" class="cz-mobile-menu__panel-card">
+          {% if cz_designer_image %}{{ cz_designer_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Designer Series' }}{% endif %}
+          <span>Designer Series</span>
+        </a>
+      </div>
+      <ul class="navigation__tier-2">
+        <li class="navigation__item"><a class="navigation__link" href="/collections/new-arrivals">New Arrivals</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/best-sellers">Best Sellers</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/all">All Products</a></li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/collections/drapery" aria-haspopup="true" aria-expanded="false">Drapery</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Drapery links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier">
+      <div class="cz-mobile-menu__panel-cards">
+        <a href="/collections/best-sellers" class="cz-mobile-menu__panel-card">
+          {% if cz_best_sellers_image %}{{ cz_best_sellers_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Best Sellers' }}{% endif %}
+          <span>Best Sellers</span>
+        </a>
+        <a href="/collections/designer-series-drapery" class="cz-mobile-menu__panel-card">
+          {% if cz_designer_image %}{{ cz_designer_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Designer Series' }}{% endif %}
+          <span>Designer Series</span>
+        </a>
+      </div>
+      <ul class="navigation__tier-2">
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/drapery">Fabric</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Drapery fabric links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery-linen">Linen</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/cotton-curtains">Cotton</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/wool-curtains">Wool</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery-sheer">Sheer</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery-velvet">Velvet</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/designer-series-drapery">Designer Series</a></li>
+          </ul></div>
+        </li>
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/drapery">Function</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Drapery function links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/pages/memory-shape">Memory Shape</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/100-blackout-curtains">100% Blackout</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery">Self-Lined</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery">Thermal + Noise</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery">Water Resistant</a></li>
+          </ul></div>
+        </li>
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/drapery">Feature</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Drapery feature links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/collections/ripple-fold-drapery">Ripple Fold Drapery</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/cafe-curtains">Café Curtains</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery-with-border-trim">Drapery with Border Trim</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery">Extra Long Curtains</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/drapery">Extra Wide Curtains</a></li>
+          </ul></div>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/collections/motorized-window-treatments" aria-haspopup="true" aria-expanded="false">Motorization</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Motorization links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier">
+      <div class="cz-mobile-menu__panel-cards">
+        <a href="{{ cz_motor_roman.url | default: '/products/motorized-window-roman-shades' }}" class="cz-mobile-menu__panel-card">
+          {% if cz_motor_roman.featured_image %}{{ cz_motor_roman.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Motorized Shades' }}{% endif %}
+          <span>Motorized Shades</span>
+        </a>
+        <a href="{{ cz_motor_track.url | default: '/products/tatum-modular-splicing-motorized-curtain-track' }}" class="cz-mobile-menu__panel-card">
+          {% if cz_motor_track.featured_image %}{{ cz_motor_track.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Motorized Curtain Track' }}{% endif %}
+          <span>Motorized Track</span>
+        </a>
+      </div>
+      <ul class="navigation__tier-2">
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/motorized-window-treatments">Motorized Shades</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Motorized Shades links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/products/motorized-window-handwoven-shades">Motorized Handwoven Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/motorized-window-roman-shades">Motorized Roman Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/roller-shades">Motorized Roller Shades</a></li>
+          </ul></div>
+        </li>
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/motorized-window-treatments">Motorized Curtain Track</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Motorized Curtain Track links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/products/tatum-modular-splicing-motorized-curtain-track">Tatum · Modular Splicing</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/tate-length-adjustable-motorized-curtain-track">Tate · Length Adjustable</a></li>
+          </ul></div>
+        </li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/collections/shades" aria-haspopup="true" aria-expanded="false">Shades</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Shades links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier">
+      <div class="cz-mobile-menu__panel-cards">
+        <a href="/collections/roman-shades" class="cz-mobile-menu__panel-card">
+          {% if cz_roman_image %}{{ cz_roman_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Roman Shades' }}{% endif %}
+          <span>Roman Shades</span>
+        </a>
+        <a href="/collections/handwoven-shades" class="cz-mobile-menu__panel-card">
+          {% if cz_handwoven_image %}{{ cz_handwoven_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Handwoven Shades' }}{% endif %}
+          <span>Handwoven Shades</span>
+        </a>
+      </div>
+      <ul class="navigation__tier-2">
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/roman-shades">Roman Shades</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Roman Shades links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/collections/roman-shades">All Roman Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/linen-roman-shades">Cordless Roman Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/motorized-window-roman-shades">Motorized Roman Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/collections/roman-shades">No-Drill Roman Shades</a></li>
+          </ul></div>
+        </li>
+        <li class="navigation__item navigation__item--with-children">
+          <a class="navigation__link" href="/collections/handwoven-shades">Handwoven Shades</a>
+          <a class="navigation__children-toggle" href="#" aria-label="Show Handwoven Shades links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+          <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+            <li class="navigation__item"><a class="navigation__link" href="/collections/handwoven-shades">All Handwoven Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/cordless-handwoven-shades">Cordless Handwoven Shades</a></li>
+            <li class="navigation__item"><a class="navigation__link" href="/products/motorized-window-handwoven-shades">Motorized Handwoven Shades</a></li>
+          </ul></div>
+        </li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/roller-shades">Roller Shades</a></li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/collections/hardware" aria-haspopup="true" aria-expanded="false">Hardware</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Hardware links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item"><a class="navigation__link" href="/collections/hardware">Rods</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/collections/hardware">Tracks</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/collections/motorized-window-treatments">Motorizations</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/collections/hardware">Accessories</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/collections/hardware">Café Curtain Rods</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/collections/hardware">Curtain Tiebacks</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/measurement-tool">Smart Measuring Tool</a></li>
+    </ul></div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link cz-mobile-menu__swatches-link" href="/collections/free-swatches" aria-haspopup="true" aria-expanded="false">
+      <img src="{{ 'crown.png' | asset_url }}" width="16" height="16" alt="" aria-hidden="true" class="cz-mobile-menu__crown">
+      <span>Free Swatches</span>
+    </a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Free Swatches links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier">
+      <div class="cz-mobile-menu__panel-cards">
+        <a href="/collections/free-swatches" class="cz-mobile-menu__panel-card">
+          {% if cz_swatches_image %}{{ cz_swatches_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Free Swatches' }}{% endif %}
+          <span>Free Swatches</span>
+        </a>
+        <a href="{{ cz_color_box.url | default: '/collections/swatch-boxes' }}" class="cz-mobile-menu__panel-card">
+          {% if cz_color_box.featured_image %}{{ cz_color_box.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220, 360, 520', sizes: '44vw', alt: 'Color Box' }}{% endif %}
+          <span>Color Box</span>
+        </a>
+      </div>
+      <ul class="navigation__tier-2">
+        <li class="navigation__item"><a class="navigation__link" href="/collections/free-swatches">FREE Swatches</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/swatch-boxes">Swatch Boxes</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/free-swatches">Fabric Booklets</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/collections/handwoven-shades">Woven Shades</a></li>
+        <li class="navigation__item"><a class="navigation__link" href="/products/border-trim-collection">Border Trims</a></li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/pages/gallery" aria-haspopup="true" aria-expanded="false">Gallery</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Gallery links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item"><a class="navigation__link" href="/pages/gallery">Image Gallery</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/gallery">Home Décor Inspiration Videos</a></li>
+    </ul></div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/pages/measurement-tool" aria-haspopup="true" aria-expanded="false">Measurement Tool</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Measurement Tool links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item"><a class="navigation__link" href="/pages/drapery-measurement">Drapery Measurement Tool</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/shades-measurement">Shade Measurement Tool</a></li>
+      <li class="navigation__item navigation__item--with-children">
+        <a class="navigation__link" href="/pages/measurement-tool">Calculators</a>
+        <a class="navigation__children-toggle" href="#" aria-label="Show Calculator links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+        <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+          <li class="navigation__item"><a class="navigation__link" href="/pages/curtain-weight-calculator">Curtain Weight Calculator</a></li>
+          <li class="navigation__item"><a class="navigation__link" href="/pages/pleats-quantity-stacked-width">Pleats &amp; Stacked Width Calculator</a></li>
+          <li class="navigation__item"><a class="navigation__link" href="/pages/roman-shade-stack-height-calculator">Roman Shade Stack Height Calculator</a></li>
+        </ul></div>
+      </li>
+    </ul></div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/pages/cozyology-collectives-shay-miron" aria-haspopup="true" aria-expanded="false">Collaborations</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Collaboration links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item"><a class="navigation__link" href="/pages/cozyology-collectives-shay-miron">Shay Miron</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/cozyology-collectives-amanda-kruger">Amanda Kruger</a></li>
+    </ul></div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children">
+    <a class="navigation__link" href="/pages/support" aria-haspopup="true" aria-expanded="false">Support</a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show Support links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item cz-mobile-menu__highlight"><a class="navigation__link" href="{{ cz_zoom.url | default: '/products/complimentary-1-on-1-zoom-consultation' }}">Zoom Consultation <span class="cz-mobile-menu__badge">Free</span></a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/measurement-tool">Measurement Tool</a></li>
+      <li class="navigation__item navigation__item--with-children">
+        <a class="navigation__link" href="/pages/support">Installation &amp; Care</a>
+        <a class="navigation__children-toggle" href="#" aria-label="Show Installation and Care links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+        <div class="navigation__tier-3-container navigation__child-tier"><ul class="navigation__tier-3">
+          <li class="navigation__item"><a class="navigation__link" href="/pages/support">Installation Guide</a></li>
+          <li class="navigation__item"><a class="navigation__link" href="/pages/support">Fabric Maintenance Guide</a></li>
+          <li class="navigation__item"><a class="navigation__link" href="/pages/support">FAQs</a></li>
+        </ul></div>
+      </li>
+    </ul></div>
+  </li>
+
+  <li class="navigation__item navigation__item--with-children featured-link">
+    <a class="navigation__link" href="/pages/sale" aria-haspopup="true" aria-expanded="false"><span>SALE</span></a>
+    <a class="navigation__children-toggle" href="#" aria-label="Show SALE links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
+    <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
+      <li class="navigation__item"><a class="navigation__link" href="/pages/sale">All Sale</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/independence-day-savings">Current Sitewide Offer</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/world-cup-special-sale">Featured Drapery Offer</a></li>
+    </ul></div>
+  </li>
+</ul>
