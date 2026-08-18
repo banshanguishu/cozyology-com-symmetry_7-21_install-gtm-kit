@@ -69,7 +69,7 @@
       if (saleLabel) saleLabel.classList.add('cz-mobile-menu__sale-label');
       var offer = document.createElement('span');
       offer.className = 'cz-mobile-menu__sale-offer';
-      offer.textContent = 'UP TO 23% OFF';
+      offer.textContent = 'UP TO 24% OFF';
       saleLink.appendChild(offer);
     }
   }

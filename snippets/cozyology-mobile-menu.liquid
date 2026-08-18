@@ -7,6 +7,7 @@
 {%- liquid
   assign cz_swatches_image = images['cozyologyfreeswatchesupto20.webp']
   assign cz_mobile_feature_swatches_image = images['Free_Swatches_1dd6ecf5-4a7e-4338-b91d-e5d2a6a9691a.webp']
+  assign cz_mobile_campaign_image = images['LABORDAYEVENT_2x_d0420d99-1a23-4fc9-947b-6939b38c902d.webp']
   assign cz_best_sellers = collections['best-sellers']
   assign cz_best_sellers_image = cz_best_sellers.image | default: cz_best_sellers.products.first.featured_image
   assign cz_designer = collections['designer-series-drapery']
@@ -23,6 +24,14 @@
 -%}
 
 <div class="cz-mobile-menu__featured" aria-label="Featured collections">
+  <a class="cz-mobile-menu__feature-card" href="/pages/labor-day-sale">
+    <span class="cz-mobile-menu__feature-media">
+      {% if cz_mobile_campaign_image %}
+        {{ cz_mobile_campaign_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '220, 320, 440, 600', sizes: '47vw', alt: 'Labor Day Sale' }}
+      {% endif %}
+    </span>
+    <span class="cz-mobile-menu__feature-title">Labor Day Sale <span aria-hidden="true">›</span></span>
+  </a>
   <a class="cz-mobile-menu__feature-card" href="/collections/free-swatches">
     <span class="cz-mobile-menu__feature-media">
       {% if cz_mobile_feature_swatches_image %}
@@ -30,14 +39,6 @@
       {% endif %}
     </span>
     <span class="cz-mobile-menu__feature-title">Free Swatches <span aria-hidden="true">›</span></span>
-  </a>
-  <a class="cz-mobile-menu__feature-card" href="{{ cz_best_sellers.url | default: '/collections/best-sellers' }}">
-    <span class="cz-mobile-menu__feature-media">
-      {% if cz_best_sellers_image %}
-        {{ cz_best_sellers_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '220, 320, 440, 600', sizes: '47vw', alt: 'Best Sellers' }}
-      {% endif %}
-    </span>
-    <span class="cz-mobile-menu__feature-title">Best Sellers <span aria-hidden="true">›</span></span>
   </a>
 </div>
 
@@ -292,8 +293,8 @@
     <a class="navigation__children-toggle" href="#" aria-label="Show SALE links">{% render 'icon-toggle-menu', stroke_width: 1.3 %}</a>
     <div class="navigation__tier-2-container navigation__child-tier"><ul class="navigation__tier-2">
       <li class="navigation__item"><a class="navigation__link" href="/pages/sale">All Sale</a></li>
-      <li class="navigation__item"><a class="navigation__link" href="/pages/independence-day-savings">Current Sitewide Offer</a></li>
-      <li class="navigation__item"><a class="navigation__link" href="/pages/world-cup-special-sale">Featured Drapery Offer</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/labor-day-sale">Labor Day Sale | Up to 24% Off</a></li>
+      <li class="navigation__item"><a class="navigation__link" href="/pages/select-styles-sale">Select Styles Sale | Up to 23% Off</a></li>
     </ul></div>
   </li>
 </ul>

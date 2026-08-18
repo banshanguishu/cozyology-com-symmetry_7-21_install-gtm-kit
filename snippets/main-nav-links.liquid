@@ -169,7 +169,7 @@
                         </a>
                         <div class="cz-sale__benefit">
                           <span class="cz-sale__benefit-title">Current Codes</span>
-                          <span>BTS19 Sitewide · WAVE22 Ripple Fold</span>
+                          <span>LAB20 Sitewide · LAB360 $360 Off $1,500+ · EASY23 Select Styles</span>
                         </div>
                       </div>
                     {%- elsif link_title_sanitised == 'collaborations' -%}
@@ -427,21 +427,21 @@
                   {%- endif -%}
                 {%- endif -%}
                 {%- if mobile == false and link_title_sanitised == 'sale' -%}
-                  {%- assign cz_sale_card_1_title = 'Back to School Sale' -%}
-                  {%- assign cz_sale_card_2_title = 'The Ripple Effect' -%}
-                  {%- assign cz_sale_card_1_url = '/pages/independence-day-savings' -%}
-                  {%- assign cz_sale_card_2_url = '/pages/world-cup-special-sale' -%}
+                  {%- assign cz_sale_card_1_title = 'Labor Day Sale' -%}
+                  {%- assign cz_sale_card_2_title = 'Select Styles Sale' -%}
+                  {%- assign cz_sale_card_1_url = '/pages/labor-day-sale' -%}
+                  {%- assign cz_sale_card_2_url = '/pages/select-styles-sale' -%}
                   {%- for child_link in link.links -%}
-                    {%- if child_link.url contains 'independence-day-savings' -%}
+                    {%- if child_link.url contains 'labor-day-sale' -%}
                       {%- assign cz_sale_card_1_title = child_link.title -%}
                       {%- assign cz_sale_card_1_url = child_link.url -%}
-                    {%- elsif child_link.url contains 'world-cup-special-sale' -%}
+                    {%- elsif child_link.url contains 'select-styles-sale' -%}
                       {%- assign cz_sale_card_2_title = child_link.title -%}
                       {%- assign cz_sale_card_2_url = child_link.url -%}
                     {%- endif -%}
                   {%- endfor -%}
-                  {%- assign cz_sale_card_1_image = images['RefreshYourSpaceforBacktoSchool_page_2x_7383ec26-6719-41b8-845f-a786a777795a.webp'] -%}
-                  {%- assign cz_sale_card_2_image = images['TheRippleEffect_page_2x_eb5351e5-4766-41bc-acf0-76285f5f26fe.webp'] -%}
+                  {%- assign cz_sale_card_1_image = images['LABORDAYEVENT_2x_d0420d99-1a23-4fc9-947b-6939b38c902d.webp'] -%}
+                  {%- assign cz_sale_card_2_image = images['THEHANDS-FREECOLLECTION_2x_c21ff74b-3fc8-4c92-804d-5eb553f4a4a9.webp'] -%}
 
                   {%- if cz_sale_card_1_image != blank -%}
                     <li class="desktop-only navigation__column cz-sale__card cz-sale__card--back-to-school">
