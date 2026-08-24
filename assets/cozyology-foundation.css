@@ -1,0 +1,76 @@
+/* Cozyology shared page foundation — inherited from the live theme. */
+.cz-page {
+  --cz-font-body: var(--base-font-family, var(--font-body-family, "Nunito Sans", Arial, sans-serif));
+  --cz-font-heading: var(--heading-font-family, var(--font-heading-family, "Americana", Georgia, serif));
+  --cz-color-canvas: #fff;
+  --cz-color-text: #333;
+  --cz-color-heading: #171717;
+  --cz-color-muted: #676869;
+  --cz-color-dark: #62564e;
+  --cz-color-line: rgba(0, 0, 0, .14);
+  --cz-space-1: 4px;
+  --cz-space-2: 8px;
+  --cz-space-3: 12px;
+  --cz-space-4: 16px;
+  --cz-space-5: 24px;
+  --cz-space-6: 32px;
+  --cz-space-7: 48px;
+  --cz-space-8: 64px;
+  --cz-gutter: clamp(18px, 3.5vw, 54px);
+  color: var(--cz-color-text);
+  background: var(--cz-color-canvas);
+  font-family: var(--cz-font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cz-page,
+.cz-page *,
+.cz-page *::before,
+.cz-page *::after { box-sizing: border-box; }
+
+.cz-page :where(h1, h2, h3, p) { margin: 0; }
+.cz-page :where(h1, h2, h3) {
+  color: var(--cz-color-heading);
+  font-family: var(--cz-font-heading);
+  font-weight: 400;
+}
+.cz-page :where(button, a) { font: inherit; }
+.cz-page :where(img) { display: block; max-width: 100%; }
+.cz-eyebrow {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+.cz-muted { color: var(--cz-color-muted); }
+.cz-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: 1px solid var(--cz-color-line);
+  border-radius: 2px;
+  color: var(--cz-color-text) !important;
+  background: #fff;
+  background-image: none !important;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+.cz-button::before,
+.cz-button::after { display: none !important; content: none !important; }
+.cz-button--primary {
+  border-color: var(--cz-color-dark);
+  color: #fff !important;
+  background: var(--cz-color-dark);
+}
+.cz-button:hover { border-color: var(--cz-color-dark); }
+.cz-button--primary:hover { opacity: .88; }
+
