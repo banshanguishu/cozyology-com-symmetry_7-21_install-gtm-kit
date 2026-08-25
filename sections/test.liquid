@@ -1,6 +1,3 @@
-{{ 'free-swatches-filter-search.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'free-swatches-filter-search.js' | asset_url }}" defer="defer"></script>
-
 <div data-section-id="{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
 {% paginate collection.products by section.settings.coll_num_per_page_int %}
   
@@ -195,33 +192,6 @@
 
   <div class="emily-box container{% if settings.use_fullwidth_layout %} container--no-max{% endif %}{% if show_header == false %} lightly-spaced-row-above{% endif %}">
     <div class="utility-bar" data-ajax-container data-ajax-scroll-to>
-    <div class="free-swatches-search" data-free-swatches-search>
-      <label class="visually-hidden" for="FreeSwatchesSearch-{{ section.id }}">Search fabric swatches</label>
-      <div class="free-swatches-search__field">
-        <button
-          type="button"
-          class="free-swatches-search__icon"
-          data-fs-mobile-search-toggle
-          aria-label="Open swatch search"
-          aria-expanded="false"
-          aria-controls="FreeSwatchesSearch-{{ section.id }}">
-          <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
-        </button>
-        <input
-          id="FreeSwatchesSearch-{{ section.id }}"
-          type="search"
-          inputmode="search"
-          autocomplete="off"
-          placeholder="Search collection, color or swatch code"
-          data-free-swatches-search-input>
-        <button type="button" class="free-swatches-search__mobile-close" data-fs-mobile-search-close aria-label="Close search">×</button>
-        <button type="button" class="free-swatches-search__clear" data-free-swatches-search-clear aria-label="Clear search" hidden>×</button>
-      </div>
-      <div class="free-swatches-search__meta">
-        <span data-free-swatches-search-status aria-live="polite"></span>
-      </div>
-    </div>
-
       <div class="utility-bar__left">
         {% if section.settings.show_sort or show_filters %}
           <a href="#" class="toggle-btn utility-bar__item{% if section.settings.collapse_tag_sidebar_by_default == false %} toggle-btn--revealed-desktop{% endif %}{% if show_filters == false %} mobile-only{% endif %}" data-toggle-filters>
@@ -314,11 +284,13 @@
     <!-- 把产品按照类型分组-->
     {%- assign product_types = collection.products | map: 'type' | uniq -%}
     {%- assign cart_variant_ids = cart.items | map: 'variant_id' -%}
-    {%- comment -%} 20 件上限：按商品所属 free-swatches collection 全量统计，不受 Shopify 250 件分页上限影响 {%- endcomment -%}
+    {%- comment -%} mini-cart 过滤用：必须在 paginate 内算，外面 collection.products 被 Shopify 截断到 50 条 {%- endcomment -%}
+    {%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
+
+    {%- comment -%} 20 件上限：达到上限后，section 内未加购的产品禁用 Add 按钮（Remove 不受限） {%- endcomment -%}
     {%- assign visible_items_count = 0 -%}
     {%- for item in cart.items -%}
-      {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
-      {%- if item_collection_handles contains 'free-swatches' -%}
+      {%- if mini_cart_product_ids contains item.product_id -%}
         {%- assign visible_items_count = visible_items_count | plus: 1 -%}
       {%- endif -%}
     {%- endfor -%}
@@ -346,7 +318,7 @@
               {% comment %} ===== 首组顶部配置图 ===== {% endcomment %}
               {% comment %}在第 6 次迭代后插入图片 {% endcomment %}
               {%- if group_idx == 7 and section.settings.show_first_group_image -%}
-                <div class="first-group-banner" data-free-swatches-banner>
+                <div class="first-group-banner">
                   <a href="{{ section.settings.first_group_image_link }}">
                     <picture>
                       <source media="(max-width: 767px)"
@@ -359,7 +331,6 @@
                 </div>
               {%- endif -%}
 
-              <section class="free-swatches-type-group" data-free-swatches-group data-series="{{ type | escape }}">
               <div style="border-bottom:1px solid #ccc;margin:20px 0;padding-bottom:20px">
                 <h2 class="text-center" >{{ type }}</h2>
                 {% comment %} 
@@ -404,40 +375,7 @@
                     {%- endif -%}
 
                     <!-- 前12个产品默认显示，其余隐藏 -->
-                    {%- capture fs_filter_color -%}
-                      {%- for filter_value in product.metafields.custom.color_collection.value -%}
-                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
-                      {%- endfor -%}
-                    {%- endcapture -%}
-                    {%- capture fs_filter_light_control -%}
-                      {%- for filter_value in product.metafields.custom.light_blocking.value -%}
-                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
-                      {%- endfor -%}
-                    {%- endcapture -%}
-                    {%- capture fs_filter_function -%}
-                      {%- for filter_value in product.metafields.custom.feature.value -%}
-                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
-                      {%- endfor -%}
-                    {%- endcapture -%}
-                    {%- capture free_swatches_search_text -%}
-                      {{ product.title }} {{ product.type }} {{ product.vendor }}
-                      {{ product.tags | join: ' ' }}
-                      {{ product.variants | map: 'sku' | join: ' ' }}
-                      {{ product.variants | map: 'title' | join: ' ' }}
-                    {%- endcapture -%}
-                    <div
-                      class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}"
-                      data-type="{{ type_id }}"
-                      data-free-swatches-card
-                      data-product-types="{{ product.metafields.custom.swatch_product_type.value | join: '|' | escape }}"
-                      data-best-seller="{% if product.metafields.custom.is_best_seller.value == true %}true{% else %}false{% endif %}"
-                      data-filter-color="{{ fs_filter_color | strip | escape }}"
-                      data-filter-material="{{ product.metafields.custom.f_abric.value | join: '|' | escape }}"
-                      data-filter-light-control="{{ fs_filter_light_control | strip | escape }}"
-                      data-filter-texture="{{ product.metafields.custom.texture.value | join: '|' | escape }}"
-                      data-filter-function="{{ fs_filter_function | strip | escape }}"
-                      data-filter-collection="{{ product.metafields.custom.collection.value | escape }}"
-                      data-search-text="{{ free_swatches_search_text | strip | escape }}">
+                    <div class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}" data-type="{{ type_id }}">
                         {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading, in_cart: in_cart, cart_full: cart_full %}
                     </div>
                 {% endfor %}
@@ -450,7 +388,6 @@
                   <div class="load-btn">Load More</div>
               </div>
               {% endif %}
-              </section>
 
               {% comment %} <div class="product-grid product-grid--per-row-{{ section.settings.grid }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }}">
                 {% for product in collection.products %}
@@ -469,17 +406,13 @@
       </div>
     </filter-container>
 
-    <div class="free-swatches-search-empty" data-free-swatches-search-empty hidden>
-      <h3>No matching swatches</h3>
-      <p>Try another collection name, color, or swatch code.</p>
-      <button type="button" class="btn btn--secondary" data-free-swatches-search-clear>Clear search</button>
-    </div>
+
 
   </div>
 
   <div class="container pagination-row" data-ajax-container>{% render 'pagination-control', paginate: paginate %}</div>
 
-  {%- render 'mini-cart' -%}
+  {%- render 'mini-cart', section_product_ids: mini_cart_product_ids -%}
 
   {% endpaginate %}
 
@@ -517,34 +450,17 @@
     return ids.join(',');
   }
 
-  // mini-cart 折叠态（模块级状态，仅当前页面会话内保留）。
-  // 手机和电脑首次进入都默认收起；成功新增小样时再自动展开。
-  const miniCartMobileMedia = window.matchMedia('(max-width: 767px)');
-  let miniCartCollapsed = true;
+  // mini-cart 折叠态（模块级状态，仅当前页面会话内保留，刷新重置回展开）
+  let miniCartCollapsed = false;
 
-  function getMiniCartCount(root) {
-    if (!root) return 0;
-    const count = root.querySelector('[data-mini-cart-count]');
-    const value = count ? parseInt(count.textContent, 10) : 0;
-    return Number.isFinite(value) ? value : 0;
-  }
-
-  // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM。
-  // 数量增加代表新加入小样：自动展开；删到 0 个：恢复默认收起状态。
+  // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM
   function updateMiniCart(html) {
     const oldEl = document.querySelector('[data-mini-cart]');
     if (!oldEl) return;
-    const oldCount = getMiniCartCount(oldEl);
     const tpl = document.createElement('template');
     tpl.innerHTML = html.trim();
     const newEl = tpl.content.querySelector('[data-mini-cart]');
     if (!newEl) return;
-    const newCount = getMiniCartCount(newEl);
-    if (newCount <= 0) {
-      miniCartCollapsed = true;
-    } else if (newCount > oldCount) {
-      miniCartCollapsed = false;
-    }
     oldEl.replaceWith(newEl);
     // 替换后 DOM 回到 Liquid 的默认（展开），把记住的折叠态再 apply 一次
     applyMiniCartState();
@@ -638,7 +554,6 @@
         throw new Error(data.description || data.message || 'Add to cart failed');
       }
 
-      // updateMiniCart 会根据数量增加自动展开手机和电脑端的底部小样条。
       applyCartChangeSections(data);
       setButtonInCart(button, true);
 
@@ -766,11 +681,6 @@
       toggleMiniCart(true);
       return;
     }
-    // 收起状态下，点击整条 Your Free Swatches 区域都可展开；Checkout 已在上方单独处理。
-    if (miniCartCollapsed && target.closest('[data-mini-cart-collapsed]')) {
-      toggleMiniCart(false);
-      return;
-    }
     if (target.closest('[data-mini-cart-expand]')) {
       toggleMiniCart(false);
       return;
@@ -818,19 +728,9 @@
     // cart-action 也有两套内容（展开 logo+Cart / 收起 计数+首个色卡）
     const cartExpanded = document.querySelector('[data-mini-cart-cart-expanded]');
     const cartCollapsed = document.querySelector('[data-mini-cart-cart-collapsed]');
-    const keepMobileCheckoutVisible = collapsed && miniCartMobileMedia.matches;
-    if (cartExpanded) cartExpanded.hidden = collapsed && !keepMobileCheckoutVisible;
-    if (cartCollapsed) cartCollapsed.hidden = !collapsed || keepMobileCheckoutVisible;
-
-    const miniCart = document.querySelector('[data-mini-cart]');
-    const visible = !!miniCart && !miniCart.classList.contains('mini-cart--hidden');
-    document.documentElement.classList.toggle('fs-mini-cart-visible', visible);
-    document.documentElement.classList.toggle('fs-mini-cart-expanded', visible && !collapsed);
+    if (cartExpanded) cartExpanded.hidden = collapsed;
+    if (cartCollapsed) cartCollapsed.hidden = !collapsed;
   }
-
-  // The mini-cart markup is already above this script, so apply the mobile
-  // initial state immediately instead of waiting for DOMContentLoaded.
-  applyMiniCartState();
 
   function scrollMiniCartList(delta) {
     const list = document.querySelector('[data-mini-cart-list]');
@@ -1426,25 +1326,3 @@
     utilityBar.style.transform = `translateX(-16px)`;
   }
 </script>
-
-<style id="fs-mini-cart-clearance-v1">
-  html.fs-refine-v2.fs-mini-cart-visible .emily-box {
-    padding-bottom: 58px;
-  }
-  html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded .emily-box {
-    padding-bottom: 130px;
-  }
-  @media (min-width: 768px) {
-    html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded [data-mini-cart] {
-      bottom: 0;
-    }
-  }
-  @media (max-width: 767px) {
-    html.fs-refine-v2.fs-mini-cart-visible .emily-box {
-      padding-bottom: 58px;
-    }
-    html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded .emily-box {
-      padding-bottom: 150px;
-    }
-  }
-</style>

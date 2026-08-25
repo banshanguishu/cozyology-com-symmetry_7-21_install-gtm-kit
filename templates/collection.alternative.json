@@ -1,1 +1,241 @@
-{"sections":{"main":{"type":"main-collection","disabled":true,"settings":{"show_title":true,"show_image_behind_heading":true,"heading_image_height":"large","overlay_style":"full image-overlay--bg-shadow","coll_desc_pos":"above","coll_num_per_page_int":24,"grid":4,"show_vendor":false,"show_total":true,"enable_filtering":true,"collapse_tag_sidebar_by_default":false,"collapse_filters_method":"over-6","show_filter_counts":false,"filter_two_columns":false,"button_grid_filter_name":"Size,Taille,Größe","auto_apply_hide_unavailable":false,"enable_sticky_filter":true,"show_sort":true,"sort_show_featured":false,"sort_show_best":true,"sort_show_alpha":true,"sort_show_price":true,"sort_show_date":true,"related_collections":["free-swatches"],"related_collections_style":"buttons","rel_coll_gall_aspect_ratio":"2","image_position":"center center","rel_coll_gall_enable_margin":true,"rel_coll_gall_full_width":false,"rel_coll_gall_overlay_style":"full image-overlay--bg-shadow","rel_coll_gall_text_alignment":"bottom left","rel_coll_grid_mobile":"2"}},"rich_text_9r8pca":{"type":"rich-text","blocks":{"heading_Qn7jEV":{"type":"heading","settings":{"title":"Free Fabric Swatches","use_h1":true}},"text_NtEXaK":{"type":"text","settings":{"text":"<p>Choose up to 20 swatches. <strong>Shipping applies<\/strong>, and you'll receive a <strong>$10 coupon code<\/strong> toward your custom drapes or shades.<\/p>","enlarge_text":false}}},"block_order":["heading_Qn7jEV","text_NtEXaK"],"custom_css":[".section-rich-text-sticky {position: sticky; top: calc(1px + var(--theme-sticky-header-height)); z-index: 199; background: #fff;}","strong {color: #c16452;}"],"settings":{"height":"medium","text_alignment":"center","full_width":false,"color_scheme":"default"}},"image_with_text_overlay_ajz8mh":{"type":"image-with-text-overlay","disabled":true,"custom_css":["{margin-top: -60px;}"],"name":"Image with text overlay","settings":{"height":"adapt","height_desktop":600,"height_mobile":460,"image_link":"shopify:\/\/products\/curated-swatches","full_width":true,"text_alignment":"center center","mobile_overlay_under":false,"overlay_style":"shadow"}},"test_GAE7ze":{"type":"test","custom_css":[".toggle-btn {font-color: #c16452;}"],"settings":{"show_first_group_image":true,"first_group_image_link":"shopify:\/\/products\/curated-swatches","first_group_image_pc":"shopify:\/\/shop_images\/feeling_lost_in_fabric.webp","first_group_image_mobile":"shopify:\/\/shop_images\/feeling_lost_in_fabric_mobile.webp","show_title":false,"show_image_behind_heading":true,"heading_image_height":"medium","overlay_style":"shadow","coll_desc_pos":"above","coll_num_per_page_int":800,"grid":6,"show_vendor":false,"show_total":false,"enable_filtering":true,"collapse_tag_sidebar_by_default":false,"collapse_filters_method":"over-12","show_filter_counts":false,"filter_two_columns":false,"button_grid_filter_name":"Size,Taille,Größe","auto_apply_hide_unavailable":false,"enable_sticky_filter":false,"show_sort":true,"sort_show_featured":false,"sort_show_best":true,"sort_show_alpha":true,"sort_show_price":true,"sort_show_date":true,"related_collections":[],"related_collections_style":"buttons","rel_coll_gall_aspect_ratio":"1","image_position":"center center","rel_coll_gall_enable_margin":true,"rel_coll_gall_full_width":false,"rel_coll_gall_overlay_style":"shadow","rel_coll_gall_text_alignment":"center center","rel_coll_grid_mobile":"2"}},"product_list_XC3L8Q":{"type":"product-list","name":"Product list","settings":{"title":"","product_list":["liam-linen-booklet-29-colors","layla-linen-booklet-18-colors","choose-any-3-booklets","neutral-color-box-38-colors","whispen-woven-shade-swatches-collection-10-options","lena-linen-booklet-15-colors","smart-laser-distance-measurer","complimentary-zoom-consultation","cyan-and-blue-green-color-box-38-colors","cyrus-cotton-booklet-32-colors","border-trim-collection","brynn-bamboo-shade-swatches-collection-8-options","cassandra-cotton-booklet-19-colors","livia-linen-booklet-16-colors","vance-velvet-booklet-11-colors","valerie-velvet-booklet-11-colors","vivian-velvet-booklet-15-colors","winslow-woven-shade-swatches-collection-17-options","willow-woven-shade-swatches-collection-10-options","achromatic-grey-color-box-38-colors","pink-and-red-analogous-color-box-38-colors"],"show_vendor":false,"enable_carousel":true,"grid":5,"color_scheme":"default","full_width":true}},"image_with_text_overlay_WNfyzM":{"type":"image-with-text-overlay","blocks":{"heading_VBVUrW":{"type":"heading","settings":{"title":"Swatch Boxes","heading_max_width":22,"title_size":60,"title_size_mobile":32,"use_h1":true}},"text_EAN6kz":{"type":"text","settings":{"text":"<p>Explore our best-selling Swatch Boxes with 4 color series and 38 stunning shades for your perfect match.<\/p>","enlarge_text":false}},"button_wqR7Mf":{"type":"button","settings":{"button_label":"shop now","button_link":"shopify:\/\/collections\/swatch-boxes","button_style":"primary"}}},"block_order":["heading_VBVUrW","text_EAN6kz","button_wqR7Mf"],"disabled":true,"custom_css":["{margin-bottom: 40px;}"],"settings":{"image":"shopify:\/\/shop_images\/box_banner.webp","height":"fixed","height_desktop":400,"height_mobile":320,"image_link":"shopify:\/\/collections\/swatch-boxes","full_width":true,"text_alignment":"center center","mobile_overlay_under":false,"overlay_style":"shadow"}}},"order":["main","rich_text_9r8pca","image_with_text_overlay_ajz8mh","test_GAE7ze","product_list_XC3L8Q","image_with_text_overlay_WNfyzM"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "disabled": true,
+      "settings": {
+        "show_title": true,
+        "show_image_behind_heading": true,
+        "heading_image_height": "large",
+        "overlay_style": "full image-overlay--bg-shadow",
+        "coll_desc_pos": "above",
+        "coll_num_per_page_int": 24,
+        "grid": 4,
+        "show_vendor": false,
+        "show_total": true,
+        "enable_filtering": true,
+        "collapse_tag_sidebar_by_default": false,
+        "collapse_filters_method": "over-6",
+        "show_filter_counts": false,
+        "filter_two_columns": false,
+        "button_grid_filter_name": "Size,Taille,Größe",
+        "auto_apply_hide_unavailable": false,
+        "enable_sticky_filter": true,
+        "show_sort": true,
+        "sort_show_featured": false,
+        "sort_show_best": true,
+        "sort_show_alpha": true,
+        "sort_show_price": true,
+        "sort_show_date": true,
+        "related_collections": [
+          "free-swatches"
+        ],
+        "related_collections_style": "buttons",
+        "rel_coll_gall_aspect_ratio": "2",
+        "image_position": "center center",
+        "rel_coll_gall_enable_margin": true,
+        "rel_coll_gall_full_width": false,
+        "rel_coll_gall_overlay_style": "full image-overlay--bg-shadow",
+        "rel_coll_gall_text_alignment": "bottom left",
+        "rel_coll_grid_mobile": "2"
+      }
+    },
+    "rich_text_9r8pca": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_Qn7jEV": {
+          "type": "heading",
+          "settings": {
+            "title": "Free Fabric Swatches",
+            "use_h1": true
+          }
+        },
+        "text_NtEXaK": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Choose up to 20 swatches. <strong>Shipping applies</strong>, and you'll receive a <strong>$10 coupon code</strong> toward your custom drapes or shades.</p>",
+            "enlarge_text": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_Qn7jEV",
+        "text_NtEXaK"
+      ],
+      "custom_css": [
+        ".section-rich-text-sticky {position: sticky; top: calc(1px + var(--theme-sticky-header-height)); z-index: 199; background: #fff;}",
+        "strong {color: #c16452;}"
+      ],
+      "settings": {
+        "height": "medium",
+        "text_alignment": "center",
+        "full_width": false,
+        "color_scheme": "default"
+      }
+    },
+    "image_with_text_overlay_ajz8mh": {
+      "type": "image-with-text-overlay",
+      "disabled": true,
+      "custom_css": [
+        "{margin-top: -60px;}"
+      ],
+      "name": "Image with text overlay",
+      "settings": {
+        "height": "adapt",
+        "height_desktop": 600,
+        "height_mobile": 460,
+        "image_link": "shopify://products/curated-swatches",
+        "full_width": true,
+        "text_alignment": "center center",
+        "mobile_overlay_under": false,
+        "overlay_style": "shadow"
+      }
+    },
+    "test_GAE7ze": {
+      "type": "test",
+      "custom_css": [
+        ".toggle-btn {font-color: #c16452;}"
+      ],
+      "settings": {
+        "show_first_group_image": true,
+        "first_group_image_link": "shopify://products/curated-swatches",
+        "first_group_image_pc": "shopify://shop_images/feeling_lost_in_fabric.webp",
+        "first_group_image_mobile": "shopify://shop_images/feeling_lost_in_fabric_mobile.webp",
+        "show_title": false,
+        "show_image_behind_heading": true,
+        "heading_image_height": "medium",
+        "overlay_style": "shadow",
+        "coll_desc_pos": "above",
+        "coll_num_per_page_int": 800,
+        "grid": 6,
+        "show_vendor": false,
+        "show_total": false,
+        "enable_filtering": true,
+        "collapse_tag_sidebar_by_default": false,
+        "collapse_filters_method": "none",
+        "show_filter_counts": false,
+        "filter_two_columns": false,
+        "button_grid_filter_name": "Size,Taille,Größe",
+        "auto_apply_hide_unavailable": false,
+        "enable_sticky_filter": false,
+        "show_sort": true,
+        "sort_show_featured": false,
+        "sort_show_best": true,
+        "sort_show_alpha": true,
+        "sort_show_price": true,
+        "sort_show_date": true,
+        "related_collections": [],
+        "related_collections_style": "buttons",
+        "rel_coll_gall_aspect_ratio": "1",
+        "image_position": "center center",
+        "rel_coll_gall_enable_margin": true,
+        "rel_coll_gall_full_width": false,
+        "rel_coll_gall_overlay_style": "shadow",
+        "rel_coll_gall_text_alignment": "center center",
+        "rel_coll_grid_mobile": "2"
+      }
+    },
+    "product_list_XC3L8Q": {
+      "type": "product-list",
+      "name": "Product list",
+      "settings": {
+        "title": "",
+        "product_list": [
+          "liam-linen-booklet-28-colors",
+          "layla-linen-booklet-16-colors",
+          "choose-any-3-booklets",
+          "neutral-color-box-38-colors",
+          "whispen-woven-shade-swatches-collection-10-options",
+          "lena-linen-booklet-15-colors",
+          "smart-laser-distance-measurer",
+          "complimentary-zoom-consultation",
+          "cyan-and-blue-green-color-box-38-colors",
+          "cyrus-cotton-booklet-33-colors",
+          "border-trim-collection",
+          "brynn-bamboo-shade-swatches-collection-8-options",
+          "cassandra-cotton-booklet-18-colors",
+          "livia-linen-booklet-16-colors",
+          "vance-velvet-booklet-10-colors",
+          "valerie-velvet-booklet-11-colors",
+          "vivian-velvet-booklet-16-colors",
+          "winslow-woven-shade-swatches-collection-17-options",
+          "willow-woven-shade-swatches-collection-10-options",
+          "achromatic-grey-color-box-38-colors",
+          "pink-and-red-analogous-color-box-38-colors"
+        ],
+        "show_vendor": false,
+        "enable_carousel": true,
+        "grid": 5,
+        "color_scheme": "default",
+        "full_width": true
+      }
+    },
+    "image_with_text_overlay_WNfyzM": {
+      "type": "image-with-text-overlay",
+      "blocks": {
+        "heading_VBVUrW": {
+          "type": "heading",
+          "settings": {
+            "title": "Swatch Boxes",
+            "heading_max_width": 22,
+            "title_size": 60,
+            "title_size_mobile": 32,
+            "use_h1": true
+          }
+        },
+        "text_EAN6kz": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Explore our best-selling Swatch Boxes with 4 color series and 38 stunning shades for your perfect match.</p>",
+            "enlarge_text": false
+          }
+        },
+        "button_wqR7Mf": {
+          "type": "button",
+          "settings": {
+            "button_label": "shop now",
+            "button_link": "shopify://collections/swatch-boxes",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_VBVUrW",
+        "text_EAN6kz",
+        "button_wqR7Mf"
+      ],
+      "disabled": true,
+      "custom_css": [
+        "{margin-bottom: 40px;}"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/box_banner.webp",
+        "height": "fixed",
+        "height_desktop": 400,
+        "height_mobile": 320,
+        "image_link": "shopify://collections/swatch-boxes",
+        "full_width": true,
+        "text_alignment": "center center",
+        "mobile_overlay_under": false,
+        "overlay_style": "shadow"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_9r8pca",
+    "image_with_text_overlay_ajz8mh",
+    "test_GAE7ze",
+    "product_list_XC3L8Q",
+    "image_with_text_overlay_WNfyzM"
+  ]
+}
