@@ -339,8 +339,8 @@
 
   .mini-cart__item-remove {
     position: absolute;
-    right: 4px;
-    bottom: 4px;
+    right: 0;
+    bottom: 16px;
     display: inline-flex;
     width: 16px;
   }
@@ -548,8 +548,8 @@
 
   .mini-cart__item-remove {
     position: absolute;
-    right: 4px;
-    bottom: 4px;
+    right: 0;
+    bottom: 16px;
     display: inline-flex;
     width: 16px;
   }
@@ -559,11 +559,13 @@
     width: 100%;
     height: auto;
     background: transparent;
-    padding: 8px 12px;
+    padding: 8px 112px 8px 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
+    box-sizing: border-box;
+    min-height: 49px;
   }
 
   .mini-cart__collapsed-title {
@@ -576,7 +578,7 @@
 
   .mini-cart__expand-btn {
     position: absolute;
-    right: 12px;
+    right: 112px;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
@@ -618,9 +620,13 @@
     display: flex;
   }
 
-  /* 收起态下 cart-action 整体隐藏 */
+  /* 手机收起态保留 Checkout，其余详情与色卡收起 */
   .mini-cart [data-mini-cart-collapsed]:not([hidden]) ~ [data-mini-cart-cart-action] {
-    display: none;
+    bottom: auto;
+    display: flex;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   /* 移动端 cart-action 只保留 Cart 按钮（隐藏 logo + 收起态变体） */
@@ -641,5 +647,176 @@
     font-weight: 400;
     color: #fff;
     border: none;
+  }
+}
+
+/* fs-collapsed-swatch-cart-v3: use the Gallery Suite mobile bottom tray at every width. */
+.mini-cart--free-swatches:has([data-mini-cart-collapsed]:not([hidden])) {
+  right: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  display: block !important;
+  z-index: 1005 !important;
+  transform: none !important;
+  border-radius: 12px 12px 0 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.mini-cart--free-swatches [data-mini-cart-collapsed]:not([hidden]) {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 48px !important;
+  box-sizing: border-box !important;
+  color: #2f2c28 !important;
+  background: #f4eee8 !important;
+  border: 1px solid #c7bcaf !important;
+  border-bottom: 0 !important;
+  border-radius: 12px 12px 0 0 !important;
+  box-shadow: 0 7px 24px rgba(38, 34, 30, .14) !important;
+}
+
+.mini-cart--free-swatches [data-mini-cart-collapsed]:not([hidden]) .mini-cart__collapsed-title {
+  display: block !important;
+  min-width: 0 !important;
+  color: #2f2c28 !important;
+  font-family: var(--base-font-family, var(--font-body-family, "Nunito Sans", sans-serif)) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.mini-cart--free-swatches [data-mini-cart-collapsed]:not([hidden]) .mini-cart__expand-btn {
+  position: absolute !important;
+  top: 0 !important;
+  right: 10px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 44px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #2f2c28 !important;
+  transform: none !important;
+}
+
+.mini-cart--free-swatches [data-mini-cart-collapsed]:not([hidden]) .mini-cart__expand-icon--desktop {
+  display: none !important;
+}
+
+.mini-cart--free-swatches [data-mini-cart-collapsed]:not([hidden]) .mini-cart__expand-icon--mobile {
+  display: block !important;
+  width: 12px !important;
+  height: 8px !important;
+}
+
+.mini-cart--free-swatches:has([data-mini-cart-collapsed]:not([hidden])) [data-mini-cart-cart-action] {
+  display: none !important;
+}
+
+/* fs-desktop-sidebar-sticky-v1: keep the open desktop filter panel available while browsing results. */
+@media (min-width: 768px) {
+  html.fs-refine-v2 .emily-box .filter-container--show-filters-desktop > .filters {
+    position: sticky !important;
+    top: calc(
+      var(--free-swatches-toolbar-top, var(--theme-sticky-header-height, 0px)) +
+      var(--free-swatches-toolbar-height, 66px) +
+      12px
+    ) !important;
+    align-self: flex-start !important;
+    max-height: calc(
+      100vh -
+      var(--free-swatches-toolbar-top, var(--theme-sticky-header-height, 0px)) -
+      var(--free-swatches-toolbar-height, 66px) -
+      24px
+    ) !important;
+  }
+
+  html.fs-refine-v2 .emily-box .filter-container--show-filters-desktop > .filters > .filters__inner {
+    position: relative !important;
+    top: auto !important;
+    max-height: inherit !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* fs-desktop-cart-with-sidebar-v1: align the swatch cart to the results column when the desktop filter is open. */
+@media (min-width: 1051px) {
+  html.fs-refine-v2 .free-swatches-all-pages-loaded.fs-desktop-filter-open > .mini-cart {
+    right: calc(50% - 164px) !important;
+  }
+}
+
+/* fs-filter-responsive-drawer-v1: use a stable left drawer at tablet widths and a lighter desktop open transition. */
+@media (min-width: 768px) and (max-width: 1050px) {
+  html.fs-refine-v2 .emily-box .filter-container--show-filters-desktop > .filters {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: min(420px, 88vw) !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
+    align-self: auto !important;
+    z-index: 8002 !important;
+    background: #fff !important;
+    border-radius: 0 !important;
+    box-shadow: 8px 0 30px rgba(47, 43, 39, 0.16) !important;
+    transition: transform 0.18s ease, opacity 0.14s ease !important;
+  }
+
+  html.fs-refine-v2 .emily-box .filter-container--show-filters-desktop > .filters > .filters__inner {
+    position: relative !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (min-width: 1051px) {
+  html.fs-refine-v2 .emily-box .filter-container--side > .filters {
+    transition: opacity 0.14s ease !important;
+  }
+}
+
+/* fs-desktop-compact-swatch-thumbnails-v1:
+   Keep the perk copy, but return the expanded desktop tray to the compact original proportion. */
+@media (min-width: 768px) {
+  .mini-cart--free-swatches .mini-cart__expanded {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .mini-cart--free-swatches .mini-cart__item {
+    flex-basis: 44px;
+    height: 44px;
+  }
+}
+
+/* Free Swatches tray: keep expanded and collapsed states flush to the viewport — 2026-08-22 */
+@media (min-width: 768px) {
+  .mini-cart--free-swatches {
+    bottom: 0 !important;
   }
 }

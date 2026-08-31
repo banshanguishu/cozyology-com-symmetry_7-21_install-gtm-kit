@@ -1,23 +1,10 @@
 {%- comment -%}
-  Mini Cart section — 不会被任何模板直接挂载。
-  存在的唯一目的是给 Section Rendering API 用：
-    fetch('?sections=mini-cart') → 返回最新的 mini-cart HTML
-  test.liquid 自身通过 {% render 'mini-cart' %} 嵌入实际 markup。
+  Mini Cart section — used only by the Section Rendering API.
+  The snippet derives its count and items directly from cart lines, so loading
+  and paginating the full Free Swatches collection is unnecessary.
 {%- endcomment -%}
 
-{%- if collection -%}
-  {%- comment -%}
-    必须包一层 paginate，否则 collection.products 被 Shopify 默认截断到 50 条，
-    跟 test.liquid 渲染的产品集对不上，导致超出前 50 的商品过滤不出来。
-  {%- endcomment -%}
-  {% paginate collection.products by 1000 %}
-    {%- assign section_product_ids = collection.products | map: 'id' -%}
-    {%- render 'mini-cart', section_product_ids: section_product_ids -%}
-  {% endpaginate %}
-{%- else -%}
-  {%- assign section_product_ids = '' | split: ',' -%}
-  {%- render 'mini-cart', section_product_ids: section_product_ids -%}
-{%- endif -%}
+{%- render 'mini-cart' -%}
 
 {% schema %}
 {

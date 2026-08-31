@@ -1228,17 +1228,29 @@ const FilterContainer = class extends HTMLElement {
     if (this.ajaxLoadUrlFetchAbortController) {
       this.ajaxLoadUrlFetchAbortController.abort();
     }
-    this.ajaxLoadUrlFetchAbortController = new AbortController();
-    fetch(fetchUrl, {
-      method: "get",
-      signal: this.ajaxLoadUrlFetchAbortController.signal,
-    })
-      .then((response) => {
+    const requestController = new AbortController();
+    this.ajaxLoadUrlFetchAbortController = requestController;
+    const fetchFilterResponse = (attempt = 0) =>
+      fetch(fetchUrl, {
+        method: "get",
+        signal: requestController.signal,
+      }).then((response) => {
+        if (response.status === 429 && attempt < 2) {
+          const retryAfter = Number(response.headers.get("Retry-After"));
+          const delay =
+            Number.isFinite(retryAfter) && retryAfter > 0
+              ? retryAfter * 1000
+              : 800 * Math.pow(2, attempt);
+          return new Promise((resolve) => setTimeout(resolve, delay)).then(() =>
+            fetchFilterResponse(attempt + 1)
+          );
+        }
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.text();
-      })
+      });
+    fetchFilterResponse()
       .then((response) => {
         if (document.activeElement) {
           this.activeElementId = document.activeElement.id;
@@ -1317,7 +1329,6 @@ const FilterContainer = class extends HTMLElement {
             to.innerHTML = from.innerHTML;
           }
         }
-        ajaxContainers.forEach((el) => el.classList.remove("ajax-loading"));
         if (this.activeElementId) {
           const el = document.getElementById(this.activeElementId);
           if (el) {
@@ -1328,7 +1339,30 @@ const FilterContainer = class extends HTMLElement {
           theme.getOffsetTopFromDoc(
             this.section.querySelector("[data-ajax-scroll-to]")
           ) - document.querySelector(".section-header").clientHeight;
-        window.scrollTo({ top: scrollToY, behavior: "smooth" });
+        const keepFreeSwatchesMobileDrawerStable =
+          window.innerWidth < 768 &&
+          document.body.classList.contains(
+            "free-swatches-filter-search-page"
+          ) &&
+          this.classList.contains(
+            "filter-container--show-filters-mobile"
+          );
+        if (!keepFreeSwatchesMobileDrawerStable) {
+          window.scrollTo({ top: scrollToY, behavior: "smooth" });
+        }
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error("Collection filter update failed:", error);
+        }
+      })
+      .finally(() => {
+        if (this.ajaxLoadUrlFetchAbortController === requestController) {
+          ajaxContainers.forEach((el) =>
+            el.classList.remove("ajax-loading")
+          );
+          this.ajaxLoadUrlFetchAbortController = null;
+        }
       });
   }
 };

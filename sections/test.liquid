@@ -1,3 +1,73 @@
+<style>
+  /* Free Swatches initial toolbar paint guard — 2026-08-23 */
+  #shopify-section-{{ section.id }} .emily-box .utility-bar:not(.free-swatches-toolbar) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Mini Cart initial-state paint guard — 2026-08-23.
+     Both breakpoints start collapsed; keep the mobile checkout action visible. */
+  html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-expanded] {
+    display: none !important;
+  }
+  html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-collapsed] {
+    display: flex !important;
+  }
+  #shopify-section-{{ section.id }} [data-mini-cart-item].mini-cart__item--pending-remove {
+    opacity: 0.18;
+    transform: scale(0.92);
+    pointer-events: none;
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+  #shopify-section-{{ section.id }} [data-mini-cart-item].mini-cart__item--queued-remove {
+    opacity: 0.55;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+  #shopify-section-{{ section.id }} [data-mini-cart-remove] {
+    position: relative;
+    touch-action: manipulation;
+  }
+  @media (max-width: 700px) {
+    #shopify-section-{{ section.id }} .add-to-cart-test {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease, transform 80ms ease;
+    }
+    #shopify-section-{{ section.id }} .add-to-cart-test:active {
+      transform: scale(0.97);
+    }
+    #shopify-section-{{ section.id }} [data-mini-cart-remove]::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+    }
+  }
+  #shopify-section-{{ section.id }} [data-mini-cart-remove] img {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  @media (min-width: 768px) {
+    html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-cart-expanded] {
+      display: none !important;
+    }
+    html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-cart-collapsed] {
+      display: flex !important;
+    }
+  }
+  @media (max-width: 767px) {
+    html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-cart-expanded] {
+      display: flex !important;
+    }
+    html:not(.fs-mini-cart-ready) #shopify-section-{{ section.id }} [data-mini-cart-cart-collapsed] {
+      display: none !important;
+    }
+  }
+</style>
+{{ 'free-swatches-filter-search.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'free-swatches-filter-search.js' | asset_url }}" defer="defer"></script>
+
 <div data-section-id="{{ section.id }}" {%- render 'animation-attrs', attrs: 'data-cc-animate' -%}>
 {% paginate collection.products by section.settings.coll_num_per_page_int %}
   
@@ -192,6 +262,33 @@
 
   <div class="emily-box container{% if settings.use_fullwidth_layout %} container--no-max{% endif %}{% if show_header == false %} lightly-spaced-row-above{% endif %}">
     <div class="utility-bar" data-ajax-container data-ajax-scroll-to>
+    <div class="free-swatches-search" data-free-swatches-search>
+      <label class="visually-hidden" for="FreeSwatchesSearch-{{ section.id }}">Search fabric swatches</label>
+      <div class="free-swatches-search__field">
+        <button
+          type="button"
+          class="free-swatches-search__icon"
+          data-fs-mobile-search-toggle
+          aria-label="Open swatch search"
+          aria-expanded="false"
+          aria-controls="FreeSwatchesSearch-{{ section.id }}">
+          <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+        </button>
+        <input
+          id="FreeSwatchesSearch-{{ section.id }}"
+          type="search"
+          inputmode="search"
+          autocomplete="off"
+          placeholder="Search collection, color or swatch code"
+          data-free-swatches-search-input>
+        <button type="button" class="free-swatches-search__mobile-close" data-fs-mobile-search-close aria-label="Close search">×</button>
+        <button type="button" class="free-swatches-search__clear" data-free-swatches-search-clear aria-label="Clear search" hidden>×</button>
+      </div>
+      <div class="free-swatches-search__meta">
+        <span data-free-swatches-search-status aria-live="polite"></span>
+      </div>
+    </div>
+
       <div class="utility-bar__left">
         {% if section.settings.show_sort or show_filters %}
           <a href="#" class="toggle-btn utility-bar__item{% if section.settings.collapse_tag_sidebar_by_default == false %} toggle-btn--revealed-desktop{% endif %}{% if show_filters == false %} mobile-only{% endif %}" data-toggle-filters>
@@ -284,13 +381,11 @@
     <!-- 把产品按照类型分组-->
     {%- assign product_types = collection.products | map: 'type' | uniq -%}
     {%- assign cart_variant_ids = cart.items | map: 'variant_id' -%}
-    {%- comment -%} mini-cart 过滤用：必须在 paginate 内算，外面 collection.products 被 Shopify 截断到 50 条 {%- endcomment -%}
-    {%- assign mini_cart_product_ids = collection.products | map: 'id' -%}
-
-    {%- comment -%} 20 件上限：达到上限后，section 内未加购的产品禁用 Add 按钮（Remove 不受限） {%- endcomment -%}
+    {%- comment -%} 20 件上限：按商品所属 free-swatches collection 全量统计，不受 Shopify 250 件分页上限影响 {%- endcomment -%}
     {%- assign visible_items_count = 0 -%}
     {%- for item in cart.items -%}
-      {%- if mini_cart_product_ids contains item.product_id -%}
+      {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+      {%- if item_collection_handles contains 'free-swatches' -%}
         {%- assign visible_items_count = visible_items_count | plus: 1 -%}
       {%- endif -%}
     {%- endfor -%}
@@ -311,26 +406,81 @@
           <a ></a>
             {% comment %} <img src="{{ 'product_img.webp' |  asset_url  }}" width="100%" height="auto" /> {% endcomment %}
           
+            {% comment %} Free Swatches journey promos: staged once so filtering can place them reliably. {% endcomment %}
+            <section class="free-swatches-story-promo free-swatches-story-promo--discount" data-free-swatches-banner data-free-swatches-story-promo data-free-swatches-discount-promo data-free-swatches-placement-pending hidden aria-labelledby="free-swatches-discount-title">
+                  <div class="free-swatches-story-promo__media" aria-hidden="true">
+                    <img
+                      src="https://cdn.shopify.com/s/files/1/0862/2506/0158/files/free-swatches-swatch-customer-29-banner.webp?v=1787406193"
+                      width="1200"
+                      height="800"
+                      alt=""
+                      loading="lazy"
+                      decoding="async">
+                  </div>
+                  <div class="free-swatches-story-promo__content">
+                    <p class="free-swatches-story-promo__eyebrow">Swatch Customer Exclusive</p>
+                    <h2 class="free-swatches-story-promo__title" id="free-swatches-discount-title">Save <span class="free-swatches-story-promo__accent">up to 29% off</span> Custom Drapes &amp; Shades</h2>
+                    <p class="free-swatches-story-promo__copy">Your swatch order unlocks exclusive savings when you’re ready to order.</p>
+                  </div>
+                </section>
+
+            <section class="free-swatches-story-promo free-swatches-story-promo--color-box" data-free-swatches-banner data-free-swatches-story-promo data-free-swatches-color-box-promo data-free-swatches-placement-pending hidden aria-labelledby="free-swatches-color-box-title">
+                  <div class="free-swatches-story-promo__media" aria-hidden="true">
+                    <img
+                      src="{{ 'free-swatches-curated-color-boxes.webp' | asset_url }}"
+                      width="1200"
+                      height="1200"
+                      alt=""
+                      loading="lazy"
+                      decoding="async">
+                  </div>
+                  <div class="free-swatches-story-promo__content">
+                    <p class="free-swatches-story-promo__eyebrow">Curated Color Boxes</p>
+                    <h2 class="free-swatches-story-promo__title" id="free-swatches-color-box-title"><span class="free-swatches-story-promo__desktop-text">Prefer a ready-made color palette?</span><span class="free-swatches-story-promo__mobile-text">Ready-made color palettes</span></h2>
+                    <p class="free-swatches-story-promo__copy"><span class="free-swatches-story-promo__desktop-text">Explore coordinated swatch boxes selected to make color comparison easier.</span><span class="free-swatches-story-promo__mobile-text">Compare coordinated shades at home.</span></p>
+                  </div>
+                  <div class="free-swatches-story-promo__actions">
+                    <a class="free-swatches-story-promo__button" href="/collections/swatch-boxes">Shop Color Boxes</a>
+                  </div>
+                </section>
+
+            {%- if section.settings.show_first_group_image -%}
+              <section class="free-swatches-story-promo free-swatches-story-promo--feeling-lost" data-free-swatches-banner data-free-swatches-story-promo data-free-swatches-feeling-lost-promo data-free-swatches-placement-pending hidden aria-labelledby="free-swatches-feeling-lost-title">
+                  <div class="free-swatches-story-promo__media" aria-hidden="true">
+                    <picture>
+                      <img
+                        src="{{ section.settings.first_group_image_pc | image_url: width: 1500 }}"
+                        width="{{ section.settings.first_group_image_pc.width }}"
+                        height="{{ section.settings.first_group_image_pc.height }}"
+                        alt=""
+                        loading="lazy"
+                        decoding="async">
+                    </picture>
+                  </div>
+                  <div class="free-swatches-story-promo__content">
+                    <p class="free-swatches-story-promo__eyebrow">Curated Swatches</p>
+                    <h2 class="free-swatches-story-promo__title" id="free-swatches-feeling-lost-title">Feeling lost in fabrics?</h2>
+                    <p class="free-swatches-story-promo__copy">Share your style—we’ll carefully select 20 swatches just for you.</p>
+                  </div>
+                  <div class="free-swatches-story-promo__actions">
+                    <a class="free-swatches-story-promo__button" href="{{ section.settings.first_group_image_link }}">Request Curated Swatches</a>
+                  </div>
+                </section>
+            {%- endif -%}
+
             {% assign group_idx = 0 %}
            {% for type in product_types %}
               {% assign group_idx = group_idx | plus: 1 %}
               {%- assign type_products = collection.products | where: 'type', type -%}
-              {% comment %} ===== 首组顶部配置图 ===== {% endcomment %}
-              {% comment %}在第 6 次迭代后插入图片 {% endcomment %}
-              {%- if group_idx == 7 and section.settings.show_first_group_image -%}
-                <div class="first-group-banner">
-                  <a href="{{ section.settings.first_group_image_link }}">
-                    <picture>
-                      <source media="(max-width: 767px)"
-                              srcset="{{ section.settings.first_group_image_mobile | image_url: width: 768 }}">
-                      <img width="100%" height="auto" src="{{ section.settings.first_group_image_pc | image_url: width: 1500 }}"
-                          alt="{{ section.settings.first_group_image_pc.alt | escape }}"
-                          loading="lazy">
-                    </picture>
-                  </a>
-                </div>
-              {%- endif -%}
+              {% comment %} ===== Free Swatches customer journey prompts ===== {% endcomment %}
+              
 
+              
+
+              
+
+
+              <section class="free-swatches-type-group" data-free-swatches-group data-series="{{ type | escape }}">
               <div style="border-bottom:1px solid #ccc;margin:20px 0;padding-bottom:20px">
                 <h2 class="text-center" >{{ type }}</h2>
                 {% comment %} 
@@ -375,7 +525,40 @@
                     {%- endif -%}
 
                     <!-- 前12个产品默认显示，其余隐藏 -->
-                    <div class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}" data-type="{{ type_id }}">
+                    {%- capture fs_filter_color -%}
+                      {%- for filter_value in product.metafields.custom.color_collection.value -%}
+                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
+                      {%- endfor -%}
+                    {%- endcapture -%}
+                    {%- capture fs_filter_light_control -%}
+                      {%- for filter_value in product.metafields.custom.light_blocking.value -%}
+                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
+                      {%- endfor -%}
+                    {%- endcapture -%}
+                    {%- capture fs_filter_function -%}
+                      {%- for filter_value in product.metafields.custom.feature.value -%}
+                        {{- filter_value.system.id -}}{%- unless forloop.last -%}|{%- endunless -%}
+                      {%- endfor -%}
+                    {%- endcapture -%}
+                    {%- capture free_swatches_search_text -%}
+                      {{ product.title }} {{ product.type }} {{ product.vendor }}
+                      {{ product.tags | join: ' ' }}
+                      {{ product.variants | map: 'sku' | join: ' ' }}
+                      {{ product.variants | map: 'title' | join: ' ' }}
+                    {%- endcapture -%}
+                    <div
+                      class="product-item{% if forloop.index > 12 %} product-item--hidden{% endif %}"
+                      data-type="{{ type_id }}"
+                      data-free-swatches-card
+                      data-product-types="{{ product.metafields.custom.swatch_product_type.value | join: '|' | escape }}"
+                      data-best-seller="{% if product.metafields.custom.is_best_seller.value == true %}true{% else %}false{% endif %}"
+                      data-filter-color="{{ fs_filter_color | strip | escape }}"
+                      data-filter-material="{{ product.metafields.custom.f_abric.value | join: '|' | escape }}"
+                      data-filter-light-control="{{ fs_filter_light_control | strip | escape }}"
+                      data-filter-texture="{{ product.metafields.custom.texture.value | join: '|' | escape }}"
+                      data-filter-function="{{ fs_filter_function | strip | escape }}"
+                      data-filter-collection="{{ product.metafields.custom.collection.value | escape }}"
+                      data-search-text="{{ free_swatches_search_text | strip | escape }}">
                         {% render 'custom-product-block', product: product, animate: true, prioritised_loading: prioritised_loading, in_cart: in_cart, cart_full: cart_full %}
                     </div>
                 {% endfor %}
@@ -388,6 +571,7 @@
                   <div class="load-btn">Load More</div>
               </div>
               {% endif %}
+              </section>
 
               {% comment %} <div class="product-grid product-grid--per-row-{{ section.settings.grid }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }} product-grid--per-row-mob-{{ settings.prod_thumb_mob_per_row }}">
                 {% for product in collection.products %}
@@ -406,13 +590,17 @@
       </div>
     </filter-container>
 
-
+    <div class="free-swatches-search-empty" data-free-swatches-search-empty hidden>
+      <h3>No matching swatches</h3>
+      <p>Try another collection name, color, or swatch code.</p>
+      <button type="button" class="btn btn--secondary" data-free-swatches-search-clear>Clear search</button>
+    </div>
 
   </div>
 
   <div class="container pagination-row" data-ajax-container>{% render 'pagination-control', paginate: paginate %}</div>
 
-  {%- render 'mini-cart', section_product_ids: mini_cart_product_ids -%}
+  {%- render 'mini-cart' -%}
 
   {% endpaginate %}
 
@@ -441,26 +629,90 @@
     }
   }
 
-  // 拼出 sections 参数：cart-drawer 的实例 id + mini-cart（按文件名）
+  // 前台操作只等待轻量的 mini-cart 内容；完整购物车抽屉在成功后后台同步。
   function buildSectionsParam() {
-    const cartDrawer = document.querySelector('cart-drawer');
-    const ids = [];
-    if (cartDrawer && cartDrawer.dataset.sectionId) ids.push(cartDrawer.dataset.sectionId);
-    ids.push('mini-cart');
-    return ids.join(',');
+    return 'mini-cart';
   }
 
-  // mini-cart 折叠态（模块级状态，仅当前页面会话内保留，刷新重置回展开）
-  let miniCartCollapsed = false;
+  // 按 Shopify 唯一 line key 删除，避免同一 variant 曾形成多条购物车记录时要点两次。
+  // 若存在重复记录，一次操作会把该小样的所有 line keys 一并清掉。
+  function buildRemoveUpdates(variantId, preferredLineKey) {
+    const updates = {};
+    if (preferredLineKey) {
+      updates[preferredLineKey] = 0;
+    }
+    document.querySelectorAll('[data-mini-cart-item][data-variant-id="' + variantId + '"]').forEach(item => {
+      const lineKey = item.getAttribute('data-line-key');
+      if (lineKey) updates[lineKey] = 0;
+    });
+    if (Object.keys(updates).length === 0) {
+      updates[variantId] = 0;
+    }
+    return updates;
+  }
 
-  // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM
+  // mini-cart 折叠态（模块级状态，仅当前页面会话内保留）。
+  // 手机和电脑首次进入都默认收起；成功新增小样时再自动展开。
+  const miniCartMobileMedia = window.matchMedia('(max-width: 767px)');
+  let miniCartCollapsed = true;
+
+  function getMiniCartCount(root) {
+    if (!root) return 0;
+    const count = root.querySelector('[data-mini-cart-count]');
+    const value = count ? parseInt(count.textContent, 10) : 0;
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  function setMiniCartCount(root, value) {
+    if (!root) return;
+    root.querySelectorAll('[data-mini-cart-count]').forEach(count => {
+      count.textContent = String(value);
+    });
+  }
+
+  // 加入时先更新页面反馈，不等待 Shopify 的 Section HTML。
+  function beginOptimisticMiniCartAdd() {
+    const miniCart = document.querySelector('[data-mini-cart]');
+    if (!miniCart) return null;
+    const previousCount = getMiniCartCount(miniCart);
+    const snapshot = {
+      count: previousCount,
+      collapsed: miniCartCollapsed,
+      hidden: miniCart.classList.contains('mini-cart--hidden')
+    };
+    setMiniCartCount(miniCart, Math.min(20, previousCount + 1));
+    miniCart.classList.remove('mini-cart--hidden');
+    miniCartCollapsed = false;
+    applyMiniCartState();
+    return snapshot;
+  }
+
+  function rollbackOptimisticMiniCartAdd(snapshot) {
+    if (!snapshot) return;
+    const miniCart = document.querySelector('[data-mini-cart]');
+    if (!miniCart) return;
+    setMiniCartCount(miniCart, snapshot.count);
+    miniCart.classList.toggle('mini-cart--hidden', snapshot.hidden);
+    miniCartCollapsed = snapshot.collapsed;
+    applyMiniCartState();
+  }
+
+  // 用 Section Rendering API 返回的 HTML 替换 mini-cart 的整段 DOM。
+  // 数量增加代表新加入小样：自动展开；删到 0 个：恢复默认收起状态。
   function updateMiniCart(html) {
     const oldEl = document.querySelector('[data-mini-cart]');
     if (!oldEl) return;
+    const oldCount = getMiniCartCount(oldEl);
     const tpl = document.createElement('template');
     tpl.innerHTML = html.trim();
     const newEl = tpl.content.querySelector('[data-mini-cart]');
     if (!newEl) return;
+    const newCount = getMiniCartCount(newEl);
+    if (newCount <= 0) {
+      miniCartCollapsed = true;
+    } else if (newCount > oldCount) {
+      miniCartCollapsed = false;
+    }
     oldEl.replaceWith(newEl);
     // 替换后 DOM 回到 Liquid 的默认（展开），把记住的折叠态再 apply 一次
     applyMiniCartState();
@@ -474,21 +726,45 @@
       cartDrawer.updateFromCartChange(data.sections[cartDrawer.dataset.sectionId]);
     }
     if (data.sections['mini-cart']) {
+      miniCartRefreshVersion += 1;
       updateMiniCart(data.sections['mini-cart']);
     }
   }
 
-  // 用 Section Rendering API 单独拉 mini-cart 的最新 HTML（响应外部购物车变化，比如抽屉里删商品）
-  // 我们自己派发的 on:cart:change 带 source 标记，会被跳过 —— applyCartChangeSections 已经从 POST 响应里同步更新过 mini-cart 了
+  // 不阻塞加入/移除的完成反馈；只应用最后一次后台刷新，避免快速操作时旧结果覆盖新结果。
+  let cartDrawerRefreshVersion = 0;
+  async function refreshCartDrawerInBackground() {
+    const cartDrawer = document.querySelector('cart-drawer');
+    const sectionId = cartDrawer && cartDrawer.dataset.sectionId;
+    if (!cartDrawer || !sectionId) return;
+    const version = ++cartDrawerRefreshVersion;
+    try {
+      const url = `${window.location.pathname}?sections=${encodeURIComponent(sectionId)}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (version !== cartDrawerRefreshVersion) return;
+      if (data[sectionId]) {
+        cartDrawer.updateFromCartChange(data[sectionId]);
+      }
+    } catch (err) {
+      console.error('Error refreshing cart drawer in background:', err);
+    }
+  }
+
+  // 用 Section Rendering API 在后台同步 mini-cart；只应用最后一次结果，避免快速操作时旧 HTML 回写。
+  let miniCartRefreshVersion = 0;
   async function refreshMiniCartFromServer(event) {
     if (event && event.detail && event.detail.source === 'mini-cart-internal') {
       return;
     }
+    const version = ++miniCartRefreshVersion;
     try {
-      const url = `${window.location.pathname}?sections=mini-cart`;
+      const url = `${window.location.pathname}?sections=mini-cart&_=${Date.now()}`;
       const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
+      if (version !== miniCartRefreshVersion) return;
       if (data['mini-cart']) {
         updateMiniCart(data['mini-cart']);
       }
@@ -503,17 +779,26 @@
       if (isCartFlying) return; // 防御：上一个 cart 写请求还在飞，不接受新点击
 
       const button = event.target;
+      const inCart = button.classList.contains('add-to-cart-test--in-cart');
+      const cartFull = getMiniCartCount(document.querySelector('[data-mini-cart]')) >= 20;
+      if (!inCart && cartFull) {
+        refreshAddBtnDisabled();
+        return;
+      }
+
       const variantId = button.getAttribute('data-product-id');
       if (!variantId) {
         console.error('未找到产品 ID');
         return;
       }
       isCartFlying = true;
+      // 第一次点击立即切换文字；请求失败时对应函数会恢复原状态。
+      setButtonInCart(button, !inCart);
       button.classList.add('loading');
       button.disabled = true;
-      refreshAddBtnDisabled(); // 立刻锁住其它未加购的 Add 按钮
+      requestAnimationFrame(refreshAddBtnDisabled); // 先让当前按钮和底部数量完成首帧反馈，再锁住其它按钮
 
-      if (button.classList.contains('add-to-cart-test--in-cart')) {
+      if (inCart) {
         removeFromCart(variantId, button);
       } else {
         addToCart(variantId, button);
@@ -526,17 +811,15 @@
     document.addEventListener('on:cart:change', refreshMiniCartFromServer);
 
     // mini-cart 的交互（委托到 document，因为 DOM 会被 section refresh 整段替换）
-    document.addEventListener('click', handleMiniCartClick);
+    // Capture phase avoids a nested image or another page listener swallowing the first tap.
+    document.addEventListener('click', handleMiniCartClick, true);
   });
 
-  // 加购：用主题原生路径 + Section Rendering API，一次请求拿到抽屉 + mini-cart 的最新 HTML
+  // 加购：先即时更新按钮和底部数量；Shopify 写入不再等待 Section Rendering。
   async function addToCart(variantId, button) {
-    // 用 /cart/update.js 替代 /cart/add.js：updates[variantId]=1 = 设为 1 件（"加入" 的语义）。
-    // 同 endpoint 也用于 remove（设为 0），跟同行实践一致，实测 Shopify 该接口响应更快。
+    const optimisticSnapshot = beginOptimisticMiniCartAdd();
     const body = JSON.stringify({
-      updates: { [variantId]: 1 },
-      sections_url: window.location.pathname,
-      sections: buildSectionsParam()
+      updates: { [variantId]: 1 }
     });
 
     try {
@@ -554,8 +837,10 @@
         throw new Error(data.description || data.message || 'Add to cart failed');
       }
 
-      applyCartChangeSections(data);
       setButtonInCart(button, true);
+      // 缩略图、小样 line key 和完整购物车均在后台同步，不阻塞当前点击反馈。
+      refreshMiniCartFromServer();
+      refreshCartDrawerInBackground();
 
       // 派发主题事件，让 header 计数等其它组件自动同步
       document.dispatchEvent(new CustomEvent('on:cart:change', {
@@ -564,18 +849,21 @@
         detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
+      rollbackOptimisticMiniCartAdd(optimisticSnapshot);
+      setButtonInCart(button, false);
       console.error('Error adding product to cart:', err);
     } finally {
       btnLoading(button);
       isCartFlying = false;
       refreshAddBtnDisabled();
+      processQueuedMiniCartRemoval();
     }
   }
 
-  // 移除：用 /cart/update.js + updates[variantId]=0 把该 line 删掉。和 addToCart 走同一个 endpoint。
+  // 移除：优先使用 Shopify line key；若同一小样有重复 line，一次全部清掉。
   async function removeFromCart(variantId, button) {
     const body = JSON.stringify({
-      updates: { [variantId]: 0 },
+      updates: buildRemoveUpdates(variantId),
       sections_url: window.location.pathname,
       sections: buildSectionsParam()
     });
@@ -597,6 +885,7 @@
 
       applyCartChangeSections(data);
       setButtonInCart(button, false);
+      refreshCartDrawerInBackground();
 
       document.dispatchEvent(new CustomEvent('on:cart:change', {
         bubbles: true,
@@ -604,19 +893,21 @@
         detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
+      setButtonInCart(button, true);
       console.error('Error removing product from cart:', err);
     } finally {
       btnLoading(button);
       isCartFlying = false;
       refreshAddBtnDisabled();
+      processQueuedMiniCartRemoval();
     }
   }
 
-  // mini-cart ⊖ 移除：和 removeFromCart 类似，但触发源是 mini-cart 自身的 ⊖ 按钮（会被 section 刷新替换掉）。
+  // mini-cart ⊖ 移除：使用点击项的唯一 line key，并清理同 variant 的重复 line。
   // 直接按 variantId 查到产品列表对应按钮 setButtonInCart(false)，避免 syncButtonsWithCart 再额外 GET /cart.js。
-  async function removeFromMiniCart(variantId) {
+  async function removeFromMiniCart(variantId, preferredLineKey) {
     const body = JSON.stringify({
-      updates: { [variantId]: 0 },
+      updates: buildRemoveUpdates(variantId, preferredLineKey),
       sections_url: window.location.pathname,
       sections: buildSectionsParam()
     });
@@ -637,6 +928,7 @@
       }
 
       applyCartChangeSections(data);
+      refreshCartDrawerInBackground();
 
       // 同步对应产品卡片的 Add 按钮态（如果存在）
       const cardBtn = document.querySelector('.add-to-cart-test[data-product-id="' + variantId + '"]');
@@ -650,35 +942,106 @@
         detail: { source: 'mini-cart-internal' }
       }));
     } catch (err) {
+      document.querySelectorAll('[data-mini-cart-item][data-variant-id="' + variantId + '"]').forEach(pendingItem => {
+        pendingItem.classList.remove('mini-cart__item--pending-remove');
+        pendingItem.removeAttribute('aria-busy');
+      });
+      const cardBtn = document.querySelector('.add-to-cart-test[data-product-id="' + variantId + '"]');
+      if (cardBtn) setButtonInCart(cardBtn, true);
       console.error('Error removing product from mini-cart:', err);
     } finally {
       isCartFlying = false;
       refreshAddBtnDisabled();
-      // 成功路径下 DOM 已被 applyCartChangeSections 替换，新 DOM 不带该 class，这次 remove 是 no-op；
-      // 失败路径下显式清掉
+      // 成功路径下 DOM 已被替换；失败路径下恢复当前按钮。
+      document.querySelectorAll('[data-mini-cart-item][data-variant-id="' + variantId + '"] [data-mini-cart-remove]').forEach(currentRemoveBtn => {
+        currentRemoveBtn.classList.remove('loading');
+        currentRemoveBtn.disabled = false;
+      });
       const miniCartEl = document.querySelector('[data-mini-cart]');
       if (miniCartEl) miniCartEl.classList.remove('mini-cart--removing');
+      processQueuedMiniCartRemoval();
     }
   }
 
+  const queuedMiniCartRemovals = [];
+
+  function queueMiniCartRemoval(item, variantId) {
+    if (!queuedMiniCartRemovals.some(entry => entry.variantId === variantId)) {
+      queuedMiniCartRemovals.push({
+        variantId: variantId,
+        lineKey: item.getAttribute('data-line-key') || ''
+      });
+    }
+    document.querySelectorAll('[data-mini-cart-item][data-variant-id="' + variantId + '"]').forEach(queuedItem => {
+      queuedItem.classList.add('mini-cart__item--queued-remove');
+      queuedItem.setAttribute('aria-busy', 'true');
+    });
+  }
+
+  function startMiniCartRemoval(item, removeBtn) {
+    if (!item || !removeBtn) return;
+    const variantId = item.getAttribute('data-variant-id');
+    if (!variantId) return;
+
+    isCartFlying = true;
+    removeBtn.classList.add('loading');
+    removeBtn.disabled = true;
+
+    document.querySelectorAll('[data-mini-cart-item][data-variant-id="' + variantId + '"]').forEach(pendingItem => {
+      pendingItem.classList.remove('mini-cart__item--queued-remove');
+      pendingItem.classList.add('mini-cart__item--pending-remove');
+      pendingItem.setAttribute('aria-busy', 'true');
+    });
+
+    const cardBtn = document.querySelector('.add-to-cart-test[data-product-id="' + variantId + '"]');
+    if (cardBtn) setButtonInCart(cardBtn, false);
+
+    const miniCartEl = removeBtn.closest('[data-mini-cart]');
+    if (miniCartEl) miniCartEl.classList.add('mini-cart--removing');
+    refreshAddBtnDisabled();
+
+    removeFromMiniCart(variantId, item.getAttribute('data-line-key'));
+  }
+
+  function processQueuedMiniCartRemoval() {
+    if (isCartFlying || queuedMiniCartRemovals.length === 0) return;
+
+    const next = queuedMiniCartRemovals.shift();
+    const item = document.querySelector('[data-mini-cart-item][data-variant-id="' + next.variantId + '"]');
+    if (!item) {
+      processQueuedMiniCartRemoval();
+      return;
+    }
+
+    const removeBtn = item.querySelector('[data-mini-cart-remove]');
+    if (!removeBtn) {
+      processQueuedMiniCartRemoval();
+      return;
+    }
+
+    startMiniCartRemoval(item, removeBtn);
+  }
+
   // mini-cart 的所有交互（×收起 / <展开 / ⊖移除 / </> 滚动 / Checkout 跳转）
-  // Checkout 按钮：href 恒为 /cart，避免 href 含 "checkout" 被第三方 app 的 a[href*="checkout"] 选择器
-  //   命中而在按钮旁注入折扣码/Total 组件。仅当按钮带 data-checkout-only-swatches（购物车只剩小样）时，
-  //   拦截点击并跳 /checkout；否则放行原生 <a> 跳购物车页。
+  // Checkout 的静态 href 仍保留 /cart，避免第三方 app 的 a[href*="checkout"] 选择器
+  // 在按钮旁注入折扣码/Total 组件；实际点击始终直接进入 Shopify Checkout。
   function handleMiniCartClick(event) {
     const target = event.target;
 
     const checkoutBtn = target.closest('.mini-cart__cart-btn');
     if (checkoutBtn) {
-      if (checkoutBtn.hasAttribute('data-checkout-only-swatches')) {
-        event.preventDefault();
-        window.location.href = '/checkout';
-      }
+      event.preventDefault();
+      window.location.href = '/checkout';
       return;
     }
 
     if (target.closest('[data-mini-cart-collapse]')) {
       toggleMiniCart(true);
+      return;
+    }
+    // 收起状态下，点击整条 Your Free Swatches 区域都可展开；Checkout 已在上方单独处理。
+    if (miniCartCollapsed && target.closest('[data-mini-cart-collapsed]')) {
+      toggleMiniCart(false);
       return;
     }
     if (target.closest('[data-mini-cart-expand]')) {
@@ -695,19 +1058,21 @@
     }
     const removeBtn = target.closest('[data-mini-cart-remove]');
     if (removeBtn) {
-      if (isCartFlying) return;
+      event.preventDefault();
+      event.stopPropagation();
       const item = removeBtn.closest('[data-mini-cart-item]');
       if (!item) return;
       const variantId = item.getAttribute('data-variant-id');
       if (!variantId) return;
-      isCartFlying = true;
-      removeBtn.classList.add('loading');
-      removeBtn.disabled = true;
-      // 给整个 list 区域加灰遮罩 + spinner，CSS 自动触发；applyCartChangeSections 后 DOM 替换自然消失
-      const miniCartEl = removeBtn.closest('[data-mini-cart]');
-      if (miniCartEl) miniCartEl.classList.add('mini-cart--removing');
-      refreshAddBtnDisabled();
-      removeFromMiniCart(variantId);
+
+      // Never drop a mobile tap. If another cart write is still running,
+      // keep this removal intent and execute it as soon as the write finishes.
+      if (isCartFlying) {
+        queueMiniCartRemoval(item, variantId);
+        return;
+      }
+
+      startMiniCartRemoval(item, removeBtn);
       return;
     }
   }
@@ -728,9 +1093,20 @@
     // cart-action 也有两套内容（展开 logo+Cart / 收起 计数+首个色卡）
     const cartExpanded = document.querySelector('[data-mini-cart-cart-expanded]');
     const cartCollapsed = document.querySelector('[data-mini-cart-cart-collapsed]');
-    if (cartExpanded) cartExpanded.hidden = collapsed;
-    if (cartCollapsed) cartCollapsed.hidden = !collapsed;
+    const keepMobileCheckoutVisible = collapsed && miniCartMobileMedia.matches;
+    if (cartExpanded) cartExpanded.hidden = collapsed && !keepMobileCheckoutVisible;
+    if (cartCollapsed) cartCollapsed.hidden = !collapsed || keepMobileCheckoutVisible;
+
+    const miniCart = document.querySelector('[data-mini-cart]');
+    const visible = !!miniCart && !miniCart.classList.contains('mini-cart--hidden');
+    document.documentElement.classList.toggle('fs-mini-cart-visible', visible);
+    document.documentElement.classList.toggle('fs-mini-cart-expanded', visible && !collapsed);
+    document.documentElement.classList.add('fs-mini-cart-ready');
   }
+
+  // The mini-cart markup is already above this script, so apply the mobile
+  // initial state immediately instead of waiting for DOMContentLoaded.
+  applyMiniCartState();
 
   function scrollMiniCartList(delta) {
     const list = document.querySelector('[data-mini-cart-list]');
@@ -758,14 +1134,14 @@
   // loading 中的按钮自己管自己，跳过。
   // cartFull 直接从 DOM 数（有 --in-cart class 的按钮 >= 20），不再单独维护变量。
   function refreshAddBtnDisabled() {
-    const cartFull = document.querySelectorAll('.add-to-cart-test--in-cart').length >= 20;
+    const miniCart = document.querySelector('[data-mini-cart]');
+    const cartFull = getMiniCartCount(miniCart) >= 20;
     document.querySelectorAll('.add-to-cart-test').forEach(btn => {
       if (btn.classList.contains('loading')) return;
       const inCart = btn.classList.contains('add-to-cart-test--in-cart');
       setAddBtnDisabled(btn, isCartFlying || (cartFull && !inCart));
     });
     // 同步切换 mini-cart 的飞行态 class，由 CSS 处理 ⊖ 按钮的视觉禁用
-    const miniCart = document.querySelector('[data-mini-cart]');
     if (miniCart) {
       miniCart.classList.toggle('mini-cart--cart-flying', isCartFlying);
     }
@@ -798,8 +1174,9 @@
       const hiddenProducts = document.querySelectorAll(`[data-type="${typeId}"].product-item--hidden`);
       const loadMoreBtn = document.getElementById(`load-more-${typeId}`);
 
-      // 每次显示12个产品
-      const showCount = Math.min(12, hiddenProducts.length);
+      // 手机版每次显示4个，桌面保持每次显示12个
+      const batchSize = window.matchMedia('(max-width: 700px)').matches ? 4 : 12;
+      const showCount = Math.min(batchSize, hiddenProducts.length);
 
       for (let i = 0; i < showCount; i++) {
           hiddenProducts[i].classList.remove('product-item--hidden');
@@ -1326,3 +1703,25 @@
     utilityBar.style.transform = `translateX(-16px)`;
   }
 </script>
+
+<style id="fs-mini-cart-clearance-v1">
+  html.fs-refine-v2.fs-mini-cart-visible .emily-box {
+    padding-bottom: 58px;
+  }
+  html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded .emily-box {
+    padding-bottom: 130px;
+  }
+  @media (min-width: 768px) {
+    html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded [data-mini-cart] {
+      bottom: 0;
+    }
+  }
+  @media (max-width: 767px) {
+    html.fs-refine-v2.fs-mini-cart-visible .emily-box {
+      padding-bottom: 58px;
+    }
+    html.fs-refine-v2.fs-mini-cart-visible.fs-mini-cart-expanded .emily-box {
+      padding-bottom: 150px;
+    }
+  }
+</style>

@@ -2,9 +2,8 @@
   Mini Cart — 仅在 test.liquid (Collection pages custom) 内使用。
   通过 sections/mini-cart.liquid 走 Section Rendering API 拿到刷新后的 HTML。
 
-  Inputs:
-    section_product_ids: array of product ids belonging to current section.
-                         cart.items 中 product_id 在此集合内的 line 才会显示。
+  Count and list source:
+    All cart lines whose product belongs to the free-swatches collection.
 {%- endcomment -%}
 
 {%- assign max_items = 20 -%}
@@ -12,22 +11,20 @@
 {%- assign visible_items_count = 0 -%}
 {%- assign first_section_item = nil -%}
 {%- comment -%}
-  Checkout 跳转判定：统计非小样商品数量。
-  小样 = 所属 collection 的 handle 含 'free-swatches'（与 main-cart / free-swatches snippet 判定一致）。
-  注意 cart.items 是整个购物车（所有加购商品），不局限于本 section。
+  Use one source of truth for the count, thumbnails, and checkout behavior:
+  every cart line whose product belongs to the free-swatches collection.
 {%- endcomment -%}
 {%- assign non_swatch_qty = 0 -%}
 {%- for item in cart.items -%}
-  {%- if section_product_ids contains item.product_id -%}
+  {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+  {%- if item_collection_handles contains 'free-swatches' -%}
     {%- assign visible_items_count = visible_items_count | plus: 1 -%}
     {%- if first_section_item == nil -%}
       {%- assign first_section_item = item -%}
     {%- endif -%}
-  {%- endif -%}
-  {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
-  {%- unless item_collection_handles contains 'free-swatches' -%}
+  {%- else -%}
     {%- assign non_swatch_qty = non_swatch_qty | plus: item.quantity -%}
-  {%- endunless -%}
+  {%- endif -%}
 {%- endfor -%}
 
 {%- comment -%}
@@ -46,14 +43,15 @@
 {%- endif -%}
 
 <aside
-  class="mini-cart{% if visible_items_count == 0 %} mini-cart--hidden{% endif %}"
+  class="mini-cart mini-cart--free-swatches{% if visible_items_count == 0 %} mini-cart--hidden{% endif %}"
   data-mini-cart
   aria-label="Sample cart">
   <div class="mini-cart__expanded" data-mini-cart-expanded>
     <header class="mini-cart__header">
       <h3 class="mini-cart__title">
-        Order Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
+        Order Free Swatches (<span data-mini-cart-count>{{ visible_items_count }}</span>/{{ max_items }})
       </h3>
+      <p class="mini-cart__perk-reminder"><strong>$9.99</strong> shipping — get a <strong>$10</strong> coupon + unlock up to <strong>29% off</strong></p>
       <button type="button" class="mini-cart__btn mini-cart__collapse-btn" data-mini-cart-collapse aria-label="Collapse">
         <img
           class="mini-cart__collapse-icon mini-cart__collapse-icon--desktop"
@@ -80,7 +78,8 @@
       </button>
       <ul class="mini-cart__list" data-mini-cart-list role="list">
         {%- for item in cart.items -%}
-          {%- if section_product_ids contains item.product_id -%}
+          {%- assign item_collection_handles = item.product.collections | map: 'handle' -%}
+          {%- if item_collection_handles contains 'free-swatches' -%}
             <li class="mini-cart__item"
                 data-mini-cart-item
                 data-variant-id="{{ item.variant_id }}"
